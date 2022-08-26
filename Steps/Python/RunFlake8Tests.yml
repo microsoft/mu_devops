@@ -1,0 +1,24 @@
+## @file
+# Azure Pipelines step template to run flake8 and publish
+# an error log if any errors occur.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+- script: flake8 .
+  displayName: 'Run flake8'
+  condition: succeededOrFailed()
+
+# Only capture and archive the lint log on failures.
+- script: flake8 . > flake8.err.log
+  displayName: 'Capture flake8 Failures'
+  condition: Failed()
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: 'flake8.err.log'
+    artifactName: 'Flake8 Error Log File'
+  continueOnError: true
+  condition: Failed()

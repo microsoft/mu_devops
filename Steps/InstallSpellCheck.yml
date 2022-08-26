@@ -1,0 +1,12 @@
+## @file
+# Azure Pipelines step template to install spell check (cspell).
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+
+- script: npm install -g cspell@5.20.0
+  displayName: Install cspell npm
+  condition: succeeded()

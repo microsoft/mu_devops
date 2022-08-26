@@ -1,0 +1,43 @@
+## @file
+# Azure Pipelines step template to build BaseTools.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: extra_parameters
+  displayName: Extra Edk2ToolsBuild.py Parameters
+  type: string
+  default: ''
+- name: tool_chain_tag
+  displayName: Tool Chain (e.g. VS2022)
+  type: string
+  default: ''
+
+steps:
+- ${{ if contains(parameters.tool_chain_tag, 'GCC') }}:
+  - bash: sudo apt-get update
+    displayName: Update apt
+    condition: and(gt(variables.pkg_count, 0), succeeded())
+
+  - bash: sudo apt-get install gcc g++ make uuid-dev
+    displayName: Install required tools
+    condition: and(gt(variables.pkg_count, 0), succeeded())
+
+- task: CmdLine@1
+  displayName: Build Base Tools from source
+  inputs:
+    filename: python
+    arguments: BaseTools/Edk2ToolsBuild.py -t ${{ parameters.tool_chain_tag }} ${{ parameters.extra_parameters }}
+  condition: and(gt(variables.pkg_count, 0), succeeded())
+
+- task: CopyFiles@2
+  displayName: "Copy base tools build log"
+  inputs:
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+    SourceFolder: 'BaseTools/BaseToolsBuild'
+    contents: |
+      BASETOOLS_BUILD*.*
+    flattenFolders: true
+  condition: and(gt(variables.pkg_count, 0), succeededOrFailed())

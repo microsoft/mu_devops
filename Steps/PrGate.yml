@@ -1,0 +1,172 @@
+## @file
+# Azure Pipelines step template to build for a pull request.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: build_archs
+  displayName: Architectures (e.g. IA32, X64)
+  type: string
+  default: ''
+- name: build_file
+  displayName: Stuart Build File
+  type: string
+  default: ".pytool/CISettings.py"
+- name: build_pkgs
+  displayName: Packages
+  type: string
+  default: ''
+- name: build_targets
+  displayName: Targets (e.g. DEBUG, RELEASE)
+  type: string
+  default: ''
+- name: do_ci_build
+  displayName: Perform Stuart CI Build
+  type: boolean
+  default: true
+- name: do_ci_setup
+  displayName: Perform Stuart CI Setup
+  type: boolean
+  default: true
+- name: do_non_ci_build
+  displayName: Perform non-CI Stuart Build
+  type: boolean
+  default: false
+- name: do_non_ci_setup
+  displayName: Perform non-CI Stuart Setup
+  type: boolean
+  default: false
+- name: tool_chain_tag
+  displayName: Tool Chain (e.g. VS2022)
+  type: string
+  default: ''
+
+steps:
+- checkout: self
+  clean: true
+  # Note: Depth cannot be limited if PR Eval is used
+
+- template: SetupPythonPreReqs.yml
+
+# Set Default Package Info
+- bash: |
+    echo "##vso[task.setvariable variable=pkgs_to_build]${{ parameters.build_pkgs }}"
+    echo "##vso[task.setvariable variable=pkg_count]${{ 1 }}"
+
+# $System.PullRequest.targetBranch looks like "dev/whatever" on GitHub,
+# but looks like "refs/heads/dev/whatever" on DevOps. The DevOps version
+# can't be used for comparison for the PR Eval.
+- powershell:
+    $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
+    Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
+  displayName: Apply Branch Name Workaround
+  condition: eq(variables['Build.Reason'], 'PullRequest')
+
+# Trim the package list if this is a PR
+- task: CmdLine@1
+  displayName: Check if ${{ parameters.build_pkgs }} Needs Testing
+  inputs:
+    filename: stuart_pr_eval
+    # Workaround an azure pipelines bug.
+    arguments: -c ${{ parameters.build_file }} -p ${{ parameters.build_pkgs }} --pr-target $(pr_compare_branch) --output-csv-format-string "##vso[task.setvariable variable=pkgs_to_build;isOutpout=true]{pkgcsv}" --output-count-format-string "##vso[task.setvariable variable=pkg_count;isOutpout=true]{pkgcount}"
+  condition: eq(variables['Build.Reason'], 'PullRequest')
+
+- template: InstallSpellCheck.yml
+
+- template: InstallMarkdownLint.yml
+
+# Build repo
+- ${{ if eq(parameters.do_ci_setup, true) }}:
+  - task: CmdLine@1
+    displayName: CI Setup ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+    inputs:
+      filename: stuart_ci_setup
+      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) --force-git -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+    condition: succeeded()
+
+- ${{ if eq(parameters.do_non_ci_setup, true) }}:
+  - task: CmdLine@1
+    displayName: Setup ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+    inputs:
+      filename: stuart_setup
+      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+    condition: succeeded()
+
+- task: CmdLine@1
+  displayName: Update ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+  inputs:
+    filename: stuart_update
+    arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+  condition: succeeded()
+
+- ${{ if eq(parameters.do_non_ci_build, true) }}:
+  - task: CmdLine@1
+    displayName: Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+    inputs:
+      filename: stuart_build
+      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+    condition: succeeded()
+
+- ${{ if eq(parameters.do_ci_build, true) }}:
+  - task: CmdLine@1
+    displayName: CI Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+    inputs:
+      filename: stuart_ci_build
+      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+    condition: succeeded()
+
+# Publish Test Results to Azure Pipelines/TFS
+- task: PublishTestResults@2
+  displayName: Publish junit Test Results
+  continueOnError: true
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'                  # Options: JUnit, NUnit, VSTest, xUnit
+    testResultsFiles: 'Build/TestSuites.xml'
+    mergeTestResults: true                      # Optional
+    testRunTitle: $(System.JobName)             # Optional
+    publishRunAttachments: true                 # Optional
+
+# Publish Test Results to Azure Pipelines/TFS
+- task: PublishTestResults@2
+  displayName: Publish Host-Based Unit Test Results for $(System.JobName)
+  continueOnError: true
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'                  # Options: JUnit, NUnit, VSTest, xUnit
+    testResultsFiles: 'Build/**/*.result.xml'
+    mergeTestResults: false                     # Optional
+    testRunTitle: ${{ parameters.build_pkgs }}  # Optional
+    publishRunAttachments: true                 # Optional
+
+# Copy the build logs to the artifact staging directory
+- task: CopyFiles@2
+  displayName: Copy Build Logs
+  inputs:
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+    SourceFolder: 'Build'
+    contents: |
+      BUILDLOG_*.txt
+      BUILDLOG_*.md
+      CI_*.txt
+      CI_*.md
+      CISETUP.txt
+      SETUPLOG.txt
+      UPDATE_LOG.txt
+      PREVALLOG.txt
+      TestSuites.xml
+      **/BUILD_TOOLS_REPORT.html
+      **/OVERRIDELOG.TXT
+    flattenFolders: true
+  condition: succeededOrFailed()
+
+# Publish build artifacts to Azure Artifacts/TFS or a file share
+- task: PublishBuildArtifacts@1
+  continueOnError: true
+  displayName: Publish Build Logs
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'Build Logs $(System.JobName)'
+  condition: succeededOrFailed()

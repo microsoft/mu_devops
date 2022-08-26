@@ -1,0 +1,24 @@
+## @file
+# Azure Pipelines step to setup Python pre-requisites.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: pip_requirement_files
+  displayName: Pip Requirement Files
+  type: string
+  default: -r pip-requirements.txt
+
+steps:
+
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: ">=3.10.6"
+    architecture: x64
+
+- script: pip install ${{ parameters.pip_requirement_files }} --upgrade
+  displayName: Install and Upgrade pip Modules
+  condition: succeeded()
+

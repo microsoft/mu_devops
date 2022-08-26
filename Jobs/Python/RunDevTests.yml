@@ -1,0 +1,69 @@
+## @file
+# Azure Pipelines job template to run Python developer tests.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: code_cov_enabled
+  displayName: Enable Code Coverage
+  type: boolean
+  default: false
+- name: custom_job_name
+  displayName: Custom Job name
+  type: string
+  default: ''
+- name: extra_steps
+  displayName: Extra Steps
+  type: stepList
+  default:
+    - script: echo No extra steps provided
+- name: pypi_auth_feed
+  displayName: PyPI Authorization Feed (Set For Release)
+  type: string
+  default: ''
+- name: root_package_folder
+  displayName: Root Package Folder
+  type: string
+  default: ''
+- name: vm_image
+  displayName: Virtual Machine Image (e.g. windows-latest)
+  type: string
+  default: 'windows-latest'
+
+jobs:
+
+- job: Build_and_Test_${{parameters.custom_job_name}}
+
+  workspace:
+    clean: all
+
+  pool:
+    vmImage: ${{ parameters.vm_image }}
+
+  steps:
+  - template: ../../Steps/SetNodeVersion.yml
+  - template: ../../Steps/SetupPythonPreReqs.yml
+    parameters:
+      pip_requirement_files: -r pip-requirements.txt -r py-requirements.txt
+  - ${{ parameters.extra_steps }}
+  - template: ../../Steps/Python/RunPytest.yml
+    parameters:
+      root_package_folder: ${{parameters.root_package_folder}}
+      code_cov_enabled: ${{parameters.code_cov_enabled}}
+
+  - template: ../../Steps/Python/RunFlake8Tests.yml
+
+  - template: ../../Steps/InstallSpellCheck.yml
+  - template: ../../Steps/RunSpellCheck.yml
+
+  - template: ../../Steps/InstallMarkdownLint.yml
+  - template: ../../Steps/RunMarkdownLint.yml
+
+  - task: PythonScript@0
+    inputs:
+      scriptSource: 'filePath'
+      scriptPath: 'BasicDevTests.py'
+    displayName: 'Check Basic File and Folder Tests'
+    condition: succeededOrFailed()
