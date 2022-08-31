@@ -31,6 +31,10 @@ parameters:
   displayName: Perform non-CI Stuart Setup
   type: boolean
   default: false
+- name: do_pr_eval
+  displayName: Perform Stuart PR Evaluation
+  type: boolean
+  default: true
 - name: extra_steps
   displayName: Extra Steps
   type: stepList
