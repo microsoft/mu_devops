@@ -1,0 +1,85 @@
+## @file
+# Template file used to build supported packages.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Copyright (c) 2020 - 2021, ARM Limited. All rights reserved.<BR>
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: arch_list
+  displayName: Architectures (e.g. IA32, X64)
+  type: string
+  default: ''
+- name: build_file
+  displayName: Stuart Build File
+  type: string
+  default: ".pytool/CISettings.py"
+- name: do_ci_build
+  displayName: Perform Stuart CI Build
+  type: boolean
+  default: true
+- name: do_ci_setup
+  displayName: Perform Stuart CI Setup
+  type: boolean
+  default: true
+- name: do_non_ci_build
+  displayName: Perform non-CI Stuart Build
+  type: boolean
+  default: false
+- name: do_non_ci_setup
+  displayName: Perform non-CI Stuart Setup
+  type: boolean
+  default: false
+- name: extra_steps
+  displayName: Extra Steps
+  type: stepList
+  default:
+    - script: echo No extra steps provided
+- name: packages
+  displayName: Packages
+  type: string
+  default: ''
+- name: target_list
+  displayName: Targets (e.g. DEBUG, RELEASE)
+  type: string
+  default: ''
+- name: tool_chain_tag
+  displayName: Tool Chain (e.g. VS2022)
+  type: string
+  default: ''
+- name: vm_image
+  displayName: Virtual Machine Image (e.g. windows-latest)
+  type: string
+  default: 'windows-latest'
+
+# Build step
+jobs:
+
+  - job: Build_${{ parameters.tool_chain_tag }}
+
+    #Use matrix to speed up the build process
+    strategy:
+      matrix:
+        TARGET_BUILD:
+          Build.Pkgs: ${{ parameters.packages }}
+          Build.Targets: ${{ parameters.target_list }}
+    workspace:
+      clean: all
+
+    pool:
+      vmImage: ${{ parameters.vm_image }}
+
+    steps:
+    - ${{ parameters.extra_steps }}
+    - template: ../Steps/PrGate.yml
+      parameters:
+        build_file: ${{ parameters.build_file }}
+        build_pkgs: $(Build.Pkgs)
+        build_targets: $(Build.Targets)
+        build_archs: ${{ parameters.arch_list }}
+        do_ci_build: ${{ parameters.do_ci_build }}
+        do_ci_setup: ${{ parameters.do_ci_setup }}
+        do_non_ci_build: ${{ parameters.do_non_ci_build }}
+        do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
+        tool_chain_tag: ${{ parameters.tool_chain_tag }}

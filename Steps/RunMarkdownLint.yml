@@ -1,0 +1,16 @@
+## @file
+# Azure Pipelines step to lint markdown files
+# in the repository.
+#
+# markdownlint should be installed on the system
+# prior to invoking this template.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+
+- script: markdownlint "**/*.md"
+  displayName: Lint MD Files
+  condition: succeeded()

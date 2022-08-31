@@ -1,0 +1,33 @@
+## @file
+# Azure Pipelines step to evaluate the patch series in a PR by
+# running BaseTools/Scripts/PatchCheck.py.
+#
+# NOTE: This example monitors pull requests against the edk2-ci branch. Most
+# environments would replace 'edk2-ci' with 'master'.
+#
+# Copyright (c) 2019 - 2020, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# https://github.com/tianocore
+#
+##
+
+trigger: none
+
+pr:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  clean: true
+
+- template: Steps/SetupPythonPreReqs.yml
+- script: |
+    git fetch origin $(System.PullRequest.TargetBranch):$(System.PullRequest.TargetBranch)
+    python BaseTools/Scripts/PatchCheck.py $(System.PullRequest.TargetBranch)..$(System.PullRequest.SourceCommitId)
+  displayName: Use PatchCheck.py to Verify Patch Series in Pull Request
+  condition: succeeded()

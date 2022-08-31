@@ -1,0 +1,12 @@
+## @file
+# Azure Pipelines step template to install markdownlint.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+
+- script: npm install -g markdownlint-cli@0.31.0
+  displayName: Install Markdown Linter
+  condition: succeeded()

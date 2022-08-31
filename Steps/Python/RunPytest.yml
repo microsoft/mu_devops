@@ -1,0 +1,53 @@
+## @file
+# Azure Pipelines step template to run pytest.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: code_cov_enabled
+  displayName: Enable Code Coverage
+  type: boolean
+  default: false
+- name: root_package_folder
+  displayName: Root Package Folder
+  type: string
+  default: ''
+
+steps:
+- script: pytest -v --junitxml=test.junit.xml --html=pytest_report.html --self-contained-html --cov=${{ parameters.root_package_folder }} --cov-report html:cov_html --cov-report xml:cov.xml --cov-config .coveragerc
+  displayName: 'Run pytest Unit Tests'
+
+# Publish Test Results to Azure Pipelines/TFS
+- task: PublishTestResults@2
+  displayName: 'Publish junit Test Results'
+  continueOnError: true
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit
+    testResultsFiles: 'test.junit.xml'
+    mergeTestResults: true # Optional
+    publishRunAttachments: true # Optional
+
+# Publish build artifacts to Azure Pipelines
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: 'pytest_report.html'
+    artifactName: 'unit test report'
+  continueOnError: true
+  condition: succeededOrFailed()
+
+- script: |
+    curl -s https://codecov.io/bash | bash -s -- -C $(Build.SourceVersion) -F $(Agent.OS)
+  displayName: 'Upload to codecov.io'
+  continueOnError: true
+  condition: ${{parameters.code_cov_enabled}}
+
+# Publish Cobertura code coverage results
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'cobertura' # Options: cobertura, jaCoCo
+    summaryFileLocation: $(System.DefaultWorkingDirectory)/cov.xml
+    reportDirectory: $(System.DefaultWorkingDirectory)/cov_html
+  condition: succeededOrFailed()

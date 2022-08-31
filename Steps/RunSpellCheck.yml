@@ -1,0 +1,22 @@
+## @file
+# Azure Pipelines step to run spell check against
+# a set of files.
+#
+# cspell should be installed on the system
+# prior to invoking this template.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: spell_check_parameters
+  displayName: Spell Check (cspell) Parameters
+  type: string
+  default: "-c .cspell.json **/*.py"
+
+steps:
+
+- script: cspell ${{ parameters.spell_check_parameters }}
+  displayName: Run Spell Check Test
+  condition: succeeded()
