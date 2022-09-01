@@ -84,7 +84,7 @@ steps:
     inputs:
       filename: stuart_ci_setup
       arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) --force-git -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
-    condition: succeeded()
+    condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_non_ci_setup, true) }}:
   - task: CmdLine@1
@@ -92,14 +92,14 @@ steps:
     inputs:
       filename: stuart_setup
       arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
-    condition: succeeded()
+    condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - task: CmdLine@1
   displayName: Update ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
   inputs:
     filename: stuart_update
     arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
-  condition: succeeded()
+  condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
   - task: CmdLine@1
@@ -107,7 +107,7 @@ steps:
     inputs:
       filename: stuart_build
       arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
-    condition: succeeded()
+    condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_ci_build, true) }}:
   - task: CmdLine@1
@@ -115,13 +115,13 @@ steps:
     inputs:
       filename: stuart_ci_build
       arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
-    condition: succeeded()
+    condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # Publish Test Results to Azure Pipelines/TFS
 - task: PublishTestResults@2
   displayName: Publish junit Test Results
   continueOnError: true
-  condition: succeededOrFailed()
+  condition: and(gt(variables.pkg_count, 0), succeeded())
   inputs:
     testResultsFormat: 'JUnit'                  # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: 'Build/TestSuites.xml'
@@ -133,7 +133,7 @@ steps:
 - task: PublishTestResults@2
   displayName: Publish Host-Based Unit Test Results for $(System.JobName)
   continueOnError: true
-  condition: succeededOrFailed()
+  condition: and(gt(variables.pkg_count, 0), succeeded())
   inputs:
     testResultsFormat: 'JUnit'                  # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: 'Build/**/*.result.xml'
