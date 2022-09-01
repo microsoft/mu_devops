@@ -121,7 +121,7 @@ steps:
 - task: PublishTestResults@2
   displayName: Publish junit Test Results
   continueOnError: true
-  condition: and(gt(variables.pkg_count, 0), succeeded())
+  condition: and(gt(variables.pkg_count, 0), succeededOrFailed())
   inputs:
     testResultsFormat: 'JUnit'                  # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: 'Build/TestSuites.xml'
@@ -133,7 +133,7 @@ steps:
 - task: PublishTestResults@2
   displayName: Publish Host-Based Unit Test Results for $(System.JobName)
   continueOnError: true
-  condition: and(gt(variables.pkg_count, 0), succeeded())
+  condition: and(gt(variables.pkg_count, 0), succeededOrFailed())
   inputs:
     testResultsFormat: 'JUnit'                  # Options: JUnit, NUnit, VSTest, xUnit
     testResultsFiles: 'Build/**/*.result.xml'
