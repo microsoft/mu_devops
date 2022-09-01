@@ -86,4 +86,5 @@ jobs:
         do_ci_setup: ${{ parameters.do_ci_setup }}
         do_non_ci_build: ${{ parameters.do_non_ci_build }}
         do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
+        do_pr_eval: ${{ parameters.do_pr_eval }}
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
