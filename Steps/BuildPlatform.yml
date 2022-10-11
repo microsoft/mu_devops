@@ -54,6 +54,8 @@ steps:
 # Set default
 - bash: echo "##vso[task.setvariable variable=pkg_count]${{ 1 }}"
 
+- template: ApplyAdoBranchNameWorkaround.yml
+
 # trim the package list if this is a PR
 - task: CmdLine@1
   displayName: Check if ${{ parameters.build_pkg }} Needs Testing

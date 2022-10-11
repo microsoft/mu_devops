@@ -1,0 +1,18 @@
+## @file
+# Azure Pipelines step template to apply a workaround for branch names
+# on Azure DevOps (ADO).
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+
+# $System.PullRequest.targetBranch looks like "dev/whatever" on GitHub,
+# but looks like "refs/heads/dev/whatever" on DevOps. The DevOps version
+# can't be used for comparison for the PR Eval.
+- powershell:
+    $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
+    Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
+  displayName: Apply Branch Name Workaround
+  condition: condition: and(eq(variables['Build.Reason'], 'PullRequest'), contains(variables['System.PullRequest.TargetBranch'], 'refs/heads/'))
