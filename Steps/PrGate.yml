@@ -46,6 +46,10 @@ parameters:
   displayName: Tool Chain (e.g. VS2022)
   type: string
   default: ''
+- name: install_tools
+  displayName: Install Build Tools
+  type: boolean
+  default: true
 
 steps:
 - checkout: self
@@ -53,6 +57,8 @@ steps:
   # Note: Depth cannot be limited if PR Eval is used
 
 - template: SetupPythonPreReqs.yml
+  parameters:
+    install_python: ${{ parameters.install_tools }}
 
 # Set Default Package Info
 - bash: |
@@ -66,7 +72,7 @@ steps:
     $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
     Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
   displayName: Apply Branch Name Workaround
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+  condition: and(eq(variables['Build.Reason'], 'PullRequest'), contains(variables['System.PullRequest.TargetBranch'], 'refs/heads/'))
 
 # Trim the package list if this is a PR
 - ${{ if eq(parameters.do_pr_eval, true) }}:
@@ -78,9 +84,11 @@ steps:
       arguments: -c ${{ parameters.build_file }} -p ${{ parameters.build_pkgs }} --pr-target $(pr_compare_branch) --output-csv-format-string "##vso[task.setvariable variable=pkgs_to_build;isOutpout=true]{pkgcsv}" --output-count-format-string "##vso[task.setvariable variable=pkg_count;isOutpout=true]{pkgcount}"
     condition: eq(variables['Build.Reason'], 'PullRequest')
 
-- template: InstallSpellCheck.yml
+- ${{ if eq(parameters.install_tools, true) }}:
+  - template: InstallSpellCheck.yml
 
-- template: InstallMarkdownLint.yml
+- ${{ if eq(parameters.install_tools, true) }}:
+  - template: InstallMarkdownLint.yml
 
 # Build repo
 - ${{ if eq(parameters.do_ci_setup, true) }}:

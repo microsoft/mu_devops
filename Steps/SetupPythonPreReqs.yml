@@ -10,15 +10,19 @@ parameters:
   displayName: Pip Requirement Files
   type: string
   default: -r pip-requirements.txt
+- name: install_python
+  displayName: Install Python
+  type: boolean
+  default: true
 
 steps:
 
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: ">=3.10.6"
-    architecture: x64
+- ${{ if eq(parameters.install_python, true) }}:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: ">=3.10.6"
+      architecture: x64
 
 - script: pip install ${{ parameters.pip_requirement_files }} --upgrade
   displayName: Install and Upgrade pip Modules
   condition: succeeded()
-
