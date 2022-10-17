@@ -15,4 +15,4 @@ steps:
     $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
     Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
   displayName: Apply Branch Name Workaround
-  condition: condition: and(eq(variables['Build.Reason'], 'PullRequest'), contains(variables['System.PullRequest.TargetBranch'], 'refs/heads/'))
+  condition: and(eq(variables['Build.Reason'], 'PullRequest'), contains(variables['System.PullRequest.TargetBranch'], 'refs/heads/'))
