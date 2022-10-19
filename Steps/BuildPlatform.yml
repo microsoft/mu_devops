@@ -51,7 +51,8 @@ steps:
 
 - checkout: self
   clean: true
-  fetchDepth: 1
+  # Note: Depth cannot be limited if PR Eval is used. A pipeline may choose
+  #       to use a shallow checkout if PR eval is not used.
 
 - template: SetupPythonPreReqs.yml
 
