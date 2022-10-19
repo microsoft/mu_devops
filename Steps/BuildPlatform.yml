@@ -42,6 +42,10 @@ parameters:
   displayName: Tool Chain (e.g. VS2022)
   type: string
   default: ''
+- name: extra_artifacts
+  displayName: Additional Artifacts to Publish
+  type: string
+  default: ''
 
 steps:
 
@@ -128,6 +132,7 @@ steps:
       **/OVERRIDELOG.TXT
       BASETOOLS_BUILD*.*
       **/FD_REPORT.HTML
+      ${{ parameters.extra_artifacts }}
     flattenFolders: true
   condition: succeededOrFailed()
 
