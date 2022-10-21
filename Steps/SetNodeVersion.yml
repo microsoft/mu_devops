@@ -9,5 +9,5 @@ steps:
 
 - task: NodeTool@0
   inputs:
-    versionSpec: '14.x'
+    versionSpec: '19.x'
   condition: succeeded()
