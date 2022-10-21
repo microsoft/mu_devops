@@ -68,7 +68,7 @@ parameters:
 # Build step
 jobs:
 
-  - job: Build_${{ parameters.tool_chain_tag }}
+  - job: Build
 
     # Use matrix to speed up the build process
     strategy:
