@@ -42,6 +42,10 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
+- name: extra_build_args
+  displayName: Extra Build Command Arguments
+  type: string
+  default: ''
 - name: tool_chain_tag
   displayName: Tool Chain (e.g. VS2022)
   type: string
@@ -110,7 +114,7 @@ steps:
     displayName: Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
     inputs:
       filename: stuart_build
-      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_ci_build, true) }}:
@@ -118,7 +122,7 @@ steps:
     displayName: CI Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
     inputs:
       filename: stuart_ci_build
-      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # Publish Test Results to Azure Pipelines/TFS
@@ -163,6 +167,8 @@ steps:
       TestSuites.xml
       **/BUILD_TOOLS_REPORT.html
       **/OVERRIDELOG.TXT
+      coverage.xml
+      coverage.html
     flattenFolders: true
   condition: succeededOrFailed()
 
@@ -174,3 +180,11 @@ steps:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'Build Logs $(System.JobName)'
   condition: succeededOrFailed()
+
+- task: PublishCodeCoverageResults@1
+  displayName: Publish Code Coverage Results
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: 'Build/coverage.xml'
+    pathToSources: '$(Build.SourcesDirectory)'
+  condition: and(succeededOrFailed(), and(gt(variables.pkg_count, 0), contains('${{ parameters.extra_build_args }}', 'CODE_COVERAGE=TRUE')))
