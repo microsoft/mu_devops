@@ -23,6 +23,11 @@ steps:
       versionSpec: ">=3.10.6"
       architecture: x64
 
-- script: pip install ${{ parameters.pip_requirement_files }} --upgrade
-  displayName: Install and Upgrade pip Modules
-  condition: succeeded()
+- ${{ if ne(variables['Agent.OS'], 'Linux') }}:
+  - script: sudo pip install ${{ parameters.pip_requirement_files }} --upgrade
+    displayName: Install and Upgrade pip Modules
+    condition: succeeded()
+- ${{ else }}:
+  - script: pip install ${{ parameters.pip_requirement_files }} --upgrade
+    displayName: Install and Upgrade pip Modules
+    condition: succeeded()
