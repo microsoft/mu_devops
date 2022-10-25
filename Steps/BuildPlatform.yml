@@ -38,6 +38,10 @@ parameters:
   displayName: Run Flags
   type: string
   default: ''
+- name: install_tools
+  displayName: Install Build Tools
+  type: boolean
+  default: true
 - name: tool_chain_tag
   displayName: Tool Chain (e.g. VS2022)
   type: string
@@ -55,6 +59,8 @@ steps:
   #       to use a shallow checkout if PR eval is not used.
 
 - template: SetupPythonPreReqs.yml
+  parameters:
+    install_python: ${{ parameters.install_tools }}
 
 # Set default
 - bash: echo "##vso[task.setvariable variable=pkg_count]${{ 1 }}"
