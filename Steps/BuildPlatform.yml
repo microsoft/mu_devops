@@ -6,6 +6,18 @@
 ##
 
 parameters:
+- name: artifacts_binary
+  displayName: Binary Artifacts to Publish
+  type: string
+  default: ''
+- name: artifacts_identifier
+  displayName: Artifacts Identifier
+  type: string
+  default: 'Artifacts'
+- name: artifacts_other
+  displayName: Other Artifacts to Publish
+  type: string
+  default: ''
 - name: build_arch
   displayName: Architectures (e.g. IA32, X64)
   type: string
@@ -48,10 +60,6 @@ parameters:
   default: true
 - name: tool_chain_tag
   displayName: Tool Chain (e.g. VS2022)
-  type: string
-  default: ''
-- name: extra_artifacts
-  displayName: Additional Artifacts to Publish
   type: string
   default: ''
 
@@ -121,35 +129,19 @@ steps:
   condition: and(and(gt(variables.pkg_count, 0), succeeded()), eq(variables['Run'], true))
   timeoutInMinutes: ${{ parameters.run_timeout }}
 
-# Copy the build logs to the artifact staging directory
-- task: CopyFiles@2
-  displayName: Copy Build Logs
-  inputs:
-    targetFolder: "$(Build.ArtifactStagingDirectory)"
-    SourceFolder: "Build"
-    contents: |
-      BUILDLOG_*.txt
-      BUILDLOG_*.md
-      CI_*.txt
-      CI_*.md
-      CISETUP.txt
-      SETUPLOG.txt
-      UPDATE_LOG.txt
-      PREVALLOG.txt
-      TestSuites.xml
-      **/BUILD_TOOLS_REPORT.html
-      **/OVERRIDELOG.TXT
-      BASETOOLS_BUILD*.*
-      **/FD_REPORT.HTML
-      ${{ parameters.extra_artifacts }}
-    flattenFolders: true
-  condition: succeededOrFailed()
+# Copy build logs to the artifact staging directory
+- template: CommonLogCopyAndPublish.yml
+  parameters:
+    artifacts_identifier: ${{ parameters.artifacts_identifier }}
 
-# Publish build artifacts to Azure Artifacts/TFS or a file share
-- task: PublishBuildArtifacts@1
-  continueOnError: true
-  displayName: Publish Build Logs
-  inputs:
-    pathtoPublish: "$(Build.ArtifactStagingDirectory)"
-    artifactName: "Build Logs $(System.JobName)"
-  condition: succeededOrFailed()
+# Copy build binaries to the artifact staging directory
+- template: BinaryCopyAndPublish.yml
+  parameters:
+    artifacts_binary: ${{ parameters.artifacts_binary }}
+    artifacts_identifier: ${{ parameters.artifacts_identifier }}
+
+# Copy other files to the artifact staging directory
+- template: OtherCopyAndPublish.yml
+  parameters:
+    artifacts_other: ${{ parameters.artifacts_other }}
+    artifacts_identifier: ${{ parameters.artifacts_identifier }}

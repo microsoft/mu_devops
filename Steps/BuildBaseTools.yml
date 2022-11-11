@@ -35,7 +35,7 @@ steps:
 - task: CopyFiles@2
   displayName: "Copy base tools build log"
   inputs:
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/Logs'
     SourceFolder: 'BaseTools/BaseToolsBuild'
     contents: |
       BASETOOLS_BUILD*.*
