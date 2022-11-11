@@ -1,0 +1,98 @@
+## @file
+# Mu DevOps template file to build and publish Nuget packages.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+# These steps should place the files to publish in the
+# "$(Build.StagingDirectory)/Nuget/"" directory.
+- name: artifact_download_steps
+  displayName: Build Artifact Download Step List
+  type: stepList
+  default:
+    - script: echo Using default build artifact download steps
+
+    # The default steps download the binary build artifacts for the current build
+    # (as opposed to a "tagged" build or other lookup mechanism for locating specific artifacts)
+    - task: DownloadBuildArtifacts@0
+      name: DownloadBinaryBuildArtifacts
+      displayName: Download Binary File Artifacts
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'Binaries $(package) $(target)'
+        downloadPath: '$(Build.StagingDirectory)/Nuget/$(package)_$(target)'
+
+    - task: CopyFiles@2
+      displayName: "Copy Binaries to Staged Nuget Package"
+      inputs:
+        SourceFolder: '$(Build.StagingDirectory)/Nuget/$(package)_$(target)/Binaries $(package) $(target)'
+        targetFolder: '$(Build.StagingDirectory)/Nuget/$(package)_$(target)/package_contents'
+        contents: '**'
+        flattenFolders: true
+
+# These steps are run just after artifact_download_steps
+# They can be used to make any final adjustments to the NuGet
+# package contents before they are published.
+- name: custom_nuget_prep_step_list
+  displayName: Custom NuGet Package Step List
+  type: stepList
+  default:
+    - script: echo No custom NuGet prep steps provided
+
+- name: package_list
+  displayName: Packages to Publish
+  type: string
+  default: ''
+
+- name: target_list
+  displayName: Targets (e.g. DEBUG, RELEASE)
+  type: string
+  default: ''
+
+jobs:
+
+  - template: ../Jobs/CreateBuildMatrix.yml
+    parameters:
+      individual_package_list: '${{ parameters.package_list }}'
+      target_list: ${{ parameters.target_list }}
+
+  - job: DownloadAndPublishBinaryArtifactsToNuget
+    displayName: Download & Publish Binary Artifacts to Nuget
+    dependsOn: CreateBuildMatrix
+
+    strategy:
+      matrix: $[ dependencies.CreateBuildMatrix.outputs['CalculateMatrix.Matrix'] ]
+
+    workspace:
+      clean: all
+
+    pool:
+      vmImage: windows-latest
+
+    steps:
+    - checkout: self
+      clean: true
+
+    - template: SetupPythonPreReqs.yml
+
+    # This step should place the NuGet package contents in $(Build.StagingDirectory)/Nuget/
+    - ${{ parameters.artifact_download_steps }}
+
+    # This step provides an opportunity for custom preparation steps to run before publishing
+    - ${{ parameters.custom_nuget_prep_step_list }}
+
+    - task: PowerShell@2
+      name: PackNugetPackage
+      displayName: Pack and Push $(package)$(optional_project_postfix) $(target) Nuget Package
+      inputs:
+        targetType: 'inline'
+        script: |
+           $configFilePath = $($env:BUILD_SOURCESDIRECTORY) + '/NugetPublishing/' + $($env:PACKAGE) + 'Config' + $(If (![string]::IsNullOrEmpty($($env:OPTIONAL_PROJECT_POSTFIX))) {$($env:OPTIONAL_PROJECT_POSTFIX).Trim().ToUpper()}) + '/' + $($env:TARGET) + 'Config.yaml';
+           $inputFolderPath = $($env:BUILD_STAGINGDIRECTORY) + '/Nuget/' + $($env:PACKAGE) + '_' + $($env:TARGET) + '/package_contents';
+           $outputLogPath = $($env:BUILD_STAGINGDIRECTORY) + '/Nuget/NugetPackagingLog.txt';optional_project_postfix
+           $packageVersion = $($env:VERSION_MAJOR) + '.' + $($env:VERSION_MINOR) + '.' + $($env:VERSION_PATCH) ;
+
+           nuget-publish --Operation PackAndPush --OutputLog "$outputLogPath" --ConfigFilePath "$configFilePath" --InputFolderPath "$inputFolderPath" --Version $packageVersion;

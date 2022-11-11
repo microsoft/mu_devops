@@ -1,0 +1,32 @@
+## @file
+# Azure Pipelines step template to publish miscellaneous (other) files specified in the template
+# parameters as build artifacts.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+- name: artifacts_other
+  displayName: Other Artifacts to Publish
+  type: string
+  default: ''
+
+# Copy other files to the artifact staging directory
+- task: CopyFiles@2
+  displayName: Copy Other Files from Build
+  inputs:
+    targetFolder: "$(Build.ArtifactStagingDirectory)/Other"
+    SourceFolder: "Build"
+    contents: |
+      ${{ parameters.artifacts_other }}
+    flattenFolders: true
+  condition: and(succeededOrFailed(), ne('${{ parameters.artifacts_other }}', ''))
+
+# Publish build artifacts to Azure Artifacts/TFS or a file share
+- task: PublishBuildArtifacts@1
+  continueOnError: true
+  displayName: Publish Other Files
+  inputs:
+    pathtoPublish: "$(Build.ArtifactStagingDirectory)/Other"
+    artifactName: "Other $(System.JobName)"
+  condition: and(succeededOrFailed(), ne('${{ parameters.artifacts_other }}', ''))

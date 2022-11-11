@@ -1,0 +1,41 @@
+## @file
+# Azure Pipelines step template to copy the common log files produced
+# by an edk2 firmware build.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+- task: CopyFiles@2
+  displayName: Copy Build Logs
+  inputs:
+    targetFolder: "$(Build.ArtifactStagingDirectory)/Logs"
+    SourceFolder: "Build"
+    contents: |
+      **/BUILD_REPORT.TXT
+      **/BUILD_TOOLS_REPORT.html
+      **/BUILD_TOOLS_REPORT.json
+      **/FD_REPORT.HTML
+      **/OVERRIDELOG.TXT
+      BASETOOLS_BUILD*.*
+      BUILDLOG_*.md
+      BUILDLOG_*.txt
+      CI_*.md
+      CI_*.txt
+      CISETUP.txt
+      coverage.html
+      coverage.xml
+      PREVALLOG.txt
+      SETUPLOG.txt
+      TestSuites.xml
+      UPDATE_LOG.txt
+    flattenFolders: true
+  condition: succeededOrFailed()
+
+- task: PublishBuildArtifacts@1
+  continueOnError: true
+  displayName: Publish Build Logs
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/Logs'
+    artifactName: 'Logs $(System.JobName)'
+  condition: succeededOrFailed()

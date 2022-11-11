@@ -1,0 +1,32 @@
+## @file
+# Azure Pipelines step template to publish binary files specified in the template
+# parameters as build artifacts.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+- name: artifacts_binary
+  displayName: Binary Artifacts to Publish
+  type: string
+  default: ''
+
+# Copy binaries to the artifact staging directory
+- task: CopyFiles@2
+  displayName: Copy Build Binaries
+  inputs:
+    targetFolder: "$(Build.ArtifactStagingDirectory)/Binaries"
+    SourceFolder: "Build"
+    contents: |
+      ${{ parameters.artifacts_binary }}
+    flattenFolders: true
+  condition: and(succeededOrFailed(), ne('${{ parameters.artifacts_binary }}', ''))
+
+# Publish build artifacts to Azure Artifacts/TFS or a file share
+- task: PublishBuildArtifacts@1
+  continueOnError: true
+  displayName: Publish Build Binaries
+  inputs:
+    pathtoPublish: "$(Build.ArtifactStagingDirectory)/Binaries"
+    artifactName: "Binaries $(System.JobName)"
+  condition: and(succeededOrFailed(), ne('${{ parameters.artifacts_binary }}', ''))
