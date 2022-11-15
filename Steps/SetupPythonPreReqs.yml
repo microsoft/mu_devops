@@ -23,7 +23,13 @@ steps:
       versionSpec: ">=3.10.6"
       architecture: x64
 
-- script: sudo pip install ${{ parameters.pip_requirement_files }} --upgrade
+- script: |
+    python3 -m venv .venv
+    source .venv/bin/activate
+  displayName: Setup Python Virtual Environment (Linux)
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
+
+- script: pip install ${{ parameters.pip_requirement_files }} --upgrade
   displayName: Install and Upgrade pip Modules (Linux)
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
