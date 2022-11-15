@@ -87,6 +87,10 @@ jobs:
       container: ${{ parameters.container_image }}
 
     steps:
+    # Add local path to ensure pip install modules are discoverable.
+    - ${{ if and(ne(parameters.container_image, ''), not(contains(parameters.vm_image, 'windows'))) }}:
+      - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
+        displayName: Add User Local Bin to Path
     - ${{ parameters.extra_steps }}
     - template: ../Steps/PrGate.yml
       parameters:
