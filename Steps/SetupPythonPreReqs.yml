@@ -30,9 +30,5 @@ steps:
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
 - script: pip install ${{ parameters.pip_requirement_files }} --upgrade
-  displayName: Install and Upgrade pip Modules (Linux)
-  condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
-
-- script: pip install ${{ parameters.pip_requirement_files }} --upgrade
-  displayName: Install and Upgrade pip Modules (Windows)
-  condition: and(succeeded(), ne(variables['Agent.OS'], 'Linux'))
+  displayName: Install and Upgrade pip Modules
+  condition: succeeded()
