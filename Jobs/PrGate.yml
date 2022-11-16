@@ -82,7 +82,7 @@ jobs:
       vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
-    - ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
+    ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
       container: ${{ parameters.linux_container_image }}
 
     steps:
