@@ -15,6 +15,9 @@ parameters:
   displayName: Stuart Build File
   type: string
   default: ".pytool/CISettings.py"
+- name: container_build
+  displayName: Use Container for Build
+  default: false
 - name: do_ci_build
   displayName: Perform Stuart CI Build
   type: boolean
@@ -40,6 +43,10 @@ parameters:
   type: stepList
   default:
     - script: echo No extra steps provided
+- name: linux_container_image
+  displayName: Linux Container Image
+  type: string
+  default: 'ghcr.io/tianocore/containers/fedora-35-build:5800d58'
 - name: packages
   displayName: Packages
   type: string
@@ -56,14 +63,6 @@ parameters:
   displayName: Virtual Machine Image (e.g. windows-latest)
   type: string
   default: 'windows-latest'
-- name: container_image
-  displayName: Container Image
-  type: string
-  default: ''
-- name: install_tools
-  displayName: Install Build Tools
-  type: boolean
-  default: true
 
 # Build step
 jobs:
@@ -83,12 +82,12 @@ jobs:
       vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
-    ${{ if ne(parameters.container_image, '') }}:
-      container: ${{ parameters.container_image }}
+    - ${{ if and(parameters.container_build, not(contains(parameters.vm_image, 'windows'))) }}:
+      container: ${{ parameters.linux_container_image }}
 
     steps:
     # Add local path to ensure pip install modules are discoverable.
-    - ${{ if and(ne(parameters.container_image, ''), not(contains(parameters.vm_image, 'windows'))) }}:
+    - ${{ if and(parameters.container_build, not(contains(parameters.vm_image, 'windows'))) }}:
       - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
         displayName: Add User Local Bin to Path
     - ${{ parameters.extra_steps }}
@@ -104,4 +103,4 @@ jobs:
         do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
         do_pr_eval: ${{ parameters.do_pr_eval }}
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
-        install_tools: ${{ parameters.install_tools }}
+        install_tools: ${{ not(parameters.container_build) }}
