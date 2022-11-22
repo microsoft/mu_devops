@@ -87,7 +87,7 @@ jobs:
         stale-pr-message: ${{ inputs.stale-pr-message }}
         close-issue-message: ${{ inputs.close-issue-message }}
         close-pr-message: ${{ inputs.close-pr-message }}
-        stale-issue-label: 'stale: issue'
-        stale-pr-label: 'stale: pr'
-        exempt-issue-labels: 'impact: security,state: backlog'
-        exempt-pr-labels: 'impact: security,state: backlog'
+        stale-issue-label: 'state:stale'
+        stale-pr-label: 'state:stale'
+        exempt-issue-labels: 'impact:security,state:backlog,state:under-discussion'
+        exempt-pr-labels: 'impact:security,state:backlog,state:under-discussion'
