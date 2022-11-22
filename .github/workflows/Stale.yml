@@ -15,27 +15,27 @@ on:
       # Note: It is recommended to use the default value for consistency across Mu repos.
       #       However, values can be customized by workflow callers if needed.
       days-before-issue-stale:
-        description: Override days-before-stale for issues only
+        description: 'Override days-before-stale for issues only'
         default: 45
         required: false
         type: number
       days-before-pr-stale:
-        description: Override days-before-stale for PRs only
+        description: 'Override days-before-stale for PRs only'
         default: 60
         required: false
         type: number
       days-before-issue-close:
-        description: Idle number of days before closing stale issues
+        description: 'Idle number of days before closing stale issues'
         default: 7
         required: false
         type: number
       days-before-pr-close:
-        description: Idle number of days before closing stale PRs
+        description: 'Idle number of days before closing stale PRs'
         default: 7
         required: false
         type: number
       stale-issue-message:
-        description: Comment made on stale issues
+        description: 'Comment made on stale issues'
         default: >
           This issue has been automatically marked as stale because it has not had
           activity in 45 days. It will be closed if no further activity occurs within
@@ -43,7 +43,7 @@ on:
         required: false
         type: string
       stale-pr-message:
-        description: Comment made on stale PRs
+        description: 'Comment made on stale PRs'
         default: >
           This PR has been automatically marked as stale because it has not had
           activity in 60 days. It will be closed if no further activity occurs within
@@ -51,7 +51,7 @@ on:
         required: false
         type: string
       close-issue-message:
-        description: Comment made on stale issues when closed
+        description: 'Comment made on stale issues when closed'
         default: >
           This issue has been automatically been closed because it did not have any
           activity in 45 days and no follow up within 7 days after being marked stale.
@@ -59,7 +59,7 @@ on:
         required: false
         type: string
       close-pr-message:
-        description: Comment made on stale PRs when closed
+        description: 'Comment made on stale PRs when closed'
         default: >
           This pull request has been automatically been closed because it did not have any
           activity in 60 days and no follow up within 7 days after being marked stale.
@@ -77,7 +77,7 @@ jobs:
 
     steps:
     - name: Check for Stale Items
-    - uses: actions/stale@v6
+      uses: actions/stale@v6
       with:
         days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
         days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
@@ -89,9 +89,5 @@ jobs:
         close-pr-message: ${{ inputs.close-pr-message }}
         stale-issue-label: 'stale: issue'
         stale-pr-label: 'stale: pr'
-        exempt-issue-labels:
-          - 'impact: security'
-          - 'state: backlog'
-        exempt-issue-labels:
-          - 'impact: security'
-          - 'state: backlog'
+        exempt-issue-labels: 'impact: security,state: backlog'
+        exempt-pr-labels: 'impact: security,state: backlog'
