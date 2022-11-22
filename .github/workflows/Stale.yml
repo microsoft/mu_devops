@@ -91,9 +91,7 @@ jobs:
         stale-pr-label: 'stale: pr'
         exempt-issue-labels:
           - 'impact: security'
-          - 'security'
-          - 'stale: ignore'
+          - 'state: backlog'
         exempt-issue-labels:
           - 'impact: security'
-          - 'security'
-          - 'stale: ignore'
+          - 'state: backlog'
