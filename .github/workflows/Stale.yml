@@ -1,0 +1,93 @@
+# This workflow warns and then closes issues and PRs that have had no activity for a specified amount of time.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# You can adjust the behavior by modifying this file.
+# For more information, see:
+# https://github.com/actions/stale
+
+name: Mu DevOps Stale Issue and PR Workflow
+
+on:
+  workflow_call:
+    inputs:
+      # Note: It is recommended to use the default value for consistency across Mu repos.
+      #       However, values can be customized by workflow callers if needed.
+      days-before-issue-stale:
+        description: 'Override days-before-stale for issues only'
+        default: 45
+        required: false
+        type: number
+      days-before-pr-stale:
+        description: 'Override days-before-stale for PRs only'
+        default: 60
+        required: false
+        type: number
+      days-before-issue-close:
+        description: 'Idle number of days before closing stale issues'
+        default: 7
+        required: false
+        type: number
+      days-before-pr-close:
+        description: 'Idle number of days before closing stale PRs'
+        default: 7
+        required: false
+        type: number
+      stale-issue-message:
+        description: 'Comment made on stale issues'
+        default: >
+          This issue has been automatically marked as stale because it has not had
+          activity in 45 days. It will be closed if no further activity occurs within
+          7 days. Thank you for your contributions.
+        required: false
+        type: string
+      stale-pr-message:
+        description: 'Comment made on stale PRs'
+        default: >
+          This PR has been automatically marked as stale because it has not had
+          activity in 60 days. It will be closed if no further activity occurs within
+          7 days. Thank you for your contributions.
+        required: false
+        type: string
+      close-issue-message:
+        description: 'Comment made on stale issues when closed'
+        default: >
+          This issue has been automatically been closed because it did not have any
+          activity in 45 days and no follow up within 7 days after being marked stale.
+          Thank you for your contributions.
+        required: false
+        type: string
+      close-pr-message:
+        description: 'Comment made on stale PRs when closed'
+        default: >
+          This pull request has been automatically been closed because it did not have any
+          activity in 60 days and no follow up within 7 days after being marked stale.
+          Thank you for your contributions.
+        required: false
+        type: string
+
+jobs:
+  stale:
+    name: Stale
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+    - name: Check for Stale Items
+      uses: actions/stale@v6
+      with:
+        days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
+        days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
+        days-before-issue-close: ${{ inputs.days-before-issue-close }}
+        days-before-pr-close: ${{ inputs.days-before-pr-close }}
+        stale-issue-message: ${{ inputs.stale-issue-message }}
+        stale-pr-message: ${{ inputs.stale-pr-message }}
+        close-issue-message: ${{ inputs.close-issue-message }}
+        close-pr-message: ${{ inputs.close-pr-message }}
+        stale-issue-label: 'state:stale'
+        stale-pr-label: 'state:stale'
+        exempt-issue-labels: 'impact:security,state:backlog,state:under-discussion'
+        exempt-pr-labels: 'impact:security,state:backlog,state:under-discussion'
