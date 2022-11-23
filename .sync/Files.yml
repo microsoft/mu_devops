@@ -139,3 +139,25 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+
+# GitHub Templates - Issues
+#
+# Note: This "ISSUE_TEMPLATE" directory is synced as-is
+  - files:
+    - source: .sync/github_templates/ISSUE_TEMPLATE/
+      dest: .github/ISSUE_TEMPLATE/
+    repos: |
+      microsoft/mu
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_crypto_release
+      microsoft/mu_feature_config
+      microsoft/mu_feature_ipmi
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_feature_uefi_variable
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_platforms
+      microsoft/mu_tiano_plus
