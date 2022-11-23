@@ -54,6 +54,11 @@
   color: 'd4c5f9'
   aliases: []
 
+- name: language:python
+  description: Pull requests that update Python code
+  color: '2b67c6'
+  aliases: []
+
 - name: state:backlog
   description: In the backlog
   color: 'e6e8d3'
