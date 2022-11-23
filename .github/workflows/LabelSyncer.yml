@@ -1,0 +1,56 @@
+# This workflow syncs GitHub labels to the integrating repository.
+#
+# The labels are declaratively defined in .github/Labels.yml.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# For more information, see:
+# https://github.com/micnncim/action-label-syncer
+
+name: Mu DevOps Git Label Sync Workflow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/Labels.yml
+
+jobs:
+  sync:
+    name: Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Project Mu Public Archived Repos for Reference:
+      #   - microsoft/mu_build
+      #   - microsoft/mu_common_intel_adv_features
+      #   - microsoft/mu_pip_build
+      #   - microsoft/mu_pip_environment
+      #   - microsoft/mu_pip_python_library
+
+      - name: Sync Labels
+        uses: micnncim/action-label-syncer@v1.3.0
+        with:
+          manifest: .github/Labels.yml
+          repository: |
+            microsoft/mu
+            microsoft/mu_basecore
+            microsoft/mu_common_intel_min_platform
+            microsoft/mu_crypto_release
+            microsoft/mu_devops
+            microsoft/mu_feature_config
+            microsoft/mu_feature_ipmi
+            microsoft/mu_feature_mm_supv
+            microsoft/mu_feature_uefi_variable
+            microsoft/mu_oem_sample
+            microsoft/mu_plus
+            microsoft/mu_siicon_arm_tiano
+            microsoft/mu_silicon_intel_tiano
+            microsoft/mu_tiano_platforms
+            microsoft/mu_tiano_plus
+          token: ${{ secrets.MU_REPO_LABEL_SYNCER }}
