@@ -1,0 +1,17 @@
+# Specifies the files synced from Mu DevOps to other Project Mu repositories.
+#
+# This file is meant to ensure common configuration across Project Mu repos that is centralized in Mu DevOps.
+#
+# Files are contributed directly in Mu DevOps by the original author and then automatically synced after the PR
+# in Mu DevOps is merged by UEFI Bot to all of the repos specified in this file.
+#
+# To maintain consistency across Project Mu, always consider if a configuration/settings file is appropriate as
+# a common file in Mu DevOps or should be repo-specific.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# For more information, see:
+# https://github.com/BetaHuhn/repo-file-sync-action
+
+# Maintenance: Keep labels groups in ascending alphabetical order - easier to scan, identify duplicates, etc.

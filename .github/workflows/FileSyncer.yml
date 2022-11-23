@@ -1,0 +1,49 @@
+# This workflow syncs files and directories from Mu DevOps to other
+# Project Mu repositories.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# For more information, see:
+# https://github.com/BetaHuhn/repo-file-sync-action
+
+name: Sync Mu DevOps Files to Mu Repos
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/FileSyncer.yml'
+      - '.sync/**'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Repo File Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run GitHub File Sync
+        uses: BetaHuhn/repo-file-sync-action@v1
+        with:
+          COMMIT_AS_PR_TITLE: true
+          COMMIT_BODY: "Signed-off-by: Project Mu UEFI Bot <uefibot@microsoft.com>"
+          COMMIT_EACH_FILE: false
+          COMMIT_PREFIX: "Repo File Sync:"
+          CONFIG_PATH: .sync/Files.yml
+          DRY_RUN: false
+          FORK: false
+          GH_PAT: ${{ secrets.UEFI_BOT_REPO_FILE_SYNC }}
+          GIT_EMAIL: uefibot@microsoft.com
+          GIT_USERNAME: uefibot
+          ORIGINAL_MESSAGE: true
+          OVERWRITE_EXISTING_PR: true
+          PR_BODY: |
+            🤖: View the [Repo File Sync Configuration File](https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml) to see how files are synced.
+          PR_LABELS: type:file-sync
+          SKIP_PR: false
+          TEAM_REVIEWERS: project-mu-dependency-reviewers
