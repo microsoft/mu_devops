@@ -128,6 +128,10 @@
   description: A new feature proposal
   color: 'a9dfbf'
   aliases: []
+- name: type:file-sync
+  description: Files automatically synced from another repo
+  color: '95d0e6'
+  aliases: []
 - name: type:notes
   description: Notes from an organized meeting
   color: 'd9ee5d'
