@@ -1,0 +1,36 @@
+# This workflow syncs GitHub labels to the integrating repository.
+#
+# The labels are declaratively defined in .github/Labels.yml.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# For more information, see:
+# https://github.com/micnncim/action-label-syncer
+
+name: Mu DevOps Git Label Sync Workflow
+
+on:
+  workflow_call:
+    inputs:
+      # Note: The caller can set a command to an empty string to skip that command
+      local_config_file:
+        description: 'Repo relative path to a repo-specific label config file'
+        default: ''
+        required: false
+        type: string
+
+jobs:
+  sync:
+    name: Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sync Labels
+        uses: EndBug/label-sync@v2
+        with:
+          config-file: |
+            https://raw.githubusercontent.com/microsoft/mu_devops/main/.github/Labels.yml
+            ${{ inputs.local_config_file }}
+
+          delete-other-labels: false
