@@ -120,3 +120,22 @@ group:
       dest: .github/dependabot.yml
     repos: |
       microsoft/mu_tiano_platforms
+
+# GitHub Templates - Contributing
+  - files:
+    - source: .sync/github_templates/contributing/CONTRIBUTING.md
+      dest: CONTRIBUTING.md
+    repos: |
+      microsoft/mu
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_feature_config
+      microsoft/mu_feature_ipmi
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_feature_uefi_variable
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_platforms
+      microsoft/mu_tiano_plus
