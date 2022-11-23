@@ -1,0 +1,34 @@
+## @file
+# Azure Pipeline build file for a build using Windows and the latest Visual Studio toolchain supported.
+#
+# IMPORTANT: This file requires the local repo to contain a .azurepipelines/Matrix-Build-Job.yml file that
+#            performs the actual build steps for the configurations and packages supported by the repo.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+resources:
+  repositories:
+    - repository: mu_devops
+      type: github
+      endpoint: microsoft
+      name: microsoft/mu_devops
+      ref: main
+
+variables:
+- group: architectures-x86-64
+- group: tool-chain-windows-visual-studio-latest
+
+jobs:
+- template: Matrix-Build-Job.yml
+  parameters:
+    arch_list: $(arch_list)
+    tool_chain_tag: $(tool_chain_tag)
+    vm_image: $(vm_image)
