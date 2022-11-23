@@ -16,7 +16,40 @@
 
 # Maintenance: Keep labels groups in ascending alphabetical order - easier to scan, identify duplicates, etc.
 
+# Azure Pipelines - Common Configs
+#
+# These files leverage a high degree of common build template reuse from Mu DevOps. It is preferred that repos
+# use the common templates for pipelines and adjust template parameter inputs as needed for a specific repo. However,
+# a repo can always be removed from this list and manage its pipeline YAML files completely independently if absolutely
+# necessary.
+#
+# Note: The fact that these files are copied to a repo does not mean that the repo has pipelines
+#       set up to use the YAML file. The file is simply available for pipelines to be connected
+#       if needed.
 group:
+  - files:
+    - source: .sync/azure_pipelines/Ubuntu-CLANGPDB.yml
+      dest: .azurepipelines/Ubuntu-CLANGPDB.yml
+    - source: .sync/azure_pipelines/Ubuntu-GCC5.yml
+      dest: .azurepipelines/Ubuntu-GCC5.yml
+    - source: .sync/azure_pipelines/Windows-CLANGPDB.yml
+      dest: .azurepipelines/Windows-CLANGPDB.yml
+    - source: .sync/azure_pipelines/Windows-VS.yml
+      dest: .azurepipelines/Windows-VS.yml
+    repos: |
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_feature_config
+      microsoft/mu_feature_ipmi
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_feature_uefi_variable
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_platforms
+      microsoft/mu_tiano_plus
+
 # Leaf Workflow - Apply Labels
   - files:
     - source: .sync/workflows/leaf/label-issues.yml
