@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # For more information, see:
-# https://github.com/micnncim/action-label-syncer
+# https://github.com/EndBug/label-sync
 
 name: Mu DevOps Git Label Sync Workflow
 
