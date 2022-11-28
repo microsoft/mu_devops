@@ -15,3 +15,28 @@
 # https://github.com/BetaHuhn/repo-file-sync-action
 
 # Maintenance: Keep labels groups in ascending alphabetical order - easier to scan, identify duplicates, etc.
+
+group:
+# Leaf Workflow - Apply Labels
+  - files:
+    - source: .sync/workflows/leaf/label-issues.yml
+      dest: .github/workflows/label-issues.yml
+    - source: .sync/workflows/config/label-issues/file-paths.yml
+      dest: .github/workflows/label-issues/file-paths.yml
+    - source: .sync/workflows/config/label-issues/regex-pull-requests.yml
+      dest: .github/workflows/label-issues/regex-pull-requests.yml
+    repos: |
+      microsoft/mu
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_crypto_release
+      microsoft/mu_feature_config
+      microsoft/mu_feature_ipmi
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_feature_uefi_variable
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_platforms
+      microsoft/mu_tiano_plus
