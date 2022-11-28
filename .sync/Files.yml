@@ -138,6 +138,32 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
+# GitHub Templates - Licensing - Project Mu License
+  - files:
+    - source: .sync/github_templates/licensing/project_mu_license.txt
+      dest: LICENSE.txt
+    repos: |
+      microsoft/mu
+      microsoft/mu_crypto_release
+      microsoft/mu_devops
+      microsoft/mu_feature_config
+      microsoft/mu_feature_ipmi
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_feature_uefi_variable
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+
+# GitHub Templates - Licensing - TianoCore License
+  - files:
+    - source: .sync/github_templates/licensing/tianocore_license.txt
+      dest: License.txt
+    repos: |
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_plus
+
 # Leaf Workflow - Apply Labels
   - files:
     - source: .sync/workflows/leaf/label-issues.yml
