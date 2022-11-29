@@ -27,6 +27,7 @@
 #       set up to use the YAML file. The file is simply available for pipelines to be connected
 #       if needed.
 group:
+# Azure Pipelines - All
   - files:
     - source: .sync/azure_pipelines/Ubuntu-CLANGPDB.yml
       dest: .azurepipelines/Ubuntu-CLANGPDB.yml
@@ -38,17 +39,39 @@ group:
       dest: .azurepipelines/Windows-VS.yml
     repos: |
       microsoft/mu_basecore
+
+# Azure Pipelines - GCC & VS Only
+  - files:
+    - source: .sync/azure_pipelines/Ubuntu-GCC5.yml
+      dest: .azurepipelines/Ubuntu-GCC5.yml
+    - source: .sync/azure_pipelines/Windows-VS.yml
+      dest: .azurepipelines/Windows-VS.yml
+    repos: |
       microsoft/mu_common_intel_min_platform
-      microsoft/mu_feature_config
-      microsoft/mu_feature_ipmi
-      microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
-      microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+
+# Azure Pipelines - Ignored Repos
+#   - mu
+#     - Does not build firmware code
+#   - microsoft/mu_crypto_release
+#     - Has a custom release process
+#   - mu_devops
+#     - Does not build firmware code
+#   - mu_feature_config
+#     - Custom pipeline steps
+#   - microsoft/mu_feature_ipmi
+#     - Custom pipeline steps
+#   - microsoft/mu_feature_mm_supv
+#     - Custom pipeline steps
+#   - microsoft/mu_feature_uefi_variable
+#     - Not connected to pipelines yet
+#   - microsoft/mu_oem_sample
+#     - Custom pipeline steps
+#   - microsoft/mu_tiano_platforms
+#     - Custom pipeline steps
 
 # CI Configuration - Markdown Lint
   - files:
@@ -66,7 +89,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
@@ -86,7 +109,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
 
@@ -111,7 +134,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
@@ -133,7 +156,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
@@ -147,11 +170,18 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
-      microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+
+# GitHub Templates - Licensing - Project Mu and TianoCore License
+  - files:
+    - source: .sync/github_templates/licensing/project_mu_and_tianocore_license.txt
+      dest: License.txt
+    repos: |
+      microsoft/mu_feature_ipmi
+      microsoft/mu_tiano_platforms
 
 # GitHub Templates - Licensing - TianoCore License
   - files:
@@ -160,7 +190,7 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
 
@@ -183,7 +213,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
@@ -204,7 +234,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
@@ -224,7 +254,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
@@ -252,7 +282,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_siicon_arm_tiano
+      microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
