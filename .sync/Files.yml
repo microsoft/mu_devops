@@ -73,19 +73,20 @@ group:
 #   - microsoft/mu_tiano_platforms
 #     - Custom pipeline steps
 
-# CI Configuration - Markdown Lint
+# CI Configuration - Markdown Lint - Common Settings
   - files:
     - source: .sync/ci_config/.markdownlint.yaml
       dest: .markdownlint.yaml
+      template:
+        allowed_elements:
+          - br
     repos: |
-      microsoft/mu
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
       microsoft/mu_feature_ipmi
-      microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
@@ -93,6 +94,30 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+
+# CI Configuration - Markdown Lint - Mu Documentation Repo Settings
+  - files:
+    - source: .sync/ci_config/.markdownlint.yaml
+      dest: .markdownlint.yaml
+      template:
+        allowed_elements:
+          - br
+          - center
+          - img
+    repos: |
+      microsoft/mu
+
+# CI Configuration - Markdown Lint - Mu MM Supervisor Repo Settings
+  - files:
+    - source: .sync/ci_config/.markdownlint.yaml
+      dest: .markdownlint.yaml
+      template:
+        allowed_elements:
+          - br
+          - SmmCategory
+          - PolicyAccessAttribute
+    repos: |
+      microsoft/mu_feature_mm_supv
 
 # dependabot - Track GitHub Actions and PIP Modules
   - files:
