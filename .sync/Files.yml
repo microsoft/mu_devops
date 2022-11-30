@@ -87,7 +87,6 @@ group:
       microsoft/mu_devops
       microsoft/mu_feature_config
       microsoft/mu_feature_ipmi
-      microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
@@ -107,6 +106,18 @@ group:
           - img
     repos: |
       microsoft/mu
+
+# CI Configuration - Markdown Lint - Mu MM Supervisor Repo Settings
+  - files:
+    - source: .sync/ci_config/.markdownlint.yaml
+      dest: .markdownlint.yaml
+      template:
+        allowed_elements:
+          - br
+          - SmmCategory
+          - PolicyAccessAttribute
+    repos: |
+      microsoft/mu_feature_mm_supv
 
 # dependabot - Track GitHub Actions and PIP Modules
   - files:
