@@ -2,7 +2,7 @@
 Project MU Developer Operations (DevOps) Repository
 ===================================================
 
-|Sync Mu DevOps Files to Mu Repos| |Latest Mu DevOps Release Version (latest SemVer)|
+|Latest Mu DevOps Release Version (latest SemVer)| |Sync Mu DevOps Files to Mu Repos|
 
 .. |Sync Mu DevOps Files to Mu Repos| image:: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml/badge.svg
    :target: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml
