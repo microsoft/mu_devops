@@ -1,0 +1,39 @@
+## @file
+# Azure Pipeline build file for a build using ubuntu and GCC5.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+resources:
+  repositories:
+    - repository: mu_devops
+      type: github
+      endpoint: microsoft
+      name: microsoft/mu_devops
+      ref: main
+
+variables:
+- group: architectures-arm-64-x86-64
+- group: tool-chain-ubuntu-gcc
+
+jobs:
+- template: Jobs/PrGate.yml@mu_devops
+  parameters:
+    arch_list: $(arch_list)
+    do_ci_build: true
+    do_ci_setup: true
+    do_non_ci_setup: true
+    extra_steps:
+    - script: sudo apt-get install mingw-w64
+      displayName: Install Windows Resource Compiler for Linux
+    packages: OemPkg
+    target_list: DEBUG,RELEASE,NO-TARGET,NOOPT
+    tool_chain_tag: $(tool_chain_tag)
+    vm_image: $(vm_image)
