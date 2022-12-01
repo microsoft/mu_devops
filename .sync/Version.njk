@@ -1,0 +1,33 @@
+{#
+  Mu DevOps Dependency Version Control
+
+  =====================================================================================================================
+  About
+  =====================================================================================================================
+  This file centralizes definitions of versions placed into files synced from Mu DevOps to other repos before the
+  files are synced.
+
+  =====================================================================================================================
+  `mu_devops` Example:
+  =====================================================================================================================
+  `mu_devops` defines the git tag value of Mu DevOps that will be synced (via file sync) to repos that depend on this
+  repo. More simply, this updates the version of Mu DevOps used across all Project Mu repos.
+
+  Example flow:
+    1. Make a new Mu DevOps release (e.g. "v1.0.0")
+    2. Update this file to set `mu_devops` to "v1.0.0"
+
+  Step (2) causes the following automated actions to take place after the change is merged:
+    1. All sync files (e.g. an Azure Pipeline file) that depend on this version get the new value substituted
+    2. All sync files with the substituted value are synced to their respective repos (PRs created with the change)
+    3. After the PRs in those repos are merged, they use the new version of Mu DevOps
+
+  ---------------------------------------------------------------------------------------------------------------------
+  Note: This file is not actually synced. It controls the version used in other files that are synced.
+
+  Copyright (c) Microsoft Corporation.
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+#}
+
+{# The git ref value that files dependent on this repo will use. #}
+{% set mu_devops = "v0.1.0" %}
