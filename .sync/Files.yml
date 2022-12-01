@@ -274,6 +274,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/label-issues.yml
       dest: .github/workflows/label-issues.yml
+      template: true
     - source: .sync/workflows/config/label-issues/file-paths.yml
       dest: .github/workflows/label-issues/file-paths.yml
     - source: .sync/workflows/config/label-issues/regex-pull-requests.yml
@@ -298,6 +299,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/label-sync.yml
       dest: .github/workflows/label-sync.yml
+      template: true
     repos: |
       microsoft/mu
       microsoft/mu_basecore
@@ -319,6 +321,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/stale.yml
       dest: .github/workflows/stale.yml
+      template: true
     repos: |
       microsoft/mu
       microsoft/mu_basecore
@@ -341,6 +344,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/stale.yml
       dest: .github/workflows/stale-leaf.yml
+      template: true
     repos: |
       microsoft/mu_devops
 
