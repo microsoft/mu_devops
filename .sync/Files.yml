@@ -31,8 +31,10 @@ group:
   - files:
     - source: .sync/azure_pipelines/custom/mu_feature_config/Ubuntu-GCC5.yml
       dest: .azurepipelines/Ubuntu-GCC5.yml
+      template: true
     - source: .sync/azure_pipelines/custom/mu_feature_config/Windows-VS.yml
       dest: .azurepipelines/Windows-VS.yml
+      template: true
     repos: |
       microsoft/mu_feature_config
 
@@ -40,8 +42,10 @@ group:
   - files:
     - source: .sync/azure_pipelines/custom/mu_feature_ipmi/Ubuntu-GCC5.yml
       dest: .azurepipelines/Ubuntu-GCC5.yml
+      template: true
     - source: .sync/azure_pipelines/custom/mu_feature_ipmi/Windows-VS.yml
       dest: .azurepipelines/Windows-VS.yml
+      template: true
     repos: |
       microsoft/mu_feature_ipmi
 
@@ -49,8 +53,10 @@ group:
   - files:
     - source: .sync/azure_pipelines/custom/mu_feature_mm_supv/Ubuntu-GCC5.yml
       dest: .azurepipelines/Ubuntu-GCC5.yml
+      template: true
     - source: .sync/azure_pipelines/custom/mu_feature_mm_supv/Windows-VS.yml
       dest: .azurepipelines/Windows-VS.yml
+      template: true
     repos: |
       microsoft/mu_feature_mm_supv
 
@@ -58,8 +64,10 @@ group:
   - files:
     - source: .sync/azure_pipelines/custom/mu_oem_sample/Ubuntu-GCC5.yml
       dest: .azurepipelines/Ubuntu-GCC5.yml
+      template: true
     - source: .sync/azure_pipelines/custom/mu_oem_sample/Windows-VS.yml
       dest: .azurepipelines/Windows-VS.yml
+      template: true
     repos: |
       microsoft/mu_oem_sample
 
@@ -67,8 +75,10 @@ group:
   - files:
     - source: .sync/azure_pipelines/custom/mu_tiano_platforms/Ubuntu-GCC5.yml
       dest: .azurepipelines/Ubuntu-GCC5.yml
+      template: true
     - source: .sync/azure_pipelines/custom/mu_tiano_platforms/Windows-VS.yml
       dest: .azurepipelines/Windows-VS.yml
+      template: true
     repos: |
       microsoft/mu_tiano_platforms
 
@@ -76,12 +86,16 @@ group:
   - files:
     - source: .sync/azure_pipelines/matrix_dependent/Ubuntu-CLANGPDB.yml
       dest: .azurepipelines/Ubuntu-CLANGPDB.yml
+      template: true
     - source: .sync/azure_pipelines/matrix_dependent/Ubuntu-GCC5.yml
       dest: .azurepipelines/Ubuntu-GCC5.yml
+      template: true
     - source: .sync/azure_pipelines/matrix_dependent/Windows-CLANGPDB.yml
       dest: .azurepipelines/Windows-CLANGPDB.yml
+      template: true
     - source: .sync/azure_pipelines/matrix_dependent/Windows-VS.yml
       dest: .azurepipelines/Windows-VS.yml
+      template: true
     repos: |
       microsoft/mu_basecore
 
@@ -89,8 +103,10 @@ group:
   - files:
     - source: .sync/azure_pipelines/matrix_dependent/Ubuntu-GCC5.yml
       dest: .azurepipelines/Ubuntu-GCC5.yml
+      template: true
     - source: .sync/azure_pipelines/matrix_dependent/Windows-VS.yml
       dest: .azurepipelines/Windows-VS.yml
+      template: true
     repos: |
       microsoft/mu_common_intel_min_platform
       microsoft/mu_plus

@@ -11,13 +11,15 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
+{% import '../../../Version.njk' as sync_version -%}
+
 resources:
   repositories:
     - repository: mu_devops
       type: github
       endpoint: microsoft
       name: microsoft/mu_devops
-      ref: main
+      ref: refs/tags/{{ sync_version.mu_devops }}
 
 variables:
 - group: architectures-arm64-x86-64

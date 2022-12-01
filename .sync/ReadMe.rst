@@ -34,4 +34,6 @@ How to Configure File Syncing
 All of the file synchronization settings are maintained in the `/.sync/Files.yml`_ configuration file. Refer to the file
 to see the current synchronization settings and to modify settings.
 
+Any resource versions that might be substituted into files during the sync process are defined in `/.sync/Version.njk`.
+
 .. _/.sync/Files.yml: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
