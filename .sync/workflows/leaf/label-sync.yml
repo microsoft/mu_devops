@@ -13,6 +13,8 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 
+{% import '../../Version.njk' as sync_version -%}
+
 name: Sync GitHub Labels
 
 on:
@@ -24,4 +26,4 @@ on:
 
 jobs:
   sync:
-    uses: microsoft/mu_devops/.github/workflows/LabelSyncer.yml@main
+    uses: microsoft/mu_devops/.github/workflows/LabelSyncer.yml@{{ sync_version.mu_devops }}
