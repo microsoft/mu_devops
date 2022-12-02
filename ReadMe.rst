@@ -2,13 +2,16 @@
 Project MU Developer Operations (DevOps) Repository
 ===================================================
 
-|Latest Mu DevOps Release Version (latest SemVer)| |Sync Mu DevOps Files to Mu Repos|
-
-.. |Sync Mu DevOps Files to Mu Repos| image:: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml/badge.svg
-   :target: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml
+|Latest Mu DevOps Release Version (latest SemVer)| |Commits Since Last Release| |Sync Mu DevOps Files to Mu Repos|
 
 .. |Latest Mu DevOps Release Version (latest SemVer)| image:: https://img.shields.io/github/v/release/microsoft/mu_devops?label=Latest%20Release
    :target: https://github.com/microsoft/mu_devops/releases/latest
+
+.. |Commits Since Last Release| image:: https://img.shields.io/github/commits-since/microsoft/mu_devops/latest/main?include_prereleases
+   :target: https://github.com/microsoft/mu_devops/releases
+
+.. |Sync Mu DevOps Files to Mu Repos| image:: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml/badge.svg
+   :target: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
@@ -18,6 +21,10 @@ for other Project Mu repositories.
 Many of these files are generic YAML templates that can be combined together to compose a fully functional pipeline.
 
 Python based code leverages `edk2-pytools` to support cross platform building and execution.
+
+You can find a high-level summary of the latest changes since the last release by viewing the `latest draft release`_.
+
+.. _`latest draft release`: https://github.com/microsoft/mu_devops/releases
 
 Continuous Integration (CI)
 ===========================
@@ -123,6 +130,29 @@ This is provided by the `.github/workflows/Stale.yml` reusable workflow.
 
 Individual repositories can control the label and time settings but it is strongly recommended to use the default
 values defined in the reusable workflow for consistency.
+
+Release Drafting
+----------------
+
+In order to ensure semantic versioning is followed based on well-defined labels used in Project Mu pull requests, the
+release drafting process is automated. On every PR merge, a draft release is updated that contains the PR change entry
+categorized according to the labels with the semantic version of the draft release updated according to the semantic
+version specification.
+
+This means, that the details for an upcoming release are always available, the release format is consistent across
+Project Mu repos, and semantic versioning is followed consistently.
+
+The draft release should be converted to an actual release any time the minor or major version is updated by a change.
+
+To see more about this flow look in these files:
+
+- The main reusable workflow file:
+  - .github/workflows/ReleaseDrafter.yml
+- The configuration file for the reusable workflow:
+  - .github/ReleaseDraft.yml
+
+A Project Mu repo simply needs to sync `.sync/workflows/leaf/release-draft.yml` to their repo and adjust any parameters
+needed in the sync process (like repo default branch name) and the release draft workflow will run in the repo.
 
 Links
 =====
