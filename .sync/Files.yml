@@ -348,6 +348,15 @@ group:
     repos: |
       microsoft/mu_devops
 
+# Leaf Workflow - Release Draft
+  - files:
+    - source: .sync/workflows/leaf/release-draft.yml
+      dest: .github/workflows/release-draft.yml
+      template:
+        trigger_branch_name: 'main'
+    repos: |
+      microsoft/mu_devops
+
 # Pull Request Template - Common Template
   - files:
     - source: .sync/github_templates/pull_requests/pull_request_template.md
