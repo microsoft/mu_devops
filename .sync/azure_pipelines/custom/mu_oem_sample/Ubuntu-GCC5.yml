@@ -33,9 +33,10 @@ jobs:
     do_ci_setup: true
     do_non_ci_setup: true
     extra_steps:
-    - script: sudo apt-get install mingw-w64
+    - script: sudo microdnf install --assumeyes mingw64-gcc
       displayName: Install Windows Resource Compiler for Linux
     packages: OemPkg
     target_list: DEBUG,RELEASE,NO-TARGET,NOOPT
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
+    container_build: true

@@ -45,3 +45,4 @@ jobs:
     custom_job_name: ubuntu
     root_package_folder: SetupDataPkg/Tools
     vm_image: $(vm_image)
+    container_build: true
