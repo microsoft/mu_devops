@@ -1,0 +1,43 @@
+# This workflow automatically merges pull requests under certain
+# conditions in Project Mu repos.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# For more information, see:
+# https://github.com/pascalgn/automerge-action
+
+name: Auto Merge Pull Request Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  auto_merge:
+    name: Merge
+    runs-on: ubuntu-latest
+
+    # The action cannot take multiple authors right now, so call with each author
+    # separately.
+    strategy:
+      matrix:
+        author: [ "dependabot[bot]", "uefibot" ]
+
+    steps:
+      - name: Auto Merge
+        id: auto_merge
+        uses: pascalgn/automerge-action@v0.15.5
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_FILTER_AUTHOR: "${{ matrix.author }}"
+          MERGE_FORKS: "false"          # dependabot and uefibot come from local repo branches - forks not needed
+          MERGE_LABELS: "!state:duplicate,!state:invalid,!state:needs-maintainer-feedback,!state:needs-submitter-info,!state:under-discussion,!state:wont-fix,!type:notes,!type:question"
+          MERGE_METHOD: "squash"        # Default merge method squash (instead of "merge")
+          MERGE_REMOVE_LABELS: = ""     # Do not remove any labels from a PR after merge
+          MERGE_REQUIRED_APPROVALS: "0" # Auto merge these PRs without human reviewers involved (need to pass PR gates)
+          MERGE_RETRIES: "6"            # Check if PR status checks pass up to 6 times
+          MERGE_RETRY_SLEEP: "10000"    # Check if PR status checks are met every 10 secs (6 * 10 = check over 1 min)
+          UPDATE_LABELS: ""             # Always update these PRs if needed to merge
+          UPDATE_METHOD: "rebase"       # Default PR update method rebase (instead of "merge")
+          UPDATE_RETRIES: "2"           # Check if an update is needed up to 2 times
+          UPDATE_RETRY_SLEEP: "30000"   # Check if an update is needed every 30 secs (2 * 30 = check over ~1 min)

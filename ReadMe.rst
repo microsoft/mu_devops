@@ -170,6 +170,27 @@ workflow will run in the repo.
 
 .. _`GitHub issue form templates`: https://github.com/microsoft/mu_devops/tree/main/.sync/github_templates/ISSUE_TEMPLATE
 
+Auto Merge
+----------
+
+As automated bots pick up mundane tasks like syncing PIP module updates, submodules, files, and so on, an increasing
+number of pull requests can accumulate that essentially update dependencies we expect to be updated over time. In most
+cases, we simply care that the new update passes CI checks.
+
+Therefore, Project Mu repos auto merge certain pull requests to reduce human burden of approving these requests in all
+of the Project Mu repos. Individual repos can opt out of this functionality by removing the leaf workflow sync to their
+repo, however, it is recommended to keep this flow enabled for consistency across all repos.
+
+To see more about this flow look in these files:
+
+- The main reusable workflow file:
+  - `.github/workflows/AutoMerger.yml`
+- The leaf workflow
+  - `.sync/workflows/leaf/auto-merge.yml`
+
+A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-merge.yml` to their repo in `Files.yml` and the
+auto merge workflow will run in the repo.
+
 Links
 =====
 - `Basic Azure Landing Site <https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops>`_
