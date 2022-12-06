@@ -1,0 +1,39 @@
+# This workflow automatically drafts new project releases so it is obvious
+# what a current release will look like at any time.
+#
+# It takes advantage of the labels used in Project Mu to automatically categorize
+# the types of changes in a given release. In addition, the semantic version of
+# the code is constantly maintained based on Project Mu label conventions to ensure
+# semantic versioning is followed and a release version is always ready.
+#
+# Project Mu repos are encouraged to use this reusable workflow if this release
+# workflow makes sense in their repo.
+#
+# The release draft configuration is defined in:
+#   - .github/ReleaseDraft.yml
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# For more information, see:
+# https://github.com/release-drafter/release-drafter
+
+name: Mu DevOps Release Draft Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  update_release_draft:
+    name: Update Release Draft
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build the New Release Draft
+        id: update_draft
+        uses: release-drafter/release-drafter@v5.21.1
+        with:
+          # Note: Path is relative to .github/
+          config-name: ReleaseDraft.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

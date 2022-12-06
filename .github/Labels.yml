@@ -59,6 +59,19 @@
   color: '2b67c6'
   aliases: []
 
+- name: semver:major
+  description: Pull requests that should increment the release major version
+  color: '000000'
+  aliases: []
+- name: semver:minor
+  description: Pull requests that should increment the release minor version
+  color: '000000'
+  aliases: []
+- name: semver:patch
+  description: Pull requests that should increment the release patch version
+  color: '000000'
+  aliases: []
+
 - name: state:backlog
   description: In the backlog
   color: 'e6e8d3'
