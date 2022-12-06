@@ -295,6 +295,31 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
+# Leaf Workflow - Issue Triage
+  - files:
+    - source: .sync/workflows/leaf/triage-issues.yml
+      dest: .github/workflows/triage-issues.yml
+    # Note: This file name (`advanced-issue-labeler.yml`) and path (`/.github/`) is
+    #       not configurable right now. Otherwise, this would get placed in a file
+    #       at `.github/workflows/triage-issues/issue-label-mapping.yml`.
+    - source: .sync/workflows/config/triage-issues/advanced-issue-labeler.yml
+      dest: .github/advanced-issue-labeler.yml
+    repos: |
+      microsoft/mu
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_crypto_release
+      microsoft/mu_feature_config
+      microsoft/mu_feature_ipmi
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_feature_uefi_variable
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_silicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_platforms
+      microsoft/mu_tiano_plus
+
 # Leaf Workflow - Label Sync
   - files:
     - source: .sync/workflows/leaf/label-sync.yml

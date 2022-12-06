@@ -157,3 +157,16 @@
   description: Further information is requested
   color: 'd876e3'
   aliases: []
+
+- name: urgency:low
+  description: Little to no impact
+  color: '00d26a'
+  aliases: []
+- name: urgency:medium
+  description: Important with a moderate impact
+  color: 'fcd53f'
+  aliases: []
+- name: urgency:high
+  description: Significant with a critical impact
+  color: 'ff6723'
+  aliases: []

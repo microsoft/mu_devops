@@ -154,6 +154,22 @@ To see more about this flow look in these files:
 A Project Mu repo simply needs to sync `.sync/workflows/leaf/release-draft.yml` to their repo and adjust any parameters
 needed in the sync process (like repo default branch name) and the release draft workflow will run in the repo.
 
+Initial Issue Triage
+--------------------
+
+This repo syncs `GitHub issue form templates`_ to many Project Mu repos. Part of initial triage for incoming issues
+involves parsing data in the issue form to apply the appropriate labels so the issue is ready for triage by a human.
+
+Issues need to be triaged by a human when the `state:needs-triage` label is present. This workflow can parse details
+provided in issue forms to apply additional labels. For example, the `state:needs-owner` label is applied if the user
+indicates they are not fixing the issue, the `urgency:<level>` label is applied based on user selection in the urgency
+dropdown, etc.
+
+A Project Mu repo simply needs to sync `.sync/workflows/leaf/triage-issues.yml` to their repo and the issue triage
+workflow will run in the repo.
+
+.. _`GitHub issue form templates`: https://github.com/microsoft/mu_devops/tree/main/.sync/github_templates/ISSUE_TEMPLATE
+
 Links
 =====
 - `Basic Azure Landing Site <https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops>`_
