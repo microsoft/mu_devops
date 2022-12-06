@@ -32,12 +32,13 @@ jobs:
     do_ci_build: true
     do_ci_setup: false
     extra_steps:
-    - script: sudo apt-get install mingw-w64
+    - script: sudo microdnf install --assumeyes mingw64-gcc
       displayName: Install Windows Resource Compiler for Linux
     packages: SetupDataPkg
     target_list: DEBUG,RELEASE,NO-TARGET,NOOPT
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
+    container_build: true
 
 - template: Jobs/Python/RunDevTests.yml@mu_devops
   parameters:
@@ -45,4 +46,3 @@ jobs:
     custom_job_name: ubuntu
     root_package_folder: SetupDataPkg/Tools
     vm_image: $(vm_image)
-    container_build: true
