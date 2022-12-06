@@ -7,6 +7,6 @@
 
 steps:
 
-- script: npm install -g markdownlint-cli@0.31.0
+- script: npm install -g markdownlint-cli@0.31.1
   displayName: Install Markdown Linter
   condition: succeeded()
