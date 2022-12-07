@@ -299,6 +299,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/auto-merge.yml
       dest: .github/workflows/auto-merge.yml
+      template: true
     repos: |
       microsoft/mu
       microsoft/mu_basecore
@@ -320,6 +321,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/triage-issues.yml
       dest: .github/workflows/triage-issues.yml
+      template: true
     # Note: This file name (`advanced-issue-labeler.yml`) and path (`/.github/`) is
     #       not configurable right now. Otherwise, this would get placed in a file
     #       at `.github/workflows/triage-issues/issue-label-mapping.yml`.

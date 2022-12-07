@@ -11,6 +11,8 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 
+{% import '../../Version.njk' as sync_version -%}
+
 name: Initial Triage for New Issue
 
 on:
@@ -19,4 +21,4 @@ on:
 
 jobs:
   sync:
-    uses: microsoft/mu_devops/.github/workflows/IssueTriager.yml@main
+    uses: microsoft/mu_devops/.github/workflows/IssueTriager.yml@{{ sync_version.mu_devops }}
