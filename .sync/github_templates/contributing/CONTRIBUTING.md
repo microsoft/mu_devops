@@ -53,8 +53,8 @@ configuration files. To aid maintainers in reviewing your code, we suggest adher
 
 1. Do keep code reviews single purpose; don't add more than one feature at a time.
 2. Do fix bugs independently of adding features.
-5. Do provide documentation and unit tests.
-7. Do introduce code in digestible amounts.
+3. Do provide documentation and unit tests.
+4. Do introduce code in digestible amounts.
    - If the contribution logically be broken up into separate pull requests that independently build and function successfully, do use multiple pull requests.
 
 #### Code Categories
