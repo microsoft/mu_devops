@@ -55,7 +55,8 @@ configuration files. To aid maintainers in reviewing your code, we suggest adher
 2. Do fix bugs independently of adding features.
 3. Do provide documentation and unit tests.
 4. Do introduce code in digestible amounts.
-   - If the contribution logically be broken up into separate pull requests that independently build and function successfully, do use multiple pull requests.
+   * If the contribution logically be broken up into separate pull requests that independently build and function
+     successfully, do use multiple pull requests.
 
 #### Code Categories
 
@@ -67,21 +68,27 @@ To keep code digestible, you may consider breaking large pull requests into thre
 
 By breaking the pull request into these three categories, the pull request reviewers can digest each piece independently.
 
-If your commits are still very large after adhering to these categories, consider further breaking the pull request down by library/driver; break each component into its own commit.
+If your commits are still very large after adhering to these categories, consider further breaking the pull request
+down by library/driver; break each component into its own commit.
 
 #### Implementation Limits
 
 Implementation is ultimately composed of functions as logical units of code.
 
-To help maintainers review the code and improve long-term maintainability, limit functions to 60 lines of code. If your function exceeds 60 lines of code, it likely has also exceeded a single responsibility and should be broken up.
+To help maintainers review the code and improve long-term maintainability, limit functions to 60 lines of code. If your
+function exceeds 60 lines of code, it likely has also exceeded a single responsibility and should be broken up.
 
-Furthermore, files contain functions. Files are easier to review and maintain if they contain functions that serves a similar purpose. Limit files to around 1,000 lines of code (excluding comments). If your file exceeds 1,000 lines of code, it may have functions that should be split into separate files.
+Furthermore, files contain functions. Files are easier to review and maintain if they contain functions that serves a
+similar purpose. Limit files to around 1,000 lines of code (excluding comments). If your file exceeds 1,000 lines of
+code, it may have functions that should be split into separate files.
 
 ---
 
-By following these guidelines, your pull requests will be reviewed faster, and you'll avoid being asked to refactor the code to follow the guidelines.
+By following these guidelines, your pull requests will be reviewed faster, and you'll avoid being asked to refactor the
+code to follow the guidelines.
 
 Feel free to create a draft pull request and ask for suggestions on how to split the pull request if you are unsure.
+
 ## Thank You
 
 Thank you for your interest in Project Mu and taking the time to contribute!
