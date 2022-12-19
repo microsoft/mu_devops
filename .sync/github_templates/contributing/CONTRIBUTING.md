@@ -48,33 +48,40 @@ requested.
 
 ### Pull Request Best Practices
 
-Generally pull requests for UEFI code can become large and difficult to review due to the large number of build and
-configuration files. To aid maintainers in reviewing your code we suggest adhering to the following guidelines:
+Pull requests for UEFI code can become large and difficult to review due to the large number of build and
+configuration files. To aid maintainers in reviewing your code, we suggest adhering to the following guidelines:
 
 1. Do keep code reviews single purpose; don't add more than one feature at a time.
 2. Do fix bugs independently of adding features.
-3. Do provide documentation and unit tests.
-4. Do introduce code in digestable amounts; don't add more than 1000 lines per pull request.
+5. Do provide documentation and unit tests.
+7. Do introduce code in digestible amounts.
+   - If the contribution logically be broken up into separate pull requests that independently build and function successfully, do use multiple pull requests.
 
-As a general guide to help keep code digestable, you may consider breaking large pull requests into three smaller
-pull requests the the general guide:
+#### Code Categories
 
-1. Interfaces (.h, .inf, documentation)
-2. Implementatation (.c, unit-tests, unit-test build file); unit tests should build and run at this point
-3. Integration/Build (.dec, .dsc, .fdf, integration tests); code added to platform and affects downstream consumers
+To keep code digestible, you may consider breaking large pull requests into three categories of commits within the pull request.
 
-By breaking the pull request into these three steps the reviewer can digest each piece independently, but each without
-risk of breaking the main branch since without step 3 the code is shipping darkly (not directly integrated into the
-build).
+1. **Interfaces**: .h, .inf, .dec, documentation
+2. **Implementation**: .c, unit tests, unit test build file; unit tests should build and run at this point
+3. **Integration/Build**: .dec, .dsc, .fdf, integration tests; code added to platform and affects downstream consumers
 
-If any of these 3 pull requests is still larger than 1000 lines of code consider breaking the pull request down by the
-following boundaries:
+By breaking the pull request into these three categories, the pull request reviewers can digest each piece independently.
 
-1. By .inf file; break each library/driver into its own 3 part pull request
-2. By .c file; for large drivers break each .c file and its tests into a separate pull request
+If your commits are still very large after adhering to these categories, consider further breaking the pull request down by library/driver; break each component into its own commit.
+
+#### Implementation Limits
+
+Implementation is ultimately composed of functions as logical units of code.
+
+To help maintainers review the code and improve long-term maintainability, limit functions to 60 lines of code. If your function exceeds 60 lines of code, it likely has also exceeded a single responsibility and should be broken up.
+
+Furthermore, files contain functions. Files are easier to review and maintain if they contain functions that serves a similar purpose. Limit files to around 1,000 lines of code (excluding comments). If your file exceeds 1,000 lines of code, it may have functions that should be split into separate files.
+
+---
+
+By following these guidelines, your pull requests will be reviewed faster, and you'll avoid being asked to refactor the code to follow the guidelines.
 
 Feel free to create a draft pull request and ask for suggestions on how to split the pull request if you are unsure.
-
 ## Thank You
 
 Thank you for your interest in Project Mu and taking the time to contribute!

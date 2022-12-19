@@ -1,7 +1,8 @@
 # Preface
 
 Please ensure you have read the [contribution docs](./CONTRIBUTING.md) prior to
-submitting the pull request. In particular [pull request guidelines](./CONTRIBUTING.md#pull-request-best-practices)
+submitting the pull request. In particular, [pull request guidelines](./CONTRIBUTING.md#pull-request-best-practices).
+
 
 ## Description
 
