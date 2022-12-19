@@ -46,6 +46,35 @@ If you cannot find an existing issue that describes your bug or feature, create 
 Please continue to follow your request after it is submitted to assist with any additional information that might be
 requested.
 
+### Pull Request Best Practices
+
+Generally pull requests for UEFI code can become large and difficult to review due to the large number of build and
+configuration files. To aid maintainers in reviewing your code we suggest adhering to the following guidelines:
+
+1. Do keep code reviews single purpose; don't add more than one feature at a time.
+2. Do fix bugs independently of adding features.
+3. Do provide documentation and unit tests.
+4. Do introduce code in digestable amounts; don't add more than 1000 lines per pull request.
+
+As a general guide to help keep code digestable, you may consider breaking large pull requests into three smaller
+pull requests the the general guide:
+
+1. Interfaces (.h, .inf, documentation)
+2. Implementatation (.c, unit-tests, unit-test build file); unit tests should build and run at this point
+3. Integration/Build (.dec, .dsc, .fdf, integration tests); code added to platform and affects downstream consumers
+
+By breaking the pull request into these three steps the reviewer can digest each piece independently, but each without
+risk of breaking the main branch since without step 3 the code is shipping darkly (not directly integrated into the
+build).
+
+If any of these 3 pull requests is still larger than 1000 lines of code consider breaking the pull request down by the
+following boundaries:
+
+1. By .inf file; break each library/driver into its own 3 part pull request
+2. By .c file; for large drivers break each .c file and its tests into a separate pull request
+
+Feel free to create a draft pull request and ask for suggestions on how to split the pull request if you are unsure.
+
 ## Thank You
 
 Thank you for your interest in Project Mu and taking the time to contribute!
