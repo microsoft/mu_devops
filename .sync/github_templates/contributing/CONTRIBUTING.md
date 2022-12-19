@@ -64,7 +64,8 @@ To keep code digestible, you may consider breaking large pull requests into thre
 
 1. **Interfaces**: .h, .inf, .dec, documentation
 2. **Implementation**: .c, unit tests, unit test build file; unit tests should build and run at this point
-3. **Integration/Build**: .dec, .dsc, .fdf, integration tests; code added to platform and affects downstream consumers
+3. **Integration/Build**: .dec, .dsc, .fdf, (.yml) configuration files, integration tests; code added to platform and affects
+        downstream consumers
 
 By breaking the pull request into these three categories, the pull request reviewers can digest each piece independently.
 
