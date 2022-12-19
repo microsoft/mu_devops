@@ -78,7 +78,8 @@ Implementation is ultimately composed of functions as logical units of code.
 To help maintainers review the code and improve long-term maintainability, limit functions to 60 lines of code. If your
 function exceeds 60 lines of code, it likely has also exceeded a single responsibility and should be broken up.
 
-Furthermore, files contain functions. Files are easier to review and maintain if they contain functions that serves a
+Files are easier to review and maintain if they contain functions that serves a
+
 similar purpose. Limit files to around 1,000 lines of code (excluding comments). If your file exceeds 1,000 lines of
 code, it may have functions that should be split into separate files.
 
