@@ -1,7 +1,8 @@
 # Preface
 
-Please ensure you have read the [contribution docs](https://github.com/microsoft/mu/blob/master/CONTRIBUTING.md) prior to
-submitting the pull request. In particular, [pull request guidelines](https://github.com/microsoft/mu/blob/master/CONTRIBUTING.md#pull-request-best-practices).
+Please ensure you have read the [contribution docs](https://github.com/microsoft/mu/blob/master/CONTRIBUTING.md) prior
+to submitting the pull request. In particular,
+[pull request guidelines](https://github.com/microsoft/mu/blob/master/CONTRIBUTING.md#pull-request-best-practices).
 
 ## Description
 

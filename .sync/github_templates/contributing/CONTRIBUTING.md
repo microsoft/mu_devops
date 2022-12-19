@@ -60,14 +60,16 @@ configuration files. To aid maintainers in reviewing your code, we suggest adher
 
 #### Code Categories
 
-To keep code digestible, you may consider breaking large pull requests into three categories of commits within the pull request.
+To keep code digestible, you may consider breaking large pull requests into three categories of commits within the pull
+request.
 
 1. **Interfaces**: .h, .inf, .dec, documentation
 2. **Implementation**: .c, unit tests, unit test build file; unit tests should build and run at this point
-3. **Integration/Build**: .dec, .dsc, .fdf, (.yml) configuration files, integration tests; code added to platform and affects
-        downstream consumers
+3. **Integration/Build**: .dec, .dsc, .fdf, (.yml) configuration files, integration tests; code added to platform and
+   affects downstream consumers
 
-By breaking the pull request into these three categories, the pull request reviewers can digest each piece independently.
+By breaking the pull request into these three categories, the pull request reviewers can digest each piece
+independently.
 
 If your commits are still very large after adhering to these categories, consider further breaking the pull request
 down by library/driver; break each component into its own commit.
@@ -79,10 +81,9 @@ Implementation is ultimately composed of functions as logical units of code.
 To help maintainers review the code and improve long-term maintainability, limit functions to 60 lines of code. If your
 function exceeds 60 lines of code, it likely has also exceeded a single responsibility and should be broken up.
 
-Files are easier to review and maintain if they contain functions that serves a
-
-similar purpose. Limit files to around 1,000 lines of code (excluding comments). If your file exceeds 1,000 lines of
-code, it may have functions that should be split into separate files.
+Files are easier to review and maintain if they contain functions that serves similar purpose. Limit files to around
+1,000 lines of code (excluding comments). If your file exceeds 1,000 lines of code, it may have functions that should
+be split into separate files.
 
 ---
 
