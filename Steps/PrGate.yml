@@ -6,6 +6,14 @@
 ##
 
 parameters:
+- name: artifacts_binary
+  displayName: Binary Artifacts to Publish
+  type: string
+  default: ''
+- name: artifacts_other
+  displayName: Other Artifacts to Publish
+  type: string
+  default: ''
 - name: build_archs
   displayName: Architectures (e.g. IA32, X64)
   type: string
@@ -156,37 +164,18 @@ steps:
     testRunTitle: ${{ parameters.build_pkgs }}  # Optional
     publishRunAttachments: true                 # Optional
 
-# Copy the build logs to the artifact staging directory
-- task: CopyFiles@2
-  displayName: Copy Build Logs
-  inputs:
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
-    SourceFolder: 'Build'
-    contents: |
-      BUILDLOG_*.txt
-      BUILDLOG_*.md
-      CI_*.txt
-      CI_*.md
-      CISETUP.txt
-      SETUPLOG.txt
-      UPDATE_LOG.txt
-      PREVALLOG.txt
-      TestSuites.xml
-      **/BUILD_TOOLS_REPORT.html
-      **/OVERRIDELOG.TXT
-      coverage.xml
-      coverage.html
-    flattenFolders: true
-  condition: succeededOrFailed()
+# Copy build logs to the artifact staging directory
+- template: CommonLogCopyAndPublish.yml
 
-# Publish build artifacts to Azure Artifacts/TFS or a file share
-- task: PublishBuildArtifacts@1
-  continueOnError: true
-  displayName: Publish Build Logs
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: 'Build Logs $(System.JobName)'
-  condition: succeededOrFailed()
+# Copy build binaries to the artifact staging directory
+- template: BinaryCopyAndPublish.yml
+  parameters:
+    artifacts_binary: ${{ parameters.artifacts_binary }}
+
+# Copy other files to the artifact staging directory
+- template: OtherCopyAndPublish.yml
+  parameters:
+    artifacts_binary: ${{ parameters.artifacts_other }}
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage Results

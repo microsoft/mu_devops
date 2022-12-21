@@ -1,0 +1,75 @@
+## @file
+# Mu DevOps template file to produce a build matrix according to the given
+# package and build target parameters.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+# An optional job dependency for this job to start.
+- name: dependency
+  displayName: Job Dependency
+  type: string
+  default: ''
+# A group package list is not split to a separate package per job in the matrix.
+- name: group_package_list
+  displayName: Group Package List (Optional - Will be Built Together)
+  type: string
+  default: ''
+# Each package in an individual package list is split to a separate job per package in the matrix.
+- name: individual_package_list
+  displayName: Individual Package List (Required - Will be Built Individually)
+  type: string
+  default: ''
+# The targets that need be supported. These are kept as a list in the output of the matrix.
+- name: target_list
+  displayName: Targets (e.g. DEBUG, RELEASE)
+  type: string
+  default: ''
+
+jobs:
+
+  - job: CreateBuildMatrix
+    displayName: Create Build Matrix
+    dependsOn: ${{ parameters.dependency }}
+
+    steps:
+    - checkout: none
+
+    - task: PowerShell@2
+      name: DumpEnvironmentVariables
+      displayName: Dump Env. Variables (For Debug Assistance)
+      inputs:
+          targetType: 'inline'
+          script: |
+              Get-ChildItem Env: | Out-String | Write-Host
+
+    - task: PowerShell@2
+      name: CalculateMatrix
+      displayName: Calculate Matrix
+      inputs:
+          targetType: 'inline'
+          script: |
+            $configs = @{}
+            '${{ parameters.target_list }}'.split(',').Trim() | % {
+              $t = $_
+              if (![string]::IsNullOrEmpty('${{ parameters.individual_package_list }}')) {
+                '${{ parameters.individual_package_list }}'.split(',').Trim() | % {
+                  $p = $_
+                  $configs["${p} ${t}"] = @{
+                    'package' = $p
+                    'target' = $t
+                  }
+                }
+              }
+              if (![string]::IsNullOrEmpty('${{ parameters.group_package_list }}')) {
+                $configs["Non-Platform Package(s) ${t}"] = @{
+                  'package' = '${{ parameters.group_package_list }}'.Trim()
+                  'target' = $t
+                }
+              }
+            }
+            $c = $configs | ConvertTo-Json -Depth 10 -Compress
+            Write-Host "##vso[task.setvariable variable=Matrix;isOutput=true;]$c"
+
