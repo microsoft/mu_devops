@@ -17,7 +17,7 @@ jobs:
     name: Bot Approval
     if: |
       github.event_name == 'pull_request_target' &&
-      github.event.action == 'opened' &&
+      (github.event.action == 'opened' || github.event.action == 'reopened') &&
       (github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'uefibot')
     runs-on: ubuntu-latest
     permissions:
