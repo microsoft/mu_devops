@@ -77,7 +77,7 @@ jobs:
 
     steps:
     - name: Check for Stale Items
-      uses: actions/stale@v6
+      uses: actions/stale@v7
       with:
         days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
         days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
