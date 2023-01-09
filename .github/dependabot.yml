@@ -32,6 +32,8 @@ updates:
       prefix: "GitHub Action"
     labels:
       - "type:dependencies"
+    reviewers:
+      - "microsoft/project-mu-dependency-reviewers"
 
   - package-ecosystem: "pip"
     directory: "/"
@@ -42,3 +44,5 @@ updates:
     labels:
       - "language:python"
       - "type:dependencies"
+    reviewers:
+      - "microsoft/project-mu-dependency-reviewers"
