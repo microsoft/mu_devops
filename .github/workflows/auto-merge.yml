@@ -18,28 +18,13 @@ name: Auto Merge Pull Request
 on:
   pull_request_target:
     types:
-      - edited
-      - labeled
       - opened
-      - ready_for_review
       - reopened
       - synchronize
-      - unlabeled
-      - unlocked
-  pull_request_review:
-    types:
-      - submitted
-  check_suite:
-    types:
-      - completed
-  status: {}
 
 jobs:
   merge_check:
     if: |
-      ((github.event_name == 'pull_request_target' || github.event_name == 'pull_request_review') &&
-       (github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'uefibot')) ||
-      ((github.event_name == 'check_suite') &&
-       (github.event.check_suite.sender.login == 'dependabot[bot]' || github.event.check_suite.sender.login == 'uefibot'))
-    uses: microsoft/mu_devops/.github/workflows/AutoMerger.yml@v1.4.0
+      github.event.pull_request.user.login == 'dependabot[bot]' || github.event.pull_request.user.login == 'uefibot'
+    uses: microsoft/mu_devops/.github/workflows/AutoMerger.yml@v1.4.2
     secrets: inherit
