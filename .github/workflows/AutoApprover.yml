@@ -1,0 +1,31 @@
+# This workflow automatically approves pull requests under certain
+# conditions in Project Mu repos.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# For more information, see:
+# https://github.com/pascalgn/automerge-action
+
+name: Auto Approve Pull Request Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  bot_approval:
+    name: Bot Approval
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          review-message: "🤖 auto approved a ${{ github.event.pull_request.user.login }} PR."
+
+      - uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.PROJECT_MU_BOT_TOKEN }}
+          review-message: "🤖 auto approved a ${{ github.event.pull_request.user.login }} PR."
