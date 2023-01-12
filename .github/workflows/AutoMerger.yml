@@ -35,9 +35,9 @@ jobs:
           MERGE_LABELS: "!state:duplicate,!state:invalid,!state:needs-maintainer-feedback,!state:needs-submitter-info,!state:under-discussion,!state:wont-fix,!type:notes,!type:question"
           MERGE_METHOD: "squash"        # Default merge method squash (instead of "merge")
           MERGE_REMOVE_LABELS: = ""     # Do not remove any labels from a PR after merge
-          MERGE_RETRIES: "120"          # Check if PR status checks pass up to 120 times
-          MERGE_RETRY_SLEEP: "60000"    # Check if PR status checks are met every 60 secs (60 * 120 = check over 2 hrs)
+          MERGE_RETRIES: "180"          # Check if PR status checks pass up to 120 times
+          MERGE_RETRY_SLEEP: "60000"    # Check if PR status checks are met every 60 secs (60 * 180 = check over 3 hrs)
           UPDATE_LABELS: ""             # Always update these PRs if needed to merge
           UPDATE_METHOD: "rebase"       # Default PR update method rebase (instead of "merge")
-          UPDATE_RETRIES: "2"           # Check if an update is needed up to 2 times
-          UPDATE_RETRY_SLEEP: "30000"   # Check if an update is needed every 30 secs (2 * 30 = check over ~1 min)
+          UPDATE_RETRIES: "120"         # Check if an update is needed up to 120 times
+          UPDATE_RETRY_SLEEP: "60000"   # Check if an update is needed every 30 secs (60 * 120 = check over 2 hrs)
