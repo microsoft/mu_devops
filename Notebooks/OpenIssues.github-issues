@@ -42,6 +42,16 @@
   {
     "kind": 1,
     "language": "markdown",
+    "value": "All Open Issues with needs-owner label"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repos is:open is:issue archived:false label:state:needs-owner"
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
     "value": "All Open Issues marked stale"
   },
   {
