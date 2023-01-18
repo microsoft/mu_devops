@@ -38,5 +38,15 @@
     "kind": 2,
     "language": "github-issues",
     "value": "$repos is:open is:issue archived:false no:assignee"
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "All Open Issues marked stale"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repos is:open is:issue archived:false label:state:stale"
   }
 ]
