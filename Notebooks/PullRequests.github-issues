@@ -48,5 +48,15 @@
     "kind": 2,
     "language": "github-issues",
     "value": "// This needs to be bumped very occassionally (annually likely) to prevent\r\n// the maximum allowed number of results from being reached.\r\n$since=2022-01-01\r\n\r\n$repos is:closed type:pr sort:created-desc closed:>$since"
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "All Stale PRs"
+  },
+  {
+    "kind": 2,
+    "language": "github-issues",
+    "value": "$repos is:open is:pr archived:false label:state:stale"
   }
 ]
