@@ -41,3 +41,13 @@ jobs:
           issue-form: ${{ steps.issue-parser.outputs.jsonString }}
           template: ${{ matrix.template }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Assignee
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FIX_OWNER: ${{ steps.issue-parser.outputs.issueparser_fix_owner }}
+        run: |
+          if [[ $FIX_OWNER == "I will fix it" ]] || [[ $FIX_OWNER == "I will make the change" ]] || [[ $FIX_OWNER == "I will implement the feature" ]]
+          then
+            gh issue edit ${{ github.event.issue.html_url }} --add-assignee ${{ github.event.issue.user.login }}
+          fi
