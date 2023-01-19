@@ -38,6 +38,10 @@ parameters:
   displayName: Run Flags
   type: string
   default: ''
+- name: run_timeout
+  displayName: Run Timeout (in minutes)
+  type: number
+  default: 5
 - name: install_tools
   displayName: Install Build Tools
   type: boolean
@@ -115,7 +119,7 @@ steps:
     filename: stuart_build
     arguments: -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} TARGET=${{ parameters.build_target}} -a ${{ parameters.build_arch}} ${{ parameters.build_flags}} ${{ parameters.run_flags }} --FlashOnly
   condition: and(and(gt(variables.pkg_count, 0), succeeded()), eq(variables['Run'], true))
-  timeoutInMinutes: 5
+  timeoutInMinutes: ${{ parameters.run_timeout }}
 
 # Copy the build logs to the artifact staging directory
 - task: CopyFiles@2
