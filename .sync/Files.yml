@@ -109,6 +109,7 @@ group:
       template: true
     repos: |
       microsoft/mu_common_intel_min_platform
+      microsoft/mu_feature_dfci
       microsoft/mu_plus
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
@@ -137,6 +138,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
@@ -180,6 +182,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -205,6 +208,7 @@ group:
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -227,6 +231,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -246,6 +251,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
@@ -285,6 +291,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -307,6 +314,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -329,6 +337,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -355,6 +364,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -377,6 +387,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -398,6 +409,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -440,6 +452,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -459,6 +472,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -478,6 +492,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
