@@ -425,7 +425,14 @@ group:
       template:
         trigger_branch_name: 'main'
     repos: |
+      microsoft/mu_crypto_release
       microsoft/mu_devops
+      microsoft/mu_feature_config
+      microsoft/mu_feature_dfci
+      microsoft/mu_feature_ipmi
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_feature_uefi_variable
+      microsoft/mu_tiano_platforms
 
 # Leaf Workflow - Scheduled Maintenance
 # Note: This currently sync to the same repos as the label sync since it is exclusively
