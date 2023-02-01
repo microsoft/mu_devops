@@ -46,7 +46,7 @@ parameters:
 - name: linux_container_image
   displayName: Linux Container Image
   type: string
-  default: 'ghcr.io/tianocore/containers/fedora-35-build:5800d58'
+  default: 'ghcr.io/tianocore/containers/fedora-35-build:5b8a008'
 - name: packages
   displayName: Packages
   type: string
