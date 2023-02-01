@@ -30,7 +30,7 @@ jobs:
   parameters:
     arch_list: $(arch_list)
     do_ci_build: true
-    do_ci_setup: false
+    do_ci_setup: true
     extra_steps:
     - script: sudo microdnf install --assumeyes mingw64-gcc
       displayName: Install Windows Resource Compiler for Linux
