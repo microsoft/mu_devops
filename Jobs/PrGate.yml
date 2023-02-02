@@ -67,14 +67,19 @@ parameters:
 # Build step
 jobs:
 
+  - template: ../Jobs/CreateBuildMatrix.yml
+    parameters:
+      group_package_list: ${{ parameters.packages }}
+      target_list: ${{ parameters.target_list }}
+
   - job: Build
+    dependsOn: CreateBuildMatrix
+    condition: Succeeded('CreateBuildMatrix')
 
     # Use matrix to speed up the build process
     strategy:
-      matrix:
-        TARGET_BUILD:
-          Build.Pkgs: ${{ parameters.packages }}
-          Build.Targets: ${{ parameters.target_list }}
+      matrix: $[ dependencies.CreateBuildMatrix.outputs['CalculateMatrix.Matrix'] ]
+
     workspace:
       clean: all
 
@@ -93,9 +98,10 @@ jobs:
     - ${{ parameters.extra_steps }}
     - template: ../Steps/PrGate.yml
       parameters:
+        artifacts_identifier: '$(package) $(target)'
         build_file: ${{ parameters.build_file }}
-        build_pkgs: $(Build.Pkgs)
-        build_targets: $(Build.Targets)
+        build_pkgs: $(package)
+        build_targets: $(target)
         build_archs: ${{ parameters.arch_list }}
         do_ci_build: ${{ parameters.do_ci_build }}
         do_ci_setup: ${{ parameters.do_ci_setup }}
