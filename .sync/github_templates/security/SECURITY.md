@@ -29,7 +29,8 @@ additional time to release and/or additional confidentiality requirements.
 Instead please use **Github Private vulnerability reporting**, which is enabled for each Project Mu
 repository. This process is well documented by github in their documentation [here](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability#privately-reporting-a-security-vulnerability).
 
-This process we will allow us to privately discuss the issue, collaborate on a solution, and then disclose the vulnerability.
+This process will allow us to privately discuss the issue, collaborate on a solution, and then disclose the vulnerability.
+
 
 ## Preferred Languages
 
