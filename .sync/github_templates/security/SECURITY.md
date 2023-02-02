@@ -4,9 +4,10 @@ Project Mu is an open source firmware project that is leveraged by and combined 
 other projects to build the firmware for a given product.  We build and maintain this
 code with the intent that any consuming projects can use this code as-is.  If features
 or fixes are necessary we ask that they contribute them back to the project.  **But**, that
-said, in the firmware ecosystem there is a lot of variation and differientiation, and
-the license in this project allows flexibility to use without contribution and therefore
-any issues found here may or may not exist in products using Project Mu.  
+said, in the firmware ecosystem there is a lot of variation and differentiation, and
+the license in this project allows flexibility for use without contribution back to
+Project Mu. Therefore, any issues found here may or may not exist in products using Project Mu.  
+
 
 ## Supported Versions
 
