@@ -78,11 +78,16 @@ steps:
 - bash: echo "##vso[task.setvariable variable=pkg_count]${{ 1 }}"
 
 # trim the package list if this is a PR
+- powershell:
+    $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
+    Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
+  displayName: Workaround for Branch Names
+  condition: eq(variables['Build.Reason'], 'PullRequest')
 - task: CmdLine@1
   displayName: Check if ${{ parameters.build_pkg }} Needs Testing
   inputs:
     filename: stuart_pr_eval
-    arguments: -c ${{ parameters.build_file }} -t ${{ parameters.build_target}} -a ${{ parameters.build_arch}} --pr-target origin/$(System.PullRequest.targetBranch) --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
+    arguments: -c ${{ parameters.build_file }} -t ${{ parameters.build_target}} -a ${{ parameters.build_arch}} --pr-target $(pr_compare_branch) --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
   condition: eq(variables['Build.Reason'], 'PullRequest')
 
  # Setup repo
