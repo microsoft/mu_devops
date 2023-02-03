@@ -27,4 +27,4 @@ on:
 
 jobs:
   draft:
-    uses: microsoft/mu_devops/.github/workflows/ReleaseDrafter.yml@v1.4.2
+    uses: microsoft/mu_devops/.github/workflows/ReleaseDrafter.yml@v1.7.4
