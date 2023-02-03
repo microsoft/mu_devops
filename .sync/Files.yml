@@ -452,13 +452,16 @@ group:
       microsoft/mu_devops
 
 # Leaf Workflow - Release Draft
+# Note: The branch name used to draft releases on in this group is
+#       set to the value "main"
   - files:
     - source: .sync/workflows/leaf/release-draft.yml
       dest: .github/workflows/release-draft.yml
       template:
         trigger_branch_name: 'main'
+    - source: .sync/workflows/config/release-draft/release-draft-config.yml
+      dest: .github/release-draft-config.yml
     repos: |
-      microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
       microsoft/mu_feature_dfci
@@ -466,6 +469,18 @@ group:
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
       microsoft/mu_tiano_platforms
+
+# Leaf Workflow - Release Draft
+# Note: The default branch name used to draft releases on in this group is
+#       the latest Mu release branch (e.g. "release/202208")
+  - files:
+    - source: .sync/workflows/leaf/release-draft.yml
+      dest: .github/workflows/release-draft.yml
+      template: true
+    - source: .sync/workflows/config/release-draft/release-draft-config.yml
+      dest: .github/release-draft-config.yml
+    repos: |
+      microsoft/mu_crypto_release
 
 # Leaf Workflow - Scheduled Maintenance
 # Note: This currently sync to the same repos as the label sync since it is exclusively
