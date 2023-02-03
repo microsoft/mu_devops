@@ -10,7 +10,7 @@
 # workflow makes sense in their repo.
 #
 # The release draft configuration is defined in:
-#   - .github/ReleaseDraft.yml
+#   - .github/release-draft-config.yml
 #
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -34,6 +34,6 @@ jobs:
         uses: release-drafter/release-drafter@v5.22.0
         with:
           # Note: Path is relative to .github/
-          config-name: ReleaseDraft.yml
+          config-name: release-draft-config.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

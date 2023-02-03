@@ -149,10 +149,12 @@ To see more about this flow look in these files:
 - The main reusable workflow file:
   - .github/workflows/ReleaseDrafter.yml
 - The configuration file for the reusable workflow:
-  - .github/ReleaseDraft.yml
+  - .sync/workflows/config/release-draft/release-draft-config.yml
+    - This will be synced to .github/release-draft-config.yml in repos using release drafter
 
-A Project Mu repo simply needs to sync `.sync/workflows/leaf/release-draft.yml` to their repo and adjust any parameters
-needed in the sync process (like repo default branch name) and the release draft workflow will run in the repo.
+A Project Mu repo simply needs to sync `.sync/workflows/leaf/release-draft.yml` and the config file
+`.sync/workflows/config/release-draft/release-draft-config.yml` to their repo and adjust any parameters needed in the
+sync process (like repo default branch name) and the release draft workflow will run in the repo.
 
 Initial Issue Triage
 --------------------
