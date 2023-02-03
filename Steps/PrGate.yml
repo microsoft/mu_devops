@@ -87,12 +87,17 @@ steps:
 
 # Trim the package list if this is a PR
 - ${{ if eq(parameters.do_pr_eval, true) }}:
+  - powershell:
+      $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
+      Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
+    displayName: Workaround for Branch Names
+    condition: eq(variables['Build.Reason'], 'PullRequest')
   - task: CmdLine@1
     displayName: Check if ${{ parameters.build_pkgs }} Needs Testing
     inputs:
       filename: stuart_pr_eval
       # Workaround an azure pipelines bug.
-      arguments: -c ${{ parameters.build_file }} -p ${{ parameters.build_pkgs }} --pr-target origin/$(System.PullRequest.targetBranch) --output-csv-format-string "##vso[task.setvariable variable=pkgs_to_build]{pkgcsv}" --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
+      arguments: -c ${{ parameters.build_file }} -p ${{ parameters.build_pkgs }} --pr-target $(pr_compare_branch) --output-csv-format-string "##vso[task.setvariable variable=pkgs_to_build]{pkgcsv}" --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
     condition: eq(variables['Build.Reason'], 'PullRequest')
 
 - ${{ if eq(parameters.install_tools, true) }}:
