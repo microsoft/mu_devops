@@ -13,6 +13,8 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 
+# Simple file change
+
 {% import '../../Version.njk' as sync_version -%}
 
 name: Auto Merge Pull Request
