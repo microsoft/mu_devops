@@ -193,6 +193,16 @@ To see more about this flow look in these files:
 A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-merge.yml` to their repo in `Files.yml` and the
 auto merge workflow will run in the repo.
 
+Pull Request Validator
+----------------------
+
+Validates pull request formatting against requirements defined in the workflow. This workflow is not intended to
+strictly validate exact formatting details but provide hints when simple, broad changes are needed to enhance the
+quality of pull request verbiage.
+
+- The leaf workflow
+  - `.sync/workflows/leaf/pull-request-formatting-validator.yml`
+
 Links
 =====
 - `Basic Azure Landing Site <https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops>`_
