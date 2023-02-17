@@ -7,7 +7,7 @@
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "// list of project mu repos\r\n$repos=repo:repo:microsoft/mu repo:microsoft/mu_basecore repo:microsoft/mu_plus repo:microsoft/mu_tiano_plus repo:microsoft/mu_oem_sample repo:microsoft/mu_tiano_platforms repo:microsoft/mu_siicon_arm_tiano repo:microsoft/mu_silicon_intel_tiano repo:microsoft/mu_common_intel_min_platform repo:microsoft/mu_devops repo:microsoft/mu_feature_config repo:microsoft/mu_feature_dfci repo:microsoft/mu_feature_mm_supv repo:microsoft/mu_feature_ipmi repo:microsoft/mu_feature_uefi_variable repo:microsoft/mu_crypto_release repo:microsoft/mu_pip_environment repo:microsoft/mu_pip_python_library repo:microsoft/mu_pip_build repo:microsoft/mu_build repo:microsoft/mu_common_intel_adv_features"
+    "value": "// list of project mu repos\r\n$repos=repo:repo:microsoft/mu repo:microsoft/mu_basecore repo:microsoft/mu_plus repo:microsoft/mu_tiano_plus repo:microsoft/mu_oem_sample repo:microsoft/mu_tiano_platforms repo:microsoft/mu_siicon_arm_tiano repo:microsoft/mu_silicon_intel_tiano repo:microsoft/mu_common_intel_min_platform repo:microsoft/mu_devops repo:microsoft/mu_feature_config repo:microsoft/mu_feature_dfci repo:microsoft/mu_feature_mm_supv repo:microsoft/mu_feature_ipmi repo:microsoft/mu_feature_uefi_variable repo:microsoft/mu_crypto_release repo:microsoft/mu_pip_environment repo:microsoft/mu_pip_python_library repo:microsoft/mu_pip_build repo:microsoft/mu_build repo:microsoft/mu_common_intel_adv_features repo:microsoft/mu_roadmap"
   },
   {
     "kind": 1,
