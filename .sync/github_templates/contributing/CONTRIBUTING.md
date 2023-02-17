@@ -8,6 +8,17 @@ high-level overview of how you can get involved.
 If this is your first time working with Project Mu, please keep in mind that many project details are maintained in
 the [Project Mu Documentation](https://microsoft.github.io/mu/).
 
+## Project Mu Roadmap
+
+The upcoming work planned for Project Mu is tracked in the [Project Mu Roadmap](https://github.com/microsoft/mu_roadmap)
+repo.
+
+Major new work streams start from an RFC there. Once approved, a GitHub issue is filed that tracks the work item
+through implementation in the appropriate repos.
+
+If you are interested in understanding what is proposed, approved, and in progress, please visit the Project Mu
+roadmap repo. We welcome feedback, comments, and new proposals.
+
 ## Asking Questions
 
 Have a question? Rather than opening an issue, please post your question under the `Q&A` category in the `Discussions`
@@ -21,7 +32,7 @@ submitted in the issues section.
 ## Security Vulnerabilities
 
 Please review the repos `Security Policy` but in general every Project Mu repo has `Private vulnerability reporting`
-enabled.  Please use the security tab to report a potential issue.  
+enabled.  Please use the security tab to report a potential issue.
 
 ### Identify Where to Report
 

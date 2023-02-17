@@ -143,6 +143,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -188,6 +189,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
@@ -214,6 +216,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -256,6 +259,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
 
 # GitHub Templates - Licensing - Project Mu and TianoCore License
   - files:
@@ -292,6 +296,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -318,6 +323,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -341,6 +347,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -364,6 +371,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -391,6 +399,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -414,6 +423,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -436,6 +446,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -468,6 +479,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -490,6 +502,7 @@ group:
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
+      microsoft/mu_roadmap
       microsoft/mu_tiano_platforms
 
 # Leaf Workflow - Release Draft
@@ -523,6 +536,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_roadmap
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
