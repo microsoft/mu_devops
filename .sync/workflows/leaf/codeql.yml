@@ -246,7 +246,40 @@ jobs:
         with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
             print(f'sarif_file_path={sarif_path}', file=fh)
 
-    - name: Upload CodeQL Results (SARIF)
+    - name: Upload Setup and Update Logs As An Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.package }}-Setup-Update-Logs
+        path: |
+          **/OVERRIDELOG.TXT
+          CISETUP.txt
+          SETUPLOG.txt
+          UPDATE_LOG.txt
+        retention-days: 3
+        if-no-files-found: ignore
+
+    - name: Upload Build Log As An Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.package }}-Build-Logs
+        path: |
+          **/BUILD_REPORT.TXT
+          BUILDLOG_*.md
+          BUILDLOG_*.txt
+          CI_*.md
+          CI_*.txt
+        retention-days: 7
+        if-no-files-found: ignore
+
+    - name: Upload CodeQL Results (SARIF) As An Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.package }}-CodeQL-SARIF
+        path: ${{ steps.env_data.outputs.sarif_file_path }}
+        retention-days: 14
+        if-no-files-found: warn
+
+    - name: Upload CodeQL Results (SARIF) To GitHub Code Scanning
       uses: github/codeql-action/upload-sarif@v2
       with:
         # Path to SARIF file relative to the root of the repository.
