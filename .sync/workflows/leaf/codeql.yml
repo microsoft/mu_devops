@@ -24,9 +24,11 @@ name: "CodeQL"
 on:
   push:
     branches:
+      - main
       - release/*
   pull_request_target:
     branches:
+      - main
       - release/*
     paths-ignore:
       - '!**.c'
