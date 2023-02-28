@@ -138,13 +138,21 @@ jobs:
       run: |
         import os
         import shutil
+        from pathlib import Path
 
+        # Only these two plugins are needed for CodeQL
         plugins_to_keep = ['CodeQL', 'CompilerPlugin']
-        plugin_dir = os.path.join(os.environ['GITHUB_WORKSPACE'], '.pytool', 'Plugin')
-        if os.path.isdir(plugin_dir):
-            for dir in os.listdir(plugin_dir):
-                if dir not in plugins_to_keep:
-                    shutil.rmtree(os.path.join(plugin_dir, dir), ignore_errors=True)
+
+        # Find the plugin directory with CodeQL
+        plugin_dir = list(Path(os.environ['GITHUB_WORKSPACE']).rglob('.pytool/Plugin/CodeQL'))
+
+        # Remove all plugins except the ones we want to keep
+        if len(plugin_dir) == 1:
+          plugin_dir = plugin_dir[0]
+          if os.path.isdir(plugin_dir):
+              for dir in os.listdir(plugin_dir):
+                  if dir not in plugins_to_keep:
+                      shutil.rmtree(os.path.join(plugin_dir, dir), ignore_errors=True)
 
     - name: CI Build
       env:
