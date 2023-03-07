@@ -96,6 +96,10 @@ jobs:
       - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
         displayName: Add User Local Bin to Path
     - ${{ parameters.extra_steps }}
+    - script: |
+              sudo dnf install --assumeyes lcov
+              pip install lcov_cobertura
+      displayName: Install Code Coverage Tools
     - template: ../Steps/PrGate.yml
       parameters:
         artifacts_identifier: '$(package) $(target)'
@@ -110,3 +114,15 @@ jobs:
         do_pr_eval: ${{ parameters.do_pr_eval }}
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
         install_tools: ${{ not(parameters.container_build) }}
+        extra_build_args: CODE_COVERAGE=TRUE
+
+  - job: PublishCoverage
+    dependsOn: Build
+    workspace:
+      clean: all
+
+    pool:
+      vmImage: 'windows-2022'
+
+    steps:
+      - template: ../Steps/PublishCodeCoverage.yml
