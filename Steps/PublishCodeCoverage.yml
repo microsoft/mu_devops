@@ -29,14 +29,14 @@ steps:
   inputs:
     buildType: 'current'
     targetPath: '$(Build.ArtifactStagingDirectory)/coverage/'
-    itemPattern: "**/coverage.xml"
+    itemPattern: "**/*coverage.xml"
 
 - task: CmdLine@2
   displayName: Create code coverage report
   inputs:
     script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
-      reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura -filefilters:-*MU*;-*Build*;-*UnitTest*;-*Mock*;-*usr*
+      reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'

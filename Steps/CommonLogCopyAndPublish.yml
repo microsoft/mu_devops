@@ -24,14 +24,13 @@ steps:
       **/BUILD_TOOLS_REPORT.json
       **/FD_REPORT.HTML
       **/OVERRIDELOG.TXT
+      **/*coverage.xml
       BASETOOLS_BUILD*.*
       BUILDLOG_*.md
       BUILDLOG_*.txt
       CI_*.md
       CI_*.txt
       CISETUP.txt
-      coverage.html
-      coverage.xml
       PREVALLOG.txt
       SETUPLOG.txt
       TestSuites.xml
