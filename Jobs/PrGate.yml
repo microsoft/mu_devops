@@ -68,6 +68,10 @@ parameters:
   displayName: Virtual Machine Image (e.g. windows-latest)
   type: string
   default: 'windows-latest'
+- name: pool_name
+  displayName: Pool Name (e.g. test-agent-pool)
+  type: string
+  default: ''
 
 # Build step
 jobs:
@@ -89,6 +93,7 @@ jobs:
       clean: all
 
     pool:
+      name: ${{ parameters.pool_name }}
       vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
