@@ -106,6 +106,9 @@ steps:
 - ${{ if eq(parameters.install_tools, true) }}:
   - template: InstallMarkdownLint.yml
 
+- ${{ if eq(parameters.install_tools, true) }}:
+  - template: InstallCoverageTools.yml
+
 # Build repo
 - ${{ if eq(parameters.do_ci_setup, true) }}:
   - task: CmdLine@1

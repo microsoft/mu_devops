@@ -1,0 +1,12 @@
+## @file
+# Azure Pipelines step template to install code coverage tools.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+
+- powershell: choco install opencppcoverage; Write-Host "##vso[task.prependpath]C:\Program Files\OpenCppCoverage"
+  displayName: Install Windows Code Coverage Tools
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
