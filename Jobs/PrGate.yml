@@ -17,6 +17,7 @@ parameters:
   default: ".pytool/CISettings.py"
 - name: container_build
   displayName: Use Container for Build
+  type: boolean
   default: false
 - name: do_ci_build
   displayName: Perform Stuart CI Build
