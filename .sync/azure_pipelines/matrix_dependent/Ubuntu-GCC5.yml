@@ -39,7 +39,7 @@ jobs:
     extra_install_step:
     - script: |
               sudo dnf install --assumeyes mingw64-gcc
-      displayName: Install Windows Resource Compiler for Linux & Code Coverage Tools
+      displayName: Install Windows Resource Compiler for Linux
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
     container_image: linux-gcc

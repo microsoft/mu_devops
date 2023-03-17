@@ -7,6 +7,8 @@
 
 steps:
 
-- powershell: choco install opencppcoverage; Write-Host "##vso[task.prependpath]C:\Program Files\OpenCppCoverage"
+- powershell: |
+    choco install opencppcoverage
+    Write-Host "##vso[task.prependpath]C:\Program Files\OpenCppCoverage"
   displayName: Install Windows Code Coverage Tools
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
