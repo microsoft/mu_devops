@@ -19,10 +19,10 @@ steps:
     targetFolder: "$(Build.ArtifactStagingDirectory)/Logs"
     SourceFolder: "Build"
     contents: |
+      **/*coverage.xml
       **/BUILD_REPORT.TXT
       **/BUILD_TOOLS_REPORT.html
       **/BUILD_TOOLS_REPORT.json
-      **/*coverage.xml
       **/FD_REPORT.HTML
       **/OVERRIDELOG.TXT
       BASETOOLS_BUILD*.*
