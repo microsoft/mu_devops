@@ -22,9 +22,9 @@ steps:
       **/BUILD_REPORT.TXT
       **/BUILD_TOOLS_REPORT.html
       **/BUILD_TOOLS_REPORT.json
+      **/*coverage.xml
       **/FD_REPORT.HTML
       **/OVERRIDELOG.TXT
-      **/*coverage.xml
       BASETOOLS_BUILD*.*
       BUILDLOG_*.md
       BUILDLOG_*.txt
