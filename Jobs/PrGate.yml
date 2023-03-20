@@ -119,7 +119,7 @@ jobs:
       clean: all
 
     pool:
-      vmImage: 'windows-2022'
+      vmImage: 'windows-latest'
 
     steps:
       - template: ../Steps/PublishCodeCoverage.yml
