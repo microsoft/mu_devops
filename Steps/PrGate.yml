@@ -106,6 +106,9 @@ steps:
 - ${{ if eq(parameters.install_tools, true) }}:
   - template: InstallMarkdownLint.yml
 
+- ${{ if eq(parameters.install_tools, true) }}:
+  - template: InstallCoverageTools.yml
+
 # Build repo
 - ${{ if eq(parameters.do_ci_setup, true) }}:
   - task: CmdLine@1
@@ -189,11 +192,3 @@ steps:
   parameters:
     artifacts_other: ${{ parameters.artifacts_other }}
     artifacts_identifier: ${{ parameters.artifacts_identifier }}
-
-- task: PublishCodeCoverageResults@1
-  displayName: Publish Code Coverage Results
-  inputs:
-    codeCoverageTool: 'Cobertura'
-    summaryFileLocation: 'Build/coverage.xml'
-    pathToSources: '$(Build.SourcesDirectory)'
-  condition: and(succeededOrFailed(), and(gt(variables.pkg_count, 0), contains('${{ parameters.extra_build_args }}', 'CODE_COVERAGE=TRUE')))

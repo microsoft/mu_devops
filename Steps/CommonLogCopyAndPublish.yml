@@ -19,6 +19,7 @@ steps:
     targetFolder: "$(Build.ArtifactStagingDirectory)/Logs"
     SourceFolder: "Build"
     contents: |
+      **/*coverage.xml
       **/BUILD_REPORT.TXT
       **/BUILD_TOOLS_REPORT.html
       **/BUILD_TOOLS_REPORT.json
@@ -30,8 +31,6 @@ steps:
       CI_*.md
       CI_*.txt
       CISETUP.txt
-      coverage.html
-      coverage.xml
       PREVALLOG.txt
       SETUPLOG.txt
       TestSuites.xml

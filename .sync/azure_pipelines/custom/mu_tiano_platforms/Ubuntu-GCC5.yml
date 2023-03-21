@@ -39,4 +39,5 @@ jobs:
     tool_chain_tag: $(tool_chain_tag)
     vm_image: ubuntu-latest
     container_build: true
+    linux_container_image: {{ sync_version.linux_build_container }}
 

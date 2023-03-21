@@ -1,0 +1,42 @@
+## @file
+# Azure Pipelines step template to merge and publish all code coverage results.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+- checkout: self
+  clean: true
+  fetchDepth: 1
+
+#
+# Download the build
+#
+- task: DownloadPipelineArtifact@2
+  name: DownloadBuildLogArtifacts
+  displayName: Download Log Artifacts
+  inputs:
+    buildType: 'current'
+    targetPath: '$(Build.ArtifactStagingDirectory)/coverage/'
+    itemPattern: "**/*coverage.xml"
+
+- powershell: |
+    $coverage_file_count=(Get-ChildItem $(Build.ArtifactStagingDirectory)/coverage/ -Recurse -Include *coverage.xml).count
+    Write-Host echo "##vso[task.setvariable variable=coverage_file_count]$coverage_file_count"
+  displayName: Check For Coverage Files
+
+- task: CmdLine@2
+  displayName: Create Coverage Report
+  inputs:
+    script: |
+      dotnet tool install -g dotnet-reportgenerator-globaltool
+      reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
+  condition: gt(variables.coverage_file_count, 0)
+
+- task: PublishCodeCoverageResults@1
+  displayName: Publish Code Coverage
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml'
+  condition: gt(variables.coverage_file_count, 0)

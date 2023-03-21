@@ -17,6 +17,7 @@ parameters:
   default: ".pytool/CISettings.py"
 - name: container_build
   displayName: Use Container for Build
+  type: boolean
   default: false
 - name: do_ci_build
   displayName: Perform Stuart CI Build
@@ -46,7 +47,7 @@ parameters:
 - name: linux_container_image
   displayName: Linux Container Image
   type: string
-  default: 'ghcr.io/tianocore/containers/fedora-35-build:5b8a008'
+  default: ''
 - name: packages
   displayName: Packages
   type: string
@@ -110,3 +111,15 @@ jobs:
         do_pr_eval: ${{ parameters.do_pr_eval }}
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
         install_tools: ${{ not(parameters.container_build) }}
+        extra_build_args: CODE_COVERAGE=TRUE
+
+  - job: PublishCoverage
+    dependsOn: Build
+    workspace:
+      clean: all
+
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+      - template: ../Steps/PublishCodeCoverage.yml
