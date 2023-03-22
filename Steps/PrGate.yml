@@ -92,12 +92,10 @@ steps:
       Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
     displayName: Workaround for Branch Names
     condition: eq(variables['Build.Reason'], 'PullRequest')
-  - task: CmdLine@1
+  - task: CmdLine@2
     displayName: Check if ${{ parameters.build_pkgs }} Needs Testing
     inputs:
-      filename: stuart_pr_eval
-      # Workaround an azure pipelines bug.
-      arguments: -c ${{ parameters.build_file }} -p ${{ parameters.build_pkgs }} --pr-target $(pr_compare_branch) --output-csv-format-string "##vso[task.setvariable variable=pkgs_to_build]{pkgcsv}" --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
+      script: stuart_pr_eval -c ${{ parameters.build_file }} -p ${{ parameters.build_pkgs }} --pr-target $(pr_compare_branch) --output-csv-format-string "##vso[task.setvariable variable=pkgs_to_build]{pkgcsv}" --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
     condition: eq(variables['Build.Reason'], 'PullRequest')
 
 - ${{ if eq(parameters.install_tools, true) }}:
@@ -111,45 +109,40 @@ steps:
 
 # Build repo
 - ${{ if eq(parameters.do_ci_setup, true) }}:
-  - task: CmdLine@1
+  - task: CmdLine@2
     displayName: CI Setup ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
     inputs:
-      filename: stuart_ci_setup
-      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) --force-git -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+      script: stuart_ci_setup -c ${{ parameters.build_file }} -p $(pkgs_to_build) --force-git -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_non_ci_setup, true) }}:
-  - task: CmdLine@1
+  - task: CmdLine@2
     displayName: Setup ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
     inputs:
-      filename: stuart_setup
-      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+      script: stuart_setup -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
-- task: CmdLine@1
+- task: CmdLine@2
   displayName: Update ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
   inputs:
-    filename: stuart_update
-    arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+    script: stuart_update -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # Potential Extra steps
 - ${{ parameters.extra_install_step }}
 
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
-  - task: CmdLine@1
+  - task: CmdLine@2
     displayName: Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
     inputs:
-      filename: stuart_build
-      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
+      script: stuart_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_ci_build, true) }}:
-  - task: CmdLine@1
+  - task: CmdLine@2
     displayName: CI Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
     inputs:
-      filename: stuart_ci_build
-      arguments: -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
+      script: stuart_ci_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # Publish Test Results to Azure Pipelines/TFS
