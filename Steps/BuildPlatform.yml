@@ -62,13 +62,17 @@ parameters:
   displayName: Tool Chain (e.g. VS2022)
   type: string
   default: ''
+- name: checkout_self
+  displayName: Install Build Tools
+  type: boolean
+  default: true
 
 steps:
-
-- checkout: self
-  clean: true
-  # Note: Depth cannot be limited if PR Eval is used. A pipeline may choose
-  #       to use a shallow checkout if PR eval is not used.
+- ${{ if eq(parameters.checkout_self, true) }}:
+  - checkout: self
+    clean: true
+    # Note: Depth cannot be limited if PR Eval is used. A pipeline may choose
+    #       to use a shallow checkout if PR eval is not used.
 
 - template: SetupPythonPreReqs.yml
   parameters:
