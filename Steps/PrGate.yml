@@ -71,7 +71,7 @@ parameters:
   type: string
   default: ''
 - name: checkout_self
-  displayName: Install Build Tools
+  displayName: Perform self checkout step
   type: boolean
   default: true
 
