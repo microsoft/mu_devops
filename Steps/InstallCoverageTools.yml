@@ -8,7 +8,8 @@
 steps:
 
 - powershell: |
-    choco install opencppcoverage
+    Invoke-WebRequest -Uri https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.9.0/OpenCppCoverageSetup-x64-0.9.9.0.exe -OutFile $(Agent.TempDirectory)\OpenCppCoverageInstall.exe
+    start-process -FilePath "$(Agent.TempDirectory)\OpenCppCoverageInstall.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -NoNewWindow -Wait
     Write-Host "##vso[task.prependpath]C:\Program Files\OpenCppCoverage"
   displayName: Install Windows Code Coverage Tools
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
