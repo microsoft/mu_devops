@@ -71,17 +71,6 @@ group:
     repos: |
       microsoft/mu_oem_sample
 
-# Azure Pipelines - Custom - microsoft/mu_tiano_platforms
-  - files:
-    - source: .sync/azure_pipelines/custom/mu_tiano_platforms/Ubuntu-GCC5.yml
-      dest: .azurepipelines/Ubuntu-GCC5.yml
-      template: true
-    - source: .sync/azure_pipelines/custom/mu_tiano_platforms/Windows-VS.yml
-      dest: .azurepipelines/Windows-VS.yml
-      template: true
-    repos: |
-      microsoft/mu_tiano_platforms
-
 # Azure Pipelines - Matrix Dependent - All
   - files:
     - source: .sync/azure_pipelines/matrix_dependent/Ubuntu-CLANGPDB.yml
@@ -113,6 +102,7 @@ group:
       microsoft/mu_plus
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
 # Azure Pipelines - Ignored Repos
