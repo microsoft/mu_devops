@@ -48,6 +48,10 @@ parameters:
   displayName: Linux Container Image
   type: string
   default: ''
+- name: linux_container_options
+  displayName: Linux Container Options
+  type: string
+  default: ''
 - name: packages
   displayName: Packages
   type: string
@@ -89,7 +93,9 @@ jobs:
 
     # Use a container if one was specified.
     ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
-      container: ${{ parameters.linux_container_image }}
+      container:
+        image: ${{ parameters.linux_container_image }}
+        options: ${{ parameters.linux_container_options }}
 
     steps:
     # Add local path to ensure pip install modules are discoverable.
