@@ -511,6 +511,7 @@ group:
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
       dest: .github/release-draft-config.yml
     repos: |
+      microsoft/mu_basecore
       microsoft/mu_crypto_release
 
 # Leaf Workflow - Scheduled Maintenance
