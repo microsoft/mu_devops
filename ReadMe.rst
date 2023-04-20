@@ -203,6 +203,18 @@ quality of pull request verbiage.
 - The leaf workflow
   - `.sync/workflows/leaf/pull-request-formatting-validator.yml`
 
+Submodule Release Updater
+-------------------------
+
+A GitHub Action and leaf workflow that automatically create a pull request for any submodule in a repo
+that has a new GitHub release available. The leaf workflow can easily be synced to repos and wraps around
+the GitHub action.
+
+- The GitHub action
+  - `.github/actions/submodule-release-updater`
+- The leaf workflow
+  - `.sync/workflows/leaf/submodule-release-update.yml`
+
 Links
 =====
 - `Basic Azure Landing Site <https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops>`_
