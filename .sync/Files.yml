@@ -538,6 +538,14 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
+# Leaf Workflow - Submodule Release Update
+  - files:
+    - source: .sync/workflows/leaf/submodule-release-update.yml
+      dest: .github/workflows/submodule-release-update.yml
+      template: true
+    repos: |
+      microsoft/mu_tiano_platforms
+
 # Pull Request Template - Common Template
   - files:
     - source: .sync/github_templates/pull_requests/pull_request_template.md
