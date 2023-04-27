@@ -172,6 +172,9 @@ workflow will run in the repo.
 
 .. _`GitHub issue form templates`: https://github.com/microsoft/mu_devops/tree/main/.sync/github_templates/ISSUE_TEMPLATE
 
+This workflow works in concert with other issue workflows such as `.sync/workflows/leaf/issue-assignment.yml` to
+automate labels in issues based on the state of the issue.
+
 Auto Merge
 ----------
 

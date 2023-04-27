@@ -379,6 +379,10 @@ group:
       microsoft/mu_tiano_plus
 
 # Leaf Workflow - Issue Triage
+# Leaf Workflow - Issue Assignment
+#                 Note: This workflow is synced with "Issue Triage" because it adjusts
+#                 labels typically applied in the triage process and applies to the
+#                 same set of repositories that support issue labeing.
   - files:
     - source: .sync/workflows/leaf/triage-issues.yml
       dest: .github/workflows/triage-issues.yml
@@ -388,6 +392,9 @@ group:
     #       at `.github/workflows/triage-issues/issue-label-mapping.yml`.
     - source: .sync/workflows/config/triage-issues/advanced-issue-labeler.yml
       dest: .github/advanced-issue-labeler.yml
+    - source: .sync/workflows/leaf/issue-assignment.yml
+      dest: .github/workflows/issue-assignment.yml
+      template: true
     repos: |
       microsoft/mu
       microsoft/mu_basecore
