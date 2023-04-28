@@ -17,6 +17,14 @@ parameters:
   default: 'Artifacts'
 
 steps:
+- bash: |
+    artifacts_str=$(echo "${{ parameters.artifacts_binary }}" | tr -d '[:space:]')
+    if [[ -z "$artifacts_str" ]]; then
+      echo "##vso[task.setvariable variable=artifacts_present]false"
+    else
+      echo "##vso[task.setvariable variable=artifacts_present]true"
+    fi
+
 # Copy binaries to the artifact staging directory
 - task: CopyFiles@2
   displayName: Copy Build Binaries
@@ -26,7 +34,7 @@ steps:
     contents: |
       ${{ parameters.artifacts_binary }}
     flattenFolders: true
-  condition: and(succeededOrFailed(), ne('${{ parameters.artifacts_binary }}', ''))
+  condition: and(succeededOrFailed(), eq(variables.artifacts_present, 'true'))
 
 # Publish build artifacts to Azure Artifacts/TFS or a file share
 - task: PublishBuildArtifacts@1
@@ -35,4 +43,4 @@ steps:
   inputs:
     pathtoPublish: "$(Build.ArtifactStagingDirectory)/Binaries"
     artifactName: "Binaries ${{ parameters.artifacts_identifier }}"
-  condition: and(succeededOrFailed(), ne('${{ parameters.artifacts_binary }}', ''))
+  condition: and(succeededOrFailed(), eq(variables.artifacts_present, 'true'))
