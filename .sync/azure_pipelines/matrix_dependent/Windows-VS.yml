@@ -35,3 +35,5 @@ jobs:
     extra_build_args: CODE_COVERAGE=TRUE
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
+    pool_name: $(pool_name)
+    os_type: Windows_NT
