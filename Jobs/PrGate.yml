@@ -72,29 +72,30 @@ parameters:
   displayName: Pool Name (e.g. test-agent-pool)
   type: string
   default: ''
+- build_matrix:
+  type: object
 
 # Build step
 jobs:
 
-  - template: ../Jobs/CreateBuildMatrix.yml
-    parameters:
-      group_package_list: ${{ parameters.packages }}
-      target_list: ${{ parameters.target_list }}
-
-  - job: Build
-    dependsOn: CreateBuildMatrix
-    condition: Succeeded('CreateBuildMatrix')
-
-    # Use matrix to speed up the build process
-    strategy:
-      matrix: $[ dependencies.CreateBuildMatrix.outputs['CalculateMatrix.Matrix'] ]
+- ${{ each item in parameters.build_matrix }}:
+  - job: Build_${{ item.Key }}
+    timeoutInMinutes: 120
+    condition: |
+      and(not(Canceled()),
+          or(eq(${{ item.Value.SelfHostAgent }}, false), ne('${{ parameters.pool_name }}', '')))
 
     workspace:
       clean: all
 
-    pool:
-      name: ${{ parameters.pool_name }}
-      vmImage: ${{ parameters.vm_image }}
+    ${{ if and(eq(item.Value.SelfHostAgent, true), ne('parameters.pool_name', '')) }}:
+      pool:
+        name: ${{ parameters.pool_name }}
+        demands:
+        - Agent.OS -equals ${{ parameters.os_type }}
+    ${{ else }}:
+      pool:
+        vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
     ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
@@ -110,10 +111,10 @@ jobs:
     - ${{ parameters.extra_steps }}
     - template: ../Steps/PrGate.yml
       parameters:
-        artifacts_identifier: '$(package) $(target)'
+        artifacts_identifier: '${{ item.Key }} ${{ item.Value.Targets }}'
         build_file: ${{ parameters.build_file }}
-        build_pkgs: $(package)
-        build_targets: $(target)
+        build_pkgs: ${{ item.Value.Pkgs }}
+        build_targets: ${{ item.Value.Targets }}
         build_archs: ${{ parameters.arch_list }}
         do_ci_build: ${{ parameters.do_ci_build }}
         do_ci_setup: ${{ parameters.do_ci_setup }}
@@ -125,7 +126,9 @@ jobs:
         extra_build_args: CODE_COVERAGE=TRUE
 
   - job: PublishCoverage
-    dependsOn: Build
+    dependsOn:
+    - ${{ each item in parameters.build_matrix }}:
+      - Build_${{ item.Key }}
     workspace:
       clean: all
 

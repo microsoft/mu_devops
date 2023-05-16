@@ -41,3 +41,13 @@ jobs:
     container_image: linux-gcc
     pool_name: $(pool_name)
     os_type: Linux
+
+- template: Matrix-Build-Job.yml
+  parameters:
+    arch_list: $(arch_list)
+    extra_build_args: CODE_COVERAGE=TRUE
+    tool_chain_tag: 'GCC5'
+    vm_image: $(vm_image)
+    container_image: linux-gcc
+    pool_name: $(pool_name)
+    os_type: Linux
