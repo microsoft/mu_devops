@@ -93,62 +93,20 @@ parameters:
 # Build step
 jobs:
 
-- ${{ each item in parameters.build_matrix }}:
-  - job: Build_${{ item.Key }}
-    timeoutInMinutes: 120
-    condition: |
-      and(not(Canceled()),
-          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne('${{ parameters.pool_name }}', 'Azure Pipelines')))
+- job: BuildTest
+  timeoutInMinutes: 120
+  condition: |
+    ne(${{ parameters.pool_name }}, 'Azure Pipelines')
 
-    workspace:
-      clean: all
-
-    pool:
-      name: ${{ parameters.pool_name }}
-      vmImage: ${{ parameters.vm_image }}
-
-    # Use a container if one was specified.
-    ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
-      container:
-        image: ${{ parameters.linux_container_image }}
-        options: ${{ parameters.linux_container_options }}
-
-    steps:
-    # Add local path to ensure pip install modules are discoverable.
-    - ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
-      - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
-        displayName: Add User Local Bin to Path
-
-    - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
-      displayName: Here
-      condition: ne('${{ parameters.pool_name }}', 'Azure Pipelines')
-
-    - ${{ parameters.extra_steps }}
-    - template: ../Steps/PrGate.yml
-      parameters:
-        artifacts_identifier: '${{ item.Key }} ${{ item.Value.Targets }}'
-        build_file: ${{ parameters.build_file }}
-        build_pkgs: ${{ item.Value.Pkgs }}
-        build_targets: ${{ item.Value.Targets }}
-        build_archs: ${{ parameters.arch_list }}
-        do_ci_build: ${{ parameters.do_ci_build }}
-        do_ci_setup: ${{ parameters.do_ci_setup }}
-        do_non_ci_build: ${{ parameters.do_non_ci_build }}
-        do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
-        do_pr_eval: ${{ parameters.do_pr_eval }}
-        tool_chain_tag: ${{ parameters.tool_chain_tag }}
-        install_tools: ${{ not(parameters.container_build) }}
-        extra_build_args: CODE_COVERAGE=TRUE
-
-- job: PublishCoverage
-  dependsOn:
-  - ${{ each item in parameters.build_matrix }}:
-    - Build_${{ item.Key }}
   workspace:
     clean: all
 
   pool:
-    vmImage: 'windows-latest'
+    name: ${{ parameters.pool_name }}
+    vmImage: ${{ parameters.vm_image }}
 
   steps:
-    - template: ../Steps/PublishCodeCoverage.yml
+  # Add local path to ensure pip install modules are discoverable.
+  - script: echo ${{ parameters.pool_name }}
+    displayName: Here
+    condition: ne(${{ parameters.pool_name }}, 'Azure Pipelines')
