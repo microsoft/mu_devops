@@ -133,15 +133,15 @@ jobs:
         install_tools: ${{ not(parameters.container_build) }}
         extra_build_args: CODE_COVERAGE=TRUE
 
-  - job: PublishCoverage
-    dependsOn:
-    - ${{ each item in parameters.build_matrix }}:
-      - Build_${{ item.Key }}
-    workspace:
-      clean: all
+- job: PublishCoverage
+  dependsOn:
+  - ${{ each item in parameters.build_matrix }}:
+    - Build_${{ item.Key }}
+  workspace:
+    clean: all
 
-    pool:
-      vmImage: 'windows-latest'
+  pool:
+    vmImage: 'windows-latest'
 
-    steps:
-      - template: ../Steps/PublishCodeCoverage.yml
+  steps:
+    - template: ../Steps/PublishCodeCoverage.yml
