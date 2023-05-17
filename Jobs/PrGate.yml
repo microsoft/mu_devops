@@ -72,7 +72,7 @@ parameters:
   displayName: Pool Name (e.g. test-agent-pool)
   type: string
   default: ''
-- build_matrix:
+- name: build_matrix
   type: object
   # Each element in the matrix will be used in a separate job
   # Required fields:
