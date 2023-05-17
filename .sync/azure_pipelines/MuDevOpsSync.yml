@@ -20,6 +20,22 @@ resources:
       ref: refs/tags/v2.5.1
 
 parameters:
+- name: do_ci_build
+  displayName: Flag for whether this repo should do stuart_ci_build
+  type: boolean
+  default: true
+- name: do_ci_setup
+  displayName: Flag for whether this repo should do stuart_ci_setup
+  type: boolean
+  default: true
+- name: do_non_ci_setup
+  displayName: Flag for whether this repo should do stuart_setup
+  type: boolean
+  default: true
+- name: container_build
+  displayName: Flag for whether this repo should do stuart_setup
+  type: boolean
+  default: false
 - name: build_matrix
   displayName: Build matrix for this repository
   type: object
@@ -29,11 +45,11 @@ jobs:
 - template: Jobs/PrGate.yml@mu_devops
   parameters:
     arch_list: $(arch_list)
-    do_ci_build: true
-    do_ci_setup: true
-    do_non_ci_setup: true
-    packages: ${{ parameters.build_matrix }}
+    do_ci_build: ${{ parameters.do_ci_build }}
+    do_ci_setup: ${{ parameters.do_ci_setup }}
+    do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
+    build_matrix: ${{ parameters.build_matrix }}
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
-    container_build: true
+    container_build: ${{ parameters.container_build }}
     linux_container_image: ghcr.io/tianocore/containers/fedora-37-build:3b3eb8f
