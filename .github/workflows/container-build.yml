@@ -1,0 +1,79 @@
+# GitHub Actions Workflow for building and pushing Docker images
+#
+# This workflow is intended to be called from another top-level
+# workflow. Each set of images (defined in a common Dockerfile)
+# should have a matching top-level workflow yaml file.
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+
+name: "Build and Push images"
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        type: string
+        required: true
+        description: "Name of the image to build (= folder name)"
+      sub_images:
+        type: string
+        required: false
+        description: "Space-separated list of sub-image names. Can not be empty."
+        default: "build"
+      runs_on:
+        type: string
+        required: false
+        description: "The OS used to build the docker image."
+        default: "ubuntu-latest"
+
+env:
+  REGISTRY: ghcr.io
+  REPOSITORY: ${{ github.repository }}
+  IMAGE_NAME: ${{ inputs.image_name }}
+  SUB_IMAGES: ${{ inputs.sub_images }}
+
+jobs:
+  build-and-push-image:
+    runs-on: ${{ inputs.runs_on }}
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set tag
+        run: echo "short_sha=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Build
+        run: |
+          cd "Containers/${IMAGE_NAME}"
+          for sub in $SUB_IMAGES; do
+            IMG=$(tr '[:upper:]' '[:lower:]' <<< "${REGISTRY}/${REPOSITORY}/${IMAGE_NAME}-${sub}")
+            echo "Building Image: ${IMG}:${short_sha}..."
+            docker build --target "${sub}" --tag "${IMG}:${short_sha}" -f Dockerfile .
+          done
+          docker images
+        shell: bash
+
+      - name: Push
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          for sub in $SUB_IMAGES; do
+            IMG=$(tr '[:upper:]' '[:lower:]' <<< "${REGISTRY}/${REPOSITORY}/${IMAGE_NAME}-${sub}")
+            echo "Pushing Image: ${IMG}:${short_sha}..."
+            docker tag "${IMG}:${short_sha}" "${IMG}:latest"
+            docker push "${IMG}:${short_sha}"
+            docker push "${IMG}:latest"
+          done
+        shell: bash
