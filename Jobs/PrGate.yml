@@ -71,7 +71,14 @@ parameters:
 - name: pool_name
   displayName: Pool Name (e.g. test-agent-pool)
   type: string
-  default: ''
+  default: "Azure Pipelines"
+- name: os_type
+  displayName: OS type on the self-hosted agent pools
+  type: string
+  values:
+  - Windows_NT
+  - Linux
+  default: Windows_NT
 - name: build_matrix
   type: object
   # Each element in the matrix will be used in a separate job
@@ -91,19 +98,14 @@ jobs:
     timeoutInMinutes: 120
     condition: |
       and(not(Canceled()),
-          or(eq(${{ item.Value.SelfHostAgent }}, false), ne('${{ parameters.pool_name }}', '')))
+          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne('${{ parameters.pool_name }}', 'Azure Pipelines')))
 
     workspace:
       clean: all
 
-    ${{ if and(eq(item.Value.SelfHostAgent, true), ne('parameters.pool_name', '')) }}:
-      pool:
-        name: ${{ parameters.pool_name }}
-        demands:
-        - Agent.OS -equals ${{ parameters.os_type }}
-    ${{ else }}:
-      pool:
-        vmImage: ${{ parameters.vm_image }}
+    pool:
+      name: ${{ parameters.pool_name }}
+      vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
     ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
@@ -116,6 +118,11 @@ jobs:
     - ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
       - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
         displayName: Add User Local Bin to Path
+
+    - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
+      displayName: Here
+      condition: ne('${{ parameters.pool_name }}', 'Azure Pipelines')
+
     - ${{ parameters.extra_steps }}
     - template: ../Steps/PrGate.yml
       parameters:
