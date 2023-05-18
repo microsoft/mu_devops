@@ -104,7 +104,7 @@ jobs:
       clean: all
 
     pool:
-      name: '${{ parameters.pool_name }}'
+      name: $(${{ parameters.pool_name }})
       vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
