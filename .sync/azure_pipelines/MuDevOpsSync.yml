@@ -16,7 +16,7 @@ resources:
     - repository: mu_devops
       type: github
       endpoint: microsoft
-      name: kuqin12/mu_devops
+      name: microsoft/mu_devops
       ref: test_arm64
 
 parameters:
