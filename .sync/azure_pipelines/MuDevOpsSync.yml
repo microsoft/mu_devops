@@ -16,8 +16,8 @@ resources:
     - repository: mu_devops
       type: github
       endpoint: microsoft
-      name: microsoft/mu_devops
-      ref: refs/tags/v2.5.1
+      name: kuqin12/mu_devops
+      ref: test_arm64
 
 parameters:
 - name: do_ci_build
@@ -36,10 +36,20 @@ parameters:
   displayName: Flag for whether this repo should do stuart_setup
   type: boolean
   default: false
+- name: os_type
+  displayName: OS type on the self-hosted agent pools
+  type: string
+  values:
+  - Windows_NT
+  - Linux
+  default: Windows_NT
 - name: build_matrix
   displayName: Build matrix for this repository
   type: object
-  # See specifiction in Jobs/PrGate.yml@mu_devops
+- name: pool_name
+  displayName: Variable name that hosts pool name to be used for self-hosted agents
+  type: string
+  default: pool_name
 
 jobs:
 - template: Jobs/PrGate.yml@mu_devops
@@ -49,6 +59,8 @@ jobs:
     do_ci_setup: ${{ parameters.do_ci_setup }}
     do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
     build_matrix: ${{ parameters.build_matrix }}
+    os_type: ${{ parameters.os_type }}
+    pool_name: ${{ parameters.pool_name }}
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
     container_build: ${{ parameters.container_build }}
