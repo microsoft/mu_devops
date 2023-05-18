@@ -65,6 +65,10 @@ RUN wget -O - https://acpica.org/sites/acpica/files/acpica-unix-${IASL_VERSION}.
     make clean && make -j $(nproc) iasl && make install && \
     cd .. && rm -rf acpica-unix-${IASL_VERSION}
 
+RUN wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" && \
+    dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && \
+    apt-get update && apt-get install -y powershell && apt-get clean
+
 #
 # Alternatives
 #
