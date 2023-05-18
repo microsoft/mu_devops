@@ -93,10 +93,6 @@ parameters:
 # Build step
 jobs:
 
-variables:
-- name: default_pool_name
-  value: ''
-
 - ${{ each item in parameters.build_matrix }}:
   - job: Build_${{ item.Key }}
     timeoutInMinutes: 120
