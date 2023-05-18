@@ -29,6 +29,7 @@ RUN apt-get update && \
         lcov \
         m4 \
         make \
+        mono-complete \
         nasm \
         python3 \
         python3-pip \
@@ -110,7 +111,7 @@ RUN update-alternatives \
 FROM build AS test
 
 ARG QEMU_URL="https://gitlab.com/qemu-project/qemu.git"
-ARG QEMU_BRANCH="v7.2.0"
+ARG QEMU_BRANCH="v8.0.0"
 
 RUN apt-get update && apt-get install --yes --no-install-recommends \
         autoconf \
@@ -131,7 +132,6 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
         && \
     git clone "${QEMU_URL}" --branch "${QEMU_BRANCH}" --depth 1 qemu && \
     cd qemu && \
-    curl "https://patchwork.ozlabs.org/project/qemu-devel/patch/20230105161804.82486-1-lersek@redhat.com/mbox/" | git apply --ignore-whitespace && \
     ./configure --target-list=x86_64-softmmu,aarch64-softmmu --enable-gtk && \
     make install -j $(nproc) && \
     cd .. && \

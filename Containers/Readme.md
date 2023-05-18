@@ -4,9 +4,7 @@ Project MU uses containers to build on Linux. These containers come with all of
 the tools expected for CI and virtual platform pipelines and local development.
 Containers can be pulled. For more details see the [mu_devops packages page](https://github.com/orgs/microsoft/packages?repo_name=mu_devops).
 
-## Container Images
-
-### Ubuntu-22 _(Recommended)_
+## Ubuntu-22 _(Recommended)_
 
 [![Ubuntu 22 Containers](https://github.com/microsoft/mu_devops/actions/workflows/Container-Ubuntu-22.yml/badge.svg?branch=main)](https://github.com/microsoft/mu_devops/actions/workflows/Container-Ubuntu-22.yml)
 
