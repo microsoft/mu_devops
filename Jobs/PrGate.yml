@@ -98,13 +98,13 @@ jobs:
     timeoutInMinutes: 120
     condition: |
       and(not(Canceled()),
-          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(${{ parameters.pool_name }}, 'Azure Pipelines')))
+          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables[${{ parameters.pool_name }}], 'Azure Pipelines')))
 
     workspace:
       clean: all
 
     pool:
-      name: $(${{ parameters.pool_name }})
+      name: $(variables.${{ parameters.pool_name }})
       vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
