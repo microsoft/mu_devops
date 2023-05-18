@@ -69,7 +69,7 @@ parameters:
   type: string
   default: 'windows-latest'
 - name: pool_name
-  displayName: Pool Name (e.g. test-agent-pool)
+  displayName: Variable name that hosts pool name to be used for self-hosted agents
   type: string
   default: ''
 - name: os_type
