@@ -71,7 +71,7 @@ parameters:
 - name: pool_name
   displayName: Pool Name (e.g. test-agent-pool)
   type: string
-  default: default_pool_name
+  default: ''
 - name: os_type
   displayName: OS type on the self-hosted agent pools
   type: string
@@ -98,7 +98,7 @@ jobs:
     timeoutInMinutes: 120
     condition: |
       and(not(Canceled()),
-          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables['${{ parameters.pool_name }}'], variables['default_pool_name'])))
+          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables['${{ parameters.pool_name }}'], '')))
 
     workspace:
       clean: all
