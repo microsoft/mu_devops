@@ -68,6 +68,10 @@ parameters:
   displayName: Virtual Machine Image (e.g. windows-latest)
   type: string
   default: 'windows-latest'
+- name: extra_install_step
+  displayName: Extra Install Steps
+  type: stepList
+  default: []
 - name: pool_name
   displayName: Variable name that hosts pool name to be used for self-hosted agents
   type: string
@@ -137,8 +141,9 @@ jobs:
         do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
         do_pr_eval: ${{ parameters.do_pr_eval }}
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
-        install_tools: ${{ not(parameters.container_build) }}
+        install_tools: ${{ and(not(eq(item.Value.SelfHostAgent, true)), not(parameters.container_build)) }}
         extra_build_args: CODE_COVERAGE=TRUE
+        extra_install_step: ${{ parameters.extra_install_step }}
 
 - job: PublishCoverage
   dependsOn:
