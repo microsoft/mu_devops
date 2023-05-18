@@ -6,10 +6,6 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
-variables:
-- name: default_pool_name
-  value: ''
-
 parameters:
 - name: arch_list
   displayName: Architectures (e.g. IA32, X64)
@@ -96,6 +92,10 @@ parameters:
 
 # Build step
 jobs:
+
+variables:
+- name: default_pool_name
+  value: ''
 
 - ${{ each item in parameters.build_matrix }}:
   - job: Build_${{ item.Key }}
