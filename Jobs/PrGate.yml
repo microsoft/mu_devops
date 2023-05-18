@@ -98,7 +98,7 @@ jobs:
     timeoutInMinutes: 120
     condition: |
       and(not(Canceled()),
-          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables[${{ parameters.pool_name }}], 'Azure Pipelines')))
+          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables['${{ parameters.pool_name }}'], 'Azure Pipelines')))
 
     workspace:
       clean: all
