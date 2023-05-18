@@ -6,6 +6,10 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
+variables:
+- name: default_pool_name
+  value: ''
+
 parameters:
 - name: arch_list
   displayName: Architectures (e.g. IA32, X64)
@@ -71,7 +75,7 @@ parameters:
 - name: pool_name
   displayName: Pool Name (e.g. test-agent-pool)
   type: string
-  default: 'Azure Pipelines'
+  default: default_pool_name
 - name: os_type
   displayName: OS type on the self-hosted agent pools
   type: string
@@ -98,7 +102,7 @@ jobs:
     timeoutInMinutes: 120
     condition: |
       and(not(Canceled()),
-          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables['${{ parameters.pool_name }}'], 'Azure Pipelines')))
+          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables['${{ parameters.pool_name }}'], variables['default_pool_name'])))
 
     workspace:
       clean: all
