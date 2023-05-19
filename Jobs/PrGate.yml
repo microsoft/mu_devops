@@ -7,10 +7,6 @@
 ##
 
 parameters:
-- name: arch_list
-  displayName: Architectures (e.g. IA32, X64)
-  type: string
-  default: ''
 - name: build_file
   displayName: Stuart Build File
   type: string
@@ -91,6 +87,7 @@ parameters:
   # Targets:        Specify which targets are to be built in this job, i.e. DEBUG,
   #                 RELEASE, NO-TARGET, NOOPT. The acceptable values depend on the
   #                 Pkgs to be built.
+  # ArchList:       List of architectures to be supported by the packages (e.g. IA32, X64)
   # SelfHostAgent:  A boolean indicating whether this job should be run on the selfhosted
   #                 "pool_name"
 
@@ -134,7 +131,7 @@ jobs:
         build_file: ${{ parameters.build_file }}
         build_pkgs: ${{ item.Value.Pkgs }}
         build_targets: ${{ item.Value.Targets }}
-        build_archs: ${{ parameters.arch_list }}
+        build_archs: ${{ item.Value.ArchList }}
         do_ci_build: ${{ parameters.do_ci_build }}
         do_ci_setup: ${{ parameters.do_ci_setup }}
         do_non_ci_build: ${{ parameters.do_non_ci_build }}
