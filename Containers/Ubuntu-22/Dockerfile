@@ -15,6 +15,8 @@ FROM ubuntu:22.04 AS build
 ARG GCC_MAJOR_VERSION=12
 ARG NASM_VERSION=2.16.01
 ARG IASL_VERSION=20210105
+ARG CSPELL_VERSION=5.20.0
+ARG MARKDOWNLINT_VERSION=0.31.0
 
 # Set environment variable to avoid interaction.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -31,6 +33,7 @@ RUN apt-get update && \
         make \
         mono-complete \
         nasm \
+        npm \
         python3 \
         python3-pip \
         python3-venv \
@@ -54,6 +57,13 @@ RUN apt-get update && \
 ENV GCC5_AARCH64_PREFIX /usr/bin/aarch64-linux-gnu-
 ENV GCC5_ARM_PREFIX     /usr/bin/arm-linux-gnueabi-
 ENV GCC5_RISCV64_PREFIX /usr/bin/riscv64-linux-gnu-
+
+RUN pip install pip lcov_cobertura --upgrade
+
+# RUN npm install -g npm
+RUN npm install -g \
+        cspell@${CSPELL_VERSION} \
+        markdownlint-cli@${MARKDOWNLINT_VERSION}
 
 RUN wget -O - https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${NASM_VERSION}.tar.gz | \
     tar xz && cd nasm-${NASM_VERSION} && \
