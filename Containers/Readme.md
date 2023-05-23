@@ -6,9 +6,9 @@ Containers can be pulled. For more details see the [mu_devops packages page](htt
 
 ## Ubuntu-22 _(Recommended)_
 
-[![Ubuntu 22 Containers](https://github.com/microsoft/mu_devops/actions/workflows/Container-Ubuntu-22.yml/badge.svg?branch=main)](https://github.com/microsoft/mu_devops/actions/workflows/Container-Ubuntu-22.yml)
-
-The MU Ubuntu container provides the following layers.
+The MU Ubuntu container provides the following layers. Ubuntu-22 is the recommended
+container image because it best aligns with existing development flows and provides
+tools needed to cross compile both kernel and user mode components needed in MU.
 
 | Name  | Description                          | Package |
 |-------|--------------------------------------|---------|

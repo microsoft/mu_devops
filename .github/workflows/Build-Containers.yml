@@ -1,49 +1,48 @@
-# GitHub Actions Workflow for building and pushing Docker images
-#
-# This workflow is intended to be called from another top-level
-# workflow. Each set of images (defined in a common Dockerfile)
-# should have a matching top-level workflow yaml file.
+# GitHub Action Workflow for building the Project MU docker images.
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 
-name: "Build and Push images"
+name: "Build Containers"
 
+#
+# This workflow only runs (on the main branch or on PRs targeted
+# at the main branch) and if a dockerfile was edited. Pull request images will
+# not be pushed to the repository.
+#
 on:
-  workflow_call:
-    inputs:
-      image_name:
-        type: string
-        required: true
-        description: "Name of the image to build (= folder name)"
-      sub_images:
-        type: string
-        required: false
-        description: "Space-separated list of sub-image names. Can not be empty."
-        default: "build"
-      runs_on:
-        type: string
-        required: false
-        description: "The OS used to build the docker image."
-        default: "ubuntu-latest"
-
-env:
-  REGISTRY: ghcr.io
-  REPOSITORY: ${{ github.repository }}
-  IMAGE_NAME: ${{ inputs.image_name }}
-  SUB_IMAGES: ${{ inputs.sub_images }}
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "Containers/**/Dockerfile"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "Containers/**/Dockerfile"
 
 jobs:
   build-and-push-image:
-    runs-on: ${{ inputs.runs_on }}
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_name: "Ubuntu-22"
+            sub_images: "dev test build"
+    env:
+      REGISTRY: ghcr.io
+      REPOSITORY: ${{ github.repository }}
+      IMAGE_NAME: ${{ matrix.image_name }}
+      SUB_IMAGES: ${{ matrix.sub_images }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -55,7 +54,15 @@ jobs:
         run: echo "short_sha=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
         shell: bash
 
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            dockerfile:
+              - 'Containers/${{ matrix.image_name }}/Dockerfile'
+
       - name: Build
+        if: steps.changes.outputs.dockerfile == 'true'
         run: |
           cd "Containers/${IMAGE_NAME}"
           for sub in $SUB_IMAGES; do
@@ -67,7 +74,7 @@ jobs:
         shell: bash
 
       - name: Push
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/main' && steps.changes.outputs.dockerfile == 'true' }}
         run: |
           for sub in $SUB_IMAGES; do
             IMG=$(tr '[:upper:]' '[:lower:]' <<< "${REGISTRY}/${REPOSITORY}/${IMAGE_NAME}-${sub}")

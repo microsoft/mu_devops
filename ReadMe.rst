@@ -2,7 +2,7 @@
 Project MU Developer Operations (DevOps) Repository
 ===================================================
 
-|Latest Mu DevOps Release Version (latest SemVer)| |Commits Since Last Release| |Sync Mu DevOps Files to Mu Repos|
+|Latest Mu DevOps Release Version (latest SemVer)| |Commits Since Last Release| |Sync Mu DevOps Files to Mu Repos| |Containers Build|
 
 .. |Latest Mu DevOps Release Version (latest SemVer)| image:: https://img.shields.io/github/v/release/microsoft/mu_devops?label=Latest%20Release
    :target: https://github.com/microsoft/mu_devops/releases/latest
@@ -12,6 +12,9 @@ Project MU Developer Operations (DevOps) Repository
 
 .. |Sync Mu DevOps Files to Mu Repos| image:: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml/badge.svg
    :target: https://github.com/microsoft/mu_devops/actions/workflows/FileSyncer.yml
+
+.. |Containers Build| image:: https://github.com/microsoft/mu_devops/actions/workflows/Build-Containers.yml/badge.svg?branch=main
+   :target: https://github.com/microsoft/mu_devops/actions/workflows/Build-Containers.yml
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
