@@ -74,6 +74,10 @@ parameters:
   displayName: Perform self checkout step
   type: boolean
   default: true
+- name: self_host_agent
+  displayName: Indicate if this is a selfhost agent
+  type: boolean
+  default: false
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -134,7 +138,8 @@ steps:
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # Potential Extra steps
-- ${{ parameters.extra_install_step }}
+- ${{ if eq(parameters.self_host_agent, false) }}:
+  - ${{ parameters.extra_install_step }}
 
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
   - task: CmdLine@2
