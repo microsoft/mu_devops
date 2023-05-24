@@ -121,6 +121,10 @@
   description: Something isn't working
   color: 'd73a4a'
   aliases: []
+- name: type:dependabot
+  description: Created by dependabot
+  color: 'c57a90'
+  aliases: []
 - name: type:dependencies
   description: Pull requests that update a dependency file
   color: '0366d6'
