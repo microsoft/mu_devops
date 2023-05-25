@@ -89,7 +89,8 @@ parameters:
   #                 Pkgs to be built.
   # ArchList:       List of architectures to be supported by the packages (e.g. IA32, X64)
   # SelfHostAgent:  A boolean indicating whether this job should be run on the selfhosted
-  #                 "pool_name"
+  #                 "pool_name". This is optional, if the matrix entry does not specify this
+  #                 element, it will be treated as false.
 
 # Build step
 jobs:
