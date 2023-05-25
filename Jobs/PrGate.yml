@@ -115,14 +115,14 @@ jobs:
         vmImage: ${{ parameters.vm_image }}
 
     # Use a container if one was specified.
-    ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows')), not(eq(item.Value.SelfHostAgent, true))) }}:
+    ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows')), ne(item.Value.SelfHostAgent, true)) }}:
       container:
         image: ${{ parameters.linux_container_image }}
         options: ${{ parameters.linux_container_options }}
 
     steps:
     # Add local path to ensure pip install modules are discoverable.
-    - ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows')), not(eq(item.Value.SelfHostAgent, true))) }}:
+    - ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows')), ne(item.Value.SelfHostAgent, true)) }}:
       - script: echo "##vso[task.prependpath]/home/vsts_azpcontainer/.local/bin"
         displayName: Add User Local Bin to Path
     - ${{ parameters.extra_steps }}
