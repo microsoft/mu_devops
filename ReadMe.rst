@@ -174,8 +174,11 @@ repo, however, it is recommended to keep this flow enabled for consistency acros
 To see more about this flow look in these files:
 
 - The main reusable workflow file:
+
   - `.github/workflows/AutoMerger.yml`
+
 - The leaf workflow
+
   - `.sync/workflows/leaf/auto-merge.yml`
 
 A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-merge.yml` to their repo in `Files.yml` and the
@@ -193,8 +196,11 @@ Note: This is currently disabled in most Project Mu repos.
 To see more about this flow look in these files:
 
 - The main reusable workflow file:
+
   - `.github/workflows/AutoApprover.yml`
+
 - The leaf workflow
+
   - `.sync/workflows/leaf/auto-approve.yml`
 
 A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-approve.yml` to their repo in `Files.yml` and the
@@ -257,8 +263,11 @@ labels from the issue that are no longer relevant after it is assigned.
 To see more about this flow look in these files:
 
 - The main reusable workflow file:
+
   - `.github/workflows/IssueAssignment.yml`
+
 - The leaf workflow
+
   - `.sync/workflows/leaf/issue-assignment.yml`
 
 Label Automation
@@ -288,6 +297,7 @@ strictly validate exact formatting details but provide hints when simple, broad 
 quality of pull request verbiage.
 
 - The leaf workflow
+
   - `.sync/workflows/leaf/pull-request-formatting-validator.yml`
 
 Release Drafting
@@ -306,9 +316,13 @@ The draft release should be converted to an actual release any time the minor or
 To see more about this flow look in these files:
 
 - The main reusable workflow file:
+
   - .github/workflows/ReleaseDrafter.yml
+
 - The configuration file for the reusable workflow:
+
   - .sync/workflows/config/release-draft/release-draft-config.yml
+
     - This will be synced to .github/release-draft-config.yml in repos using release drafter
 
 A Project Mu repo simply needs to sync `.sync/workflows/leaf/release-draft.yml` and the config file
@@ -323,7 +337,7 @@ tasks can be added to the workflow over time.
 
 The leaf workflow contains the primary implementation and is directly synced to subscribed repos:
 
-  - `.sync/workflows/leaf/scheduled-maintenance.yml`
+- `.sync/workflows/leaf/scheduled-maintenance.yml`
 
 Stale Detection
 ---------------
@@ -348,8 +362,11 @@ that has a new GitHub release available. The leaf workflow can easily be synced 
 the GitHub action.
 
 - The GitHub action
+
   - `.github/actions/submodule-release-updater`
+
 - The leaf workflow
+
   - `.sync/workflows/leaf/submodule-release-update.yml`
 
 Links
