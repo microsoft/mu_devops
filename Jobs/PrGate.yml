@@ -99,7 +99,7 @@ jobs:
     timeoutInMinutes: 120
     condition: |
       and(not(Canceled()),
-          or(${{ eq(item.Value.SelfHostAgent, false) }}, ne(variables['${{ parameters.pool_name }}'], '')))
+          or(${{ ne(item.Value.SelfHostAgent, true) }}, ne(variables['${{ parameters.pool_name }}'], '')))
 
     workspace:
       clean: all
@@ -140,7 +140,10 @@ jobs:
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
         install_tools: ${{ and(not(eq(item.Value.SelfHostAgent, true)), not(parameters.container_build)) }}
         extra_install_step: ${{ parameters.extra_install_step }}
-        self_host_agent: ${{ item.Value.SelfHostAgent }}
+        ${{ if eq(item.Value.SelfHostAgent, true) }}:
+          self_host_agent: true
+        ${{ else }}:
+          self_host_agent: false
         extra_build_args: CODE_COVERAGE=TRUE
 
 - job: PublishCoverage
