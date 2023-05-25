@@ -510,7 +510,7 @@ group:
 
 # Leaf Workflow - Release Draft
 # Note: The default branch name used to draft releases on in this group is
-#       the latest Mu release branch (e.g. "release/202208")
+#       the latest Mu release branch (e.g. "release/202302")
   - files:
     - source: .sync/workflows/leaf/release-draft.yml
       dest: .github/workflows/release-draft.yml
