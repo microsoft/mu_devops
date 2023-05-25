@@ -1,5 +1,5 @@
 ===================================================
-Project MU Developer Operations (DevOps) Repository
+Project Mu Developer Operations (DevOps) Repository
 ===================================================
 
 |Latest Mu DevOps Release Version (latest SemVer)| |Commits Since Last Release| |Sync Mu DevOps Files to Mu Repos| |Containers Build|
@@ -29,24 +29,103 @@ You can find a high-level summary of the latest changes since the last release b
 
 .. _`latest draft release`: https://github.com/microsoft/mu_devops/releases
 
+Table of Contents
+=================
+
+1. `Project Mu Developer Operations (DevOps) Repository`_
+
+2. `Table of Contents`_
+
+3. `Continuous Integration (CI)`_
+
+4. `Conventions`_
+
+5. `Containers`_
+
+6. `GitHub Automation Workflow Overview`_
+
+   - `Leaf Workflows & Reusable Workflows`_
+
+   - `Reusable Workflows`_
+
+   - `Leaf Workflows`_
+
+7. `GitHub Automation Workflow Summary`_
+
+   - `Auto Merge`_
+
+   - `Auto Approver`_
+
+   - `File Synchronization`_
+
+   - `Initial Issue Triage`_
+
+   - `Issue Assignment`_
+
+   - `Label Automation`_
+
+   - `Pull Request Validator`_
+
+   - `Release Drafting`_
+
+   - `Scheduled Maintenance`_
+
+   - `Stale Detection`_
+
+8. `GitHub Action Summary`_
+
+   - `Submodule Release Updater`_
+
+9.  `Links`_
+
 Continuous Integration (CI)
 ===========================
 
-There are two broad categories of CI - Core CI and Platform CI.
+There are two broad categories of CI - Core CI and Platform CI. You may see these terms used in the repo.
   - **Core CI** - Focused on building and testing all packages in Edk2 without an actual target platform.
   - **Platform CI** - Focused on building a single target platform and confirming functionality on that platform.
 
 Conventions
 ===========
 
-- Files extension should be `*.yml`. `*.yaml` is also supported but in edk2 we use those for our package
-  configuration.
-- Shared templates should be contributed to the `mu_devops` repository.
-- Platform CI files should be placed in a `<PlatformPkg>/.azurepipelines` folder in the platform repository.
-  - Top level CI files should be named `<HostOs><ToolChainTag>.yml`
+- Shared templates in Project Mu repos are encouraged to be maintained in this repository.
 
-GitHub Automation
-=================
+- The `.github` directory contains GitHub collateral for this repository.
+
+  - Some of the files are shared GitHub actions or workflows used (referenced) by other repositories as well.
+
+- Files that are synced to other repositories should be placed in the `.sync` folder.
+
+  - Some files are synced back to this repository (`mu_devops`).
+
+- Azure Pipelines job and step templates should respectively be placed in the `Jobs` and `Steps` directories.
+
+- YAML files should have the extensions `*.yml`.
+
+  - An exception is the markdown configuration file (`.markdownlint.yaml`) that uses `.yaml` for consistency with
+    pre-existing conventions across Mu repos.
+
+Containers
+==========
+
+This repo maintains containers used throughout Project Mu projects. Containers provide well-defined, ready-to-go
+images and result in improved performance, portability, and consistency of build environments. Project Mu leverages
+containers for both server-side builds (e.g. pull requests and continuous integration) and for local developer builds.
+
+At this time, containers are only offered for Linux. If you want to get started quickly and receive the smoothest
+build experience, it is recommended to use containers where available.
+
+The `Containers` directory contains the actual dockerfiles for building the containers. The containers are actually
+built (in pull requests to dockerfiles and merges to the `main` branch) in the `.github/workflows/Build-Containers.yml`
+workflow. On any change to a dockerfile a new container is built and pushed to the Microsoft GitHub container registry
+as a container package associated with this repo. The latest Project Mu container builds are available in the
+`Packages - Mu DevOps`_ container feed and more information is available in the `Container Readme file`_.
+
+.. _`Container Readme file`: https://github.com/microsoft/mu_devops/blob/main/Containers/Readme.md
+.. _`Packages - Mu DevOps`: https://github.com/orgs/microsoft/packages?repo_name=mu_devops
+
+GitHub Automation Workflow Overview
+===================================
 
 This repository also drives automation of Project Mu GitHub repositories.
 
@@ -75,6 +154,51 @@ Leaf Workflows
 These workflow are only designed to call reusable workflows. They should not directly invoke GitHub Actions. The
 actual GitHub Actions used by Project Mu are centrally tracked/updated in the single-copy reusable workflow files
 in the Mu DevOps repo. This allows dependabot to update the actions here at once.
+
+GitHub Automation Workflow Summary
+==================================
+
+Following is a brief summary of the actual workflows in the repository.
+
+Auto Merge
+----------
+
+As automated bots pick up mundane tasks like syncing PIP module updates, submodules, files, and so on, an increasing
+number of pull requests can accumulate that essentially update dependencies we expect to be updated over time. In most
+cases, we simply care that the new update passes CI checks.
+
+Therefore, Project Mu repos auto merge certain pull requests to reduce human burden of approving these requests in all
+of the Project Mu repos. Individual repos can opt out of this functionality by removing the leaf workflow sync to their
+repo, however, it is recommended to keep this flow enabled for consistency across all repos.
+
+To see more about this flow look in these files:
+
+- The main reusable workflow file:
+  - `.github/workflows/AutoMerger.yml`
+- The leaf workflow
+  - `.sync/workflows/leaf/auto-merge.yml`
+
+A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-merge.yml` to their repo in `Files.yml` and the
+auto merge workflow will run in the repo.
+
+Auto Approver
+-------------
+
+Auto approves pull requests from allowed bot accounts. As part of reducing dependency overhead, this workflow first
+approves pull requests that are then auto merged after CI status checks complete. If a CI status check (e.g. build)
+fails, the pull request will not be merged.
+
+Note: This is currently disabled in most Project Mu repos.
+
+To see more about this flow look in these files:
+
+- The main reusable workflow file:
+  - `.github/workflows/AutoApprover.yml`
+- The leaf workflow
+  - `.sync/workflows/leaf/auto-approve.yml`
+
+A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-approve.yml` to their repo in `Files.yml` and the
+auto approve workflow will run in the repo.
 
 File Synchronization
 --------------------
@@ -105,6 +229,38 @@ changes.
 
 .. _`Project Mu UEFI Bot`: https://github.com/uefibot
 
+Initial Issue Triage
+--------------------
+
+This repo syncs `GitHub issue form templates`_ to many Project Mu repos. Part of initial triage for incoming issues
+involves parsing data in the issue form to apply the appropriate labels so the issue is ready for triage by a human.
+
+Issues need to be triaged by a human when the `state:needs-triage` label is present. This workflow can parse details
+provided in issue forms to apply additional labels. For example, the `state:needs-owner` label is applied if the user
+indicates they are not fixing the issue, the `urgency:<level>` label is applied based on user selection in the urgency
+dropdown, etc.
+
+A Project Mu repo simply needs to sync `.sync/workflows/leaf/triage-issues.yml` to their repo and the issue triage
+workflow will run in the repo.
+
+.. _`GitHub issue form templates`: https://github.com/microsoft/mu_devops/tree/main/.sync/github_templates/ISSUE_TEMPLATE
+
+This workflow works in concert with other issue workflows such as `.sync/workflows/leaf/issue-assignment.yml` to
+automate labels in issues based on the state of the issue.
+
+Issue Assignment
+----------------
+
+A generic workflow that contains actions applied when GitHub issues are assigned. Currently, the workflow removes
+labels from the issue that are no longer relevant after it is assigned.
+
+To see more about this flow look in these files:
+
+- The main reusable workflow file:
+  - `.github/workflows/IssueAssignment.yml`
+- The leaf workflow
+  - `.sync/workflows/leaf/issue-assignment.yml`
+
 Label Automation
 ----------------
 
@@ -124,15 +280,15 @@ Labels are synced to all repos on a regular schedule that is the same for all re
 Labels are automatically applied to issues and pull request on creation/modification and can be applied based on file
 paths modified a pull request or content in the body of the issue or pull request.
 
-Stale Detection
----------------
+Pull Request Validator
+----------------------
 
-Stale issues and pull requests are automatically labeled and closed after a configured amount of time.
+Validates pull request formatting against requirements defined in the workflow. This workflow is not intended to
+strictly validate exact formatting details but provide hints when simple, broad changes are needed to enhance the
+quality of pull request verbiage.
 
-This is provided by the `.github/workflows/Stale.yml` reusable workflow.
-
-Individual repositories can control the label and time settings but it is strongly recommended to use the default
-values defined in the reusable workflow for consistency.
+- The leaf workflow
+  - `.sync/workflows/leaf/pull-request-formatting-validator.yml`
 
 Release Drafting
 ----------------
@@ -159,55 +315,30 @@ A Project Mu repo simply needs to sync `.sync/workflows/leaf/release-draft.yml` 
 `.sync/workflows/config/release-draft/release-draft-config.yml` to their repo and adjust any parameters needed in the
 sync process (like repo default branch name) and the release draft workflow will run in the repo.
 
-Initial Issue Triage
---------------------
+Scheduled Maintenance
+---------------------
 
-This repo syncs `GitHub issue form templates`_ to many Project Mu repos. Part of initial triage for incoming issues
-involves parsing data in the issue form to apply the appropriate labels so the issue is ready for triage by a human.
+Performs regularly scheduled maintenance-related tasks such as closing pull requests and issues marked stale. Similar
+tasks can be added to the workflow over time.
 
-Issues need to be triaged by a human when the `state:needs-triage` label is present. This workflow can parse details
-provided in issue forms to apply additional labels. For example, the `state:needs-owner` label is applied if the user
-indicates they are not fixing the issue, the `urgency:<level>` label is applied based on user selection in the urgency
-dropdown, etc.
+The leaf workflow contains the primary implementation and is directly synced to subscribed repos:
 
-A Project Mu repo simply needs to sync `.sync/workflows/leaf/triage-issues.yml` to their repo and the issue triage
-workflow will run in the repo.
+  - `.sync/workflows/leaf/scheduled-maintenance.yml`
 
-.. _`GitHub issue form templates`: https://github.com/microsoft/mu_devops/tree/main/.sync/github_templates/ISSUE_TEMPLATE
+Stale Detection
+---------------
 
-This workflow works in concert with other issue workflows such as `.sync/workflows/leaf/issue-assignment.yml` to
-automate labels in issues based on the state of the issue.
+Stale issues and pull requests are automatically labeled and closed after a configured amount of time.
 
-Auto Merge
-----------
+This is provided by the `.github/workflows/Stale.yml` reusable workflow.
 
-As automated bots pick up mundane tasks like syncing PIP module updates, submodules, files, and so on, an increasing
-number of pull requests can accumulate that essentially update dependencies we expect to be updated over time. In most
-cases, we simply care that the new update passes CI checks.
+Individual repositories can control the label and time settings but it is strongly recommended to use the default
+values defined in the reusable workflow for consistency.
 
-Therefore, Project Mu repos auto merge certain pull requests to reduce human burden of approving these requests in all
-of the Project Mu repos. Individual repos can opt out of this functionality by removing the leaf workflow sync to their
-repo, however, it is recommended to keep this flow enabled for consistency across all repos.
+GitHub Action Summary
+=====================
 
-To see more about this flow look in these files:
-
-- The main reusable workflow file:
-  - `.github/workflows/AutoMerger.yml`
-- The leaf workflow
-  - `.sync/workflows/leaf/auto-merge.yml`
-
-A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-merge.yml` to their repo in `Files.yml` and the
-auto merge workflow will run in the repo.
-
-Pull Request Validator
-----------------------
-
-Validates pull request formatting against requirements defined in the workflow. This workflow is not intended to
-strictly validate exact formatting details but provide hints when simple, broad changes are needed to enhance the
-quality of pull request verbiage.
-
-- The leaf workflow
-  - `.sync/workflows/leaf/pull-request-formatting-validator.yml`
+Following is a brief summary of the GitHub Actions maintained in the repository.
 
 Submodule Release Updater
 -------------------------
