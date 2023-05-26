@@ -31,9 +31,6 @@ jobs:
     arch_list: $(arch_list)
     do_ci_build: true
     do_ci_setup: true
-    extra_steps:
-    - script: sudo apt-get install -y gcc-mingw-w64
-      displayName: Install Windows Resource Compiler for Linux
     packages: SetupDataPkg
     target_list: DEBUG,RELEASE,NO-TARGET,NOOPT
     tool_chain_tag: $(tool_chain_tag)
