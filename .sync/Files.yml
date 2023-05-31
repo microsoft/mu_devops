@@ -29,8 +29,8 @@
 group:
 # Azure Pipelines - Matrix Dependent - GCC & VS Only
   - files:
-    - source: .sync/azure_pipelines/MuDevOpsSync.yml
-      dest: .azurepipelines/MuDevOpsSync.yml
+    - source: .sync/azure_pipelines/MuDevOpsWrapper.yml
+      dest: .azurepipelines/MuDevOpsWrapper.yml
       template: true
     repos: |
       microsoft/mu_basecore
