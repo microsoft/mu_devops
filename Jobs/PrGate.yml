@@ -83,7 +83,8 @@ parameters:
   type: object
   # Each element in the matrix will be used in a separate job
   # Required fields:
-  # Pkgs:           Specify what packages in the target repo are to be build for this job
+  # Pkgs:           Specify what packages in the target repo are to be built for this job
+``
   # Targets:        Specify which targets are to be built in this job, i.e. DEBUG,
   #                 RELEASE, NO-TARGET, NOOPT. The acceptable values depend on the
   #                 Pkgs to be built.
