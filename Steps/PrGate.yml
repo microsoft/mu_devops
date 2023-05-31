@@ -74,6 +74,10 @@ parameters:
   displayName: Perform self checkout step
   type: boolean
   default: true
+- name: self_host_agent
+  displayName: Indicate if this is a selfhost agent
+  type: boolean
+  default: false
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -112,6 +116,12 @@ steps:
 - ${{ if eq(parameters.install_tools, true) }}:
   - template: InstallCoverageTools.yml
 
+# Potential Extra steps
+- ${{ if eq(parameters.self_host_agent, false) }}:
+  - ${{ parameters.extra_install_step }}
+- ${{ else }}:
+  - bash: echo "##[warning]A self-hosted agent build requested extra install steps. Those are not supported right now."
+
 # Build repo
 - ${{ if eq(parameters.do_ci_setup, true) }}:
   - task: CmdLine@2
@@ -132,9 +142,6 @@ steps:
   inputs:
     script: stuart_update -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
-
-# Potential Extra steps
-- ${{ parameters.extra_install_step }}
 
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
   - task: CmdLine@2
