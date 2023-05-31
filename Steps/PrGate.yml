@@ -119,6 +119,8 @@ steps:
 # Potential Extra steps
 - ${{ if eq(parameters.self_host_agent, false) }}:
   - ${{ parameters.extra_install_step }}
+- ${{ else }}:
+  - bash: echo "##[warning]A self-hosted agent build requested extra install steps. Those are not supported right now."
 
 # Build repo
 - ${{ if eq(parameters.do_ci_setup, true) }}:
