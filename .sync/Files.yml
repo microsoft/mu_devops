@@ -216,6 +216,7 @@ group:
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
+      microsoft/mu_devops
       microsoft/mu_feature_config
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
