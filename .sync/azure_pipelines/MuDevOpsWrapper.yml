@@ -73,6 +73,8 @@ parameters:
 jobs:
 - template: Jobs/PrGate.yml@mu_devops
   parameters:
+    linux_container_image: {{ sync_version.linux_build_container }}
+{% raw %}
     do_ci_build: ${{ parameters.do_ci_build }}
     do_ci_setup: ${{ parameters.do_ci_setup }}
     do_pr_eval: ${{ parameters.do_pr_eval }}
@@ -85,6 +87,6 @@ jobs:
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
     container_build: ${{ parameters.container_build }}
-    linux_container_image: {{ sync_version.linux_build_container }}
 
 - ${{ parameters.extra_jobs }}
+{% endraw %}
