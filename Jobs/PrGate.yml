@@ -163,7 +163,7 @@ jobs:
   dependsOn:
   - ${{ each item in parameters.build_matrix }}:
     - Build_${{ item.Key }}
-  condition: and(not(Canceled(), not(Failed()))
+  condition: and(not(Canceled()), not(Failed()))
 
   workspace:
     clean: all
