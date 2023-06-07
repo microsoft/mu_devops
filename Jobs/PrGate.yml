@@ -163,6 +163,18 @@ jobs:
   dependsOn:
   - ${{ each item in parameters.build_matrix }}:
     - Build_${{ item.Key }}
+
+  condition: |
+    and
+    (
+    - ${{ each item in parameters.build_matrix }}:
+      ${{ if ne(item.Value.SelfHostAgent, true) }}:
+        eq(dependencies.Build_${{ item.Key }}.result, 'Succeeded'),
+      ${{ else }}:
+        in(dependencies.WebApp2.result, 'Succeeded', 'Skipped'),
+    # This to deal with the commas above...
+    True
+    )
   workspace:
     clean: all
 
