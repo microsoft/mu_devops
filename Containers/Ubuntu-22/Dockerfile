@@ -22,6 +22,10 @@ ARG MARKDOWNLINT_VERSION=0.31.0
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
 
+# Work-around for azure pipelines adding the vsts_azpcontainer user, but not adding
+# the .local/bin directory to the path which will be used by pip.
+ENV PATH $PATH:/home/vsts_azpcontainer/.local/bin
+
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
         bison \
