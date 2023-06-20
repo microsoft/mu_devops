@@ -441,6 +441,7 @@ group:
         trigger_branch_name: 'main'
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
       dest: .github/release-draft-config.yml
+      template: true
     repos: |
       microsoft/mu_devops
       microsoft/mu_feature_config
@@ -451,14 +452,22 @@ group:
       microsoft/mu_tiano_platforms
 
 # Leaf Workflow - Release Draft
-# Note: The default branch name used to draft releases on in this group is
-#       the latest Mu release branch (e.g. "release/202302")
+# Note: This group has two files synced that allow separate configuration for
+#       n (e.g. "release/202302") and n-1 (e.g. "release/202208") branches.
   - files:
     - source: .sync/workflows/leaf/release-draft.yml
       dest: .github/workflows/release-draft.yml
       template: true
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
-      dest: .github/release-draft-config.yml
+      dest: .github/release-draft-config-n.yml
+      template:
+        latest: true
+        release_branch: true
+    - source: .sync/workflows/config/release-draft/release-draft-config.yml
+      dest: .github/release-draft-config-n-1.yml
+      template:
+        latest: false
+        release_branch: true
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform

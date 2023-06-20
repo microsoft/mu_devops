@@ -6,6 +6,24 @@
 # the code is constantly maintained based on Project Mu label conventions to ensure
 # semantic versioning is followed and a release version is always ready.
 #
+# The workflow is set up to support three types of repos as used in Project Mu. The
+# config file name varies depending on the branch being built.
+#
+#   1. A "latest release branch"
+#      - Example: `release/202302`
+#      - Config file: `release-draft-config-n.yml`
+#   2. A "previous release branch"
+#      - Example: `release/202208`
+#      - Config file: `release-draft-config-n-1.yml`
+#   3. A "main branch"
+#      - Example: `main`
+#      - Config file: `release-draft-config.yml`
+#
+# Note:
+#   - The versions for the above types of repos are automatically read from .sync/Version.njk.
+#   - The correct config files are automatically synced to the corresponding branches by the
+#     Mu DevOps file sync operation. No manual maintenance is needed.
+#
 # Project Mu repos are encouraged to use this reusable workflow if this release
 # workflow makes sense in their repo.
 #
@@ -29,8 +47,51 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Download Version Information
+        if: ${{ startsWith(github.ref, 'refs/heads/release') }}
+        id: download_ver_info
+        shell: bash
+        run: |
+          mkdir $HOME/temp
+          versionFileUrl="https://raw.githubusercontent.com/microsoft/mu_devops/main/.sync/Version.njk"
+          localFilePath=$HOME/temp/Version.njk
+          curl $versionFileUrl --output "${localFilePath}"
+          echo "file_path=${localFilePath}" >> $GITHUB_ENV
+      - name: Extract Version Information
+        if: ${{ startsWith(github.ref, 'refs/heads/release') }}
+        id: extract_ver_info
+        shell: bash
+        env:
+          FILE_PATH: ${{ env.file_path }}
+        run: |
+          fileContent=$(cat "${FILE_PATH}")
+          latestMuReleaseBranch=$(echo "$fileContent" | grep -oP '(?<=latest_mu_release_branch = ").*(?=")')
+          previousMuReleaseBranch=$(echo "$fileContent" | grep -oP '(?<=previous_mu_release_branch = ").*(?=")')
+          echo "latest_mu_branch=${latestMuReleaseBranch}" >> $GITHUB_ENV
+          echo "latest_mu_branch_full=refs/heads/${latestMuReleaseBranch}" >> $GITHUB_ENV
+          echo "previous_mu_branch=${previousMuReleaseBranch}" >> $GITHUB_ENV
+          echo "previous_mu_branch_full=refs/heads/${previousMuReleaseBranch}" >> $GITHUB_ENV
+      - name: Build a ${{ env.latest_mu_branch }} Draft
+        if: ${{ startsWith(github.ref, env.latest_mu_branch_full) }}
+        id: update_draft_n
+        uses: release-drafter/release-drafter@v5.23.0
+        with:
+          # Note: Path is relative to .github/
+          config-name: release-draft-config-n.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build a ${{ env.previous_mu_branch }} Draft
+        if: ${{ startsWith(github.ref, env.previous_mu_branch_full) }}
+        id: update_draft_n_1
+        uses: release-drafter/release-drafter@v5.23.0
+        with:
+          # Note: Path is relative to .github/
+          config-name: release-draft-config-n-1.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build the New Release Draft
-        id: update_draft
+        if: ${{ !startsWith(github.ref, 'refs/heads/release') }}
+        id: update_draft_non_release
         uses: release-drafter/release-drafter@v5.23.0
         with:
           # Note: Path is relative to .github/
