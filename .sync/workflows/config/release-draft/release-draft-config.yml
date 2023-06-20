@@ -17,8 +17,18 @@
 # For more information, see:
 # https://github.com/release-drafter/release-drafter
 
+{% import '../../../Version.njk' as sync_version -%}
+
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
+
+{# `release_branch` applies a commitish. `latest` then determines the branch to use. -#}
+{# If a commitish is not specified, then the `github.ref` value is implicitly used. -#}
+{%- if release_branch %}
+{% set release_branch = "refs/heads/" + (sync_version.latest_mu_release_branch if latest else sync_version.previous_mu_release_branch) %}
+commitish: {{ release_branch }}
+filter-by-commitish: true
+{% endif %}
 
 template: |
   # What's Changed
