@@ -48,7 +48,6 @@ jobs:
 
     steps:
       - name: Download Version Information
-        if: ${{ startsWith(github.ref, 'refs/heads/release') }}
         id: download_ver_info
         shell: bash
         run: |
@@ -58,7 +57,6 @@ jobs:
           curl $versionFileUrl --output "${localFilePath}"
           echo "file_path=${localFilePath}" >> $GITHUB_ENV
       - name: Extract Version Information
-        if: ${{ startsWith(github.ref, 'refs/heads/release') }}
         id: extract_ver_info
         shell: bash
         env:
