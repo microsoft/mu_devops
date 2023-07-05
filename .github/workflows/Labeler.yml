@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Apply Labels Based on PR File Paths
-        uses: actions/labeler@v4.1.0
+        uses: actions/labeler@v4.2.0
         with:
           configuration-path: .github/workflows/label-issues/file-paths.yml
           repo-token: ${{ secrets.GITHUB_TOKEN }}
