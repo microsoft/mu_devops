@@ -71,6 +71,7 @@ steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
   - checkout: self
     clean: true
+    fetchDepth: 0
     # Note: Depth cannot be limited if PR Eval is used. A pipeline may choose
     #       to use a shallow checkout if PR eval is not used.
 
