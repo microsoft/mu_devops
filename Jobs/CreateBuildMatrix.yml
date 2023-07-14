@@ -36,7 +36,7 @@ jobs:
 
     steps:
     - checkout: none
-       fetchDepth: 0
+      fetchDepth: 0
 
     - task: PowerShell@2
       name: CalculateMatrix
