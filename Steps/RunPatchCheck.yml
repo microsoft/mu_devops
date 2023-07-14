@@ -24,6 +24,7 @@ pool:
 steps:
 - checkout: self
   clean: true
+  fetchDepth: 0
 
 - template: Steps/SetupPythonPreReqs.yml
 - script: |
