@@ -5,10 +5,17 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
+parameters:
+- name: checkout_self
+  displayName: Perform self checkout step
+  type: boolean
+  default: true
+
 steps:
-- checkout: self
-  clean: true
-  fetchDepth: 1
+- ${{ if eq(parameters.checkout_self, true) }}:
+  - checkout: self
+    clean: true
+    fetchDepth: 1
 
 #
 # Download the build
