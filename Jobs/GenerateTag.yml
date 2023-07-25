@@ -1,0 +1,51 @@
+## @file
+# Template file used to generate tags on ADO.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+  - name: base_version
+    displayName: Path to the devops directory.
+    type: string
+    default: ""
+
+jobs:
+  - job: Create_Release_Tag
+    steps:
+      - checkout: self
+        clean: true
+        fetchTags: true
+        persistCredentials: true
+        path: "target"
+
+      - checkout: mu_devops
+        path: "mu_devops"
+        fetchDepth: 0
+
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: "3.10"
+        displayName: "Setup Python"
+
+      - script: |
+          python -m pip install --upgrade pip
+          pip install GitPython
+        displayName: "Install Dependencies"
+
+      - script: |
+          git config --global user.email "autobuild@fabrikam.com"
+          git config --global user.name "BuildService"
+          ls $(Agent.BuildDirectory)
+        displayName: "Setup Git"
+
+      - script: |
+          cd $(Agent.BuildDirectory)
+          python mu_devops/Scripts/TagGenerator.py -r target/ -b ${{ parameters.devops_path }} -v --adovar tag_name
+        displayName: "Run Tag Generator"
+
+      - script: |
+          cd $(Agent.BuildDirectory)/target
+          git push origin $(tag_name)
+        displayName: "Push Tag"
