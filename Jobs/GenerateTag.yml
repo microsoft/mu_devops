@@ -10,6 +10,14 @@ parameters:
     displayName: Path to the devops directory.
     type: string
     default: ""
+  - name: git_name
+    displayName: Name to use for creating tag.
+    type: string
+    default: ""
+  - name: git_email
+    displayName: Email to use for creating tag.
+    type: string
+    default: ""
 
 jobs:
   - job: Create_Release_Tag
@@ -35,15 +43,28 @@ jobs:
         displayName: "Install Dependencies"
 
       - script: |
-          git config --global user.email "autobuild@fabrikam.com"
-          git config --global user.name "BuildService"
+          git config --global user.name "${{ parameters.git_name }}"
+          git config --global user.email "${{ parameters.git_email }}"
           ls $(Agent.BuildDirectory)
         displayName: "Setup Git"
 
       - script: |
           cd $(Agent.BuildDirectory)
-          python mu_devops/Scripts/TagGenerator.py -r target/ -b ${{ parameters.devops_path }} -v --adovar tag_name
+          python mu_devops/Scripts/TagGenerator.py -r target/ -b ${{ parameters.base_version }} -v --tagvar tag_name --notes target/ReleaseNotes.md --url $(Build.Repository.Uri)
         displayName: "Run Tag Generator"
+
+      - script: |
+          cd $(Agent.BuildDirectory)/target
+          git branch
+          git add ReleaseNotes.md
+          git commit -m "Release notes for $(tag_name)"
+          git tag $(tag_name)
+        displayName: "Create Tag"
+
+      - script: |
+          cd $(Agent.BuildDirectory)/target
+          git push origin HEAD:$(Build.SourceBranchName)
+        displayName: "Push Commit"
 
       - script: |
           cd $(Agent.BuildDirectory)/target

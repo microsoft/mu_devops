@@ -19,12 +19,12 @@ parser.add_argument("-b", "--base", type=str, required=True,
                     help="The base release version. This must be provided")
 parser.add_argument("-n", "--notes", type=str,
                     help="Provides path to the release notes markdown file.")
-parser.add_argument("--adovar", type=str,
+parser.add_argument("--tagvar", type=str,
                     help="An ADO variable to set to the tag name")
 parser.add_argument("--url", type=str, default="",
                     help="The URL to the repo, used for tag notes.")
-parser.add_argument("--notag", action="store_true",
-                    help="Don't create the new tag")
+parser.add_argument("--create", action="store_true",
+                    help="Create the new tag")
 parser.add_argument("--first", action="store_true",
                     help="Indicates this is expected to be the first tag.")
 parser.add_argument("-v", "--verbose", action="store_true",
@@ -63,14 +63,14 @@ def main():
 
     version = f"{args.base}.{major}.{minor}"
     Log(f"New tag: {version}")
-    if not args.notag:
+    if args.create:
         repo.create_tag(version, message=f"Release Tag {version}")
 
     if args.notes is not None:
         GenerateNotes(prev_tag.object.hexsha, version, commits)
 
-    if args.adovar is not None:
-        print(f"##vso[task.setvariable variable={args.adovar};]{version}")
+    if args.tagvar is not None:
+        print(f"##vso[task.setvariable variable={args.tagvar};]{version}")
 
 
 def GetLastTag(repo):
@@ -110,7 +110,7 @@ def GetLastTag(repo):
 
 
 def GenerateNotes(commit_hash, version, commits):
-    notes_file = open(args.notes, 'r+')
+    notes_file = open(args.notes, 'a+')
     old_lines = notes_file.readlines()
     notes_file.seek(0)
 
@@ -153,7 +153,7 @@ def GenerateNotes(commit_hash, version, commits):
 
     notes += "\n## Contributors\n\n"
     for contributor in contributors:
-        notes += f"- {contributor.name} \<{contributor.email}\>"
+        notes += f"- {contributor.name} <<{contributor.email}>>"
 
     notes += "\n"
 
@@ -174,7 +174,7 @@ def GetChangeList(commits):
             pr = msg[len("Merged PR "):match.end() - 1]
             msg = f"[{msg[0:match.end()]}]({args.url}/pullrequest/{pr}){msg[match.end():]}"
 
-        changes += f"- {msg} -- {commit.author}\n"
+        changes += f"- {msg} ~ _{commit.author}_\n"
 
     return changes
 
