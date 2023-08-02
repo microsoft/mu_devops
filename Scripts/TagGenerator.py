@@ -21,6 +21,8 @@ parser.add_argument("-n", "--notes", type=str,
                     help="Provides path to the release notes markdown file.")
 parser.add_argument("--adovar", type=str,
                     help="An ADO variable to set to the tag name")
+parser.add_argument("--url", type=str, default="",
+                    help="The URL to the repo, used for tag notes.")
 parser.add_argument("--notag", action="store_true",
                     help="Don't create the new tag")
 parser.add_argument("--first", action="store_true",
@@ -153,6 +155,8 @@ def GenerateNotes(commit_hash, version, commits):
     for contributor in contributors:
         notes += f"- {contributor.name} \<{contributor.email}\>"
 
+    notes += "\n"
+
     # Add new notes at the top and write out existing content.
     notes_file.write(notes)
     for line in old_lines:
@@ -161,8 +165,15 @@ def GenerateNotes(commit_hash, version, commits):
 
 def GetChangeList(commits):
     changes = ""
+
     for commit in commits:
+        pr = None
         msg = commit.message.split('\n', 1)[0]
+        match = re.match('Merged PR [0-9]+:', msg, flags=re.IGNORECASE)
+        if match:
+            pr = msg[len("Merged PR "):match.end() - 1]
+            msg = f"[{msg[0:match.end()]}]({args.url}/pullrequest/{pr}){msg[match.end():]}"
+
         changes += f"- {msg} -- {commit.author}\n"
 
     return changes
