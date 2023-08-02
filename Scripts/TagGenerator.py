@@ -17,9 +17,6 @@ parser.add_argument("-r", "--repo", default=".",
                     help="Path to the repo directory.")
 parser.add_argument("-b", "--base", type=str, required=True,
                     help="The base release version. This must be provided")
-parser.add_argument("-f", "--format", default="BASE.MAJOR.MINOR",
-                    help="The format of the release version. "
-                    "Supported macros are BASE, MAJOR, and MINOR")
 parser.add_argument("-n", "--notes", type=str,
                     help="Provides path to the release notes markdown file.")
 parser.add_argument("--adovar", type=str,
@@ -75,36 +72,39 @@ def main():
 
 
 def GetLastTag(repo):
-    ref_log = repo.head.log()
-    repo.tags
     breaking = False
-    VerboseLog(f"{len(ref_log)} refs to check.")
+    included_commits = []
+    commits = repo.iter_commits(repo.head.commit)
 
-    # TODO: This parsing is currently potentially broken if a commit has
-    # multiple parents. Think on this.
-    commit = repo.head.commit
-    commits = []
-    while commit is not None:
+    # Find all the eligible tags first.
+    tags = []
+    pattern = re.compile("^[0-9]+\.[0-9]+\.[0-9]+$")
+    for tag in repo.tags:
+        if tag.tag is None or pattern.match(tag.tag.tag) is None:
+            VerboseLog(f"Skipping unrecognized tag format. Tag: {tag}")
+            continue
+
+        tags.append(tag)
+
+    # Find the most recent commit with a tag.
+    for commit in commits:
         if IsBreakingChange(commit.message):
             breaking = True
 
         VerboseLog(f"Checking commit {commit.hexsha}")
-        for tag in repo.tags:
-            if tag.commit.hexsha == commit.hexsha:
+        for tag in tags:
+            if tag.commit == commit:
                 Log(f"Previous tag: {tag} Breaking: {breaking}")
-                return tag.tag, breaking, commits
+                return tag.tag, breaking, included_commits
 
-        commits.append(commit)
-        if commit.parents is None or len(commit.parents) == 0:
-            break
-
-        commit = commit.parents[0]
+        included_commits.append(commit)
 
     if not args.first:
         raise ("No previous tag found!")
 
+    # No tag found, return all commits and non-breaking.
     Log("No previous tag found.")
-    return None, breaking, commits
+    return None, False, commits
 
 
 def GenerateNotes(commit_hash, version, commits):
@@ -173,7 +173,7 @@ def IsBreakingChange(message):
 
 
 def IsSecurityChange(message):
-    return re.search('\[x\] fixes security issue', message, flags=re.IGNORECASE) is not None
+    return re.search('\[x\] security fix', message, flags=re.IGNORECASE) is not None
 
 
 def IsNewFeature(message):
