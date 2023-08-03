@@ -1,5 +1,6 @@
 ## @file
-# Template file used to generate tags on ADO.
+# Template file used to generate tags on ADO. This template requires that the
+# consumer specifies this repository as a resource named mu_devops.
 #
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -7,7 +8,7 @@
 
 parameters:
   - name: base_version
-    displayName: Path to the devops directory.
+    displayName: The base version.
     type: string
     default: ""
   - name: git_name
@@ -18,6 +19,10 @@ parameters:
     displayName: Email to use for creating tag.
     type: string
     default: ""
+  - name: notes_file
+    displayName: Path to the notes file to generate.
+    type: string
+    default: "ReleaseNotes.md"
 
 jobs:
   - job: Create_Release_Tag
@@ -32,10 +37,9 @@ jobs:
         path: "mu_devops"
         fetchDepth: 0
 
-      - task: UsePythonVersion@0
-        inputs:
-          versionSpec: "3.10"
-        displayName: "Setup Python"
+      - template: ../Steps/SetupPythonPreReqs.yml
+        parameters:
+          install_pip_modules: false
 
       - script: |
           python -m pip install --upgrade pip
@@ -45,28 +49,21 @@ jobs:
       - script: |
           git config --global user.name "${{ parameters.git_name }}"
           git config --global user.email "${{ parameters.git_email }}"
-          ls $(Agent.BuildDirectory)
         displayName: "Setup Git"
 
       - script: |
-          cd $(Agent.BuildDirectory)
-          python mu_devops/Scripts/TagGenerator.py -r target/ -b ${{ parameters.base_version }} -v --tagvar tag_name --notes target/ReleaseNotes.md --url $(Build.Repository.Uri)
+          python mu_devops/Scripts/TagGenerator.py -r target/ -b ${{ parameters.base_version }} -v --tagvar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri)
         displayName: "Run Tag Generator"
+        workingDirectory: $(Agent.BuildDirectory)
 
       - script: |
-          cd $(Agent.BuildDirectory)/target
+          set -e
           git branch
           git add ReleaseNotes.md
           git commit -m "Release notes for $(tag_name)"
           git tag $(tag_name)
-        displayName: "Create Tag"
-
-      - script: |
-          cd $(Agent.BuildDirectory)/target
           git push origin HEAD:$(Build.SourceBranchName)
-        displayName: "Push Commit"
-
-      - script: |
-          cd $(Agent.BuildDirectory)/target
           git push origin $(tag_name)
-        displayName: "Push Tag"
+        continueOnError: false
+        displayName: "Create Tag"
+        workingDirectory: $(Agent.BuildDirectory)/target

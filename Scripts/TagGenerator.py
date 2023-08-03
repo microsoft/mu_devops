@@ -44,11 +44,11 @@ def main():
     major = 0
     minor = 0
     if prev_tag is not None:
-        if prev_tag.object.hexsha == repo.head.commit.hexsha:
+        if prev_tag.commit == repo.head.commit:
             Log("No changes since last tag")
             return
 
-        version_split = prev_tag.tag.split('.')
+        version_split = prev_tag.name.split('.')
         if version_split[0] == args.base:
             major = int(version_split[1])
             minor = int(version_split[2])
@@ -63,11 +63,19 @@ def main():
 
     version = f"{args.base}.{major}.{minor}"
     Log(f"New tag: {version}")
+
+    # Before going further, ensure this is not a duplicate. This can happen if
+    # there are tags detached from their intended branch.
+    for tag in repo.tags:
+        if f"{tag}" == version:
+            raise Exception(
+                "Duplicate tag! Check for tags not in branch history.")
+
     if args.create:
         repo.create_tag(version, message=f"Release Tag {version}")
 
     if args.notes is not None:
-        GenerateNotes(prev_tag.object.hexsha, version, commits)
+        GenerateNotes(version, commits)
 
     if args.tagvar is not None:
         print(f"##vso[task.setvariable variable={args.tagvar};]{version}")
@@ -82,7 +90,7 @@ def GetLastTag(repo):
     tags = []
     pattern = re.compile("^[0-9]+\.[0-9]+\.[0-9]+$")
     for tag in repo.tags:
-        if tag.tag is None or pattern.match(tag.tag.tag) is None:
+        if pattern.match(tag.name) is None:
             VerboseLog(f"Skipping unrecognized tag format. Tag: {tag}")
             continue
 
@@ -97,19 +105,19 @@ def GetLastTag(repo):
         for tag in tags:
             if tag.commit == commit:
                 Log(f"Previous tag: {tag} Breaking: {breaking}")
-                return tag.tag, breaking, included_commits
+                return tag, breaking, included_commits
 
         included_commits.append(commit)
 
     if not args.first:
-        raise ("No previous tag found!")
+        raise Exception("No previous tag found!")
 
     # No tag found, return all commits and non-breaking.
     Log("No previous tag found.")
     return None, False, commits
 
 
-def GenerateNotes(commit_hash, version, commits):
+def GenerateNotes(version, commits):
     notes_file = open(args.notes, 'a+')
     old_lines = notes_file.readlines()
     notes_file.seek(0)
