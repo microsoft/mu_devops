@@ -67,7 +67,7 @@ def main():
     # Before going further, ensure this is not a duplicate. This can happen if
     # there are tags detached from their intended branch.
     for tag in repo.tags:
-        if f"{tag}" == version:
+        if tag.name == version:
             raise Exception(
                 "Duplicate tag! Check for tags not in branch history.")
 
