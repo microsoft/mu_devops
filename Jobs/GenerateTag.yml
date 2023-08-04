@@ -23,6 +23,11 @@ parameters:
     displayName: Path to the notes file to generate.
     type: string
     default: "ReleaseNotes.md"
+  - name: extra_prepare_steps
+    displayName: Extra Prepare Steps
+    type: stepList
+    default:
+      - script: echo No extra prepare steps provided
 
 jobs:
   - job: Create_Release_Tag
@@ -45,6 +50,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install GitPython
         displayName: "Install Dependencies"
+
+      - ${{ parameters.extra_prepare_steps }}
 
       - script: |
           git config --global user.name "${{ parameters.git_name }}"
