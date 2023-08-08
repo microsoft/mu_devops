@@ -7,8 +7,8 @@
 ##
 
 parameters:
-  - name: base_version
-    displayName: The base version.
+  - name: major_version
+    displayName: The major version.
     type: string
     default: ""
   - name: git_name
@@ -59,7 +59,7 @@ jobs:
         displayName: "Setup Git"
 
       - script: |
-          python mu_devops/Scripts/TagGenerator.py -r target/ -b ${{ parameters.base_version }} -v --tagvar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri)
+          python mu_devops/Scripts/TagGenerator/TagGenerator.py -r target/ --major ${{ parameters.major_version }} -v --printadovar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri)
         displayName: "Run Tag Generator"
         workingDirectory: $(Agent.BuildDirectory)
 
