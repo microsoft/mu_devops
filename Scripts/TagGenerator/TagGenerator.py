@@ -146,9 +146,8 @@ def generate_notes(version, commits, filepath, url):
     url - The URL of the repository.
     """
 
-    notes_file = open(filepath, 'a+')
+    notes_file = open(filepath, 'r+')
     old_lines = notes_file.readlines()
-    notes_file.seek(0)
 
     # Collect all the notable changes
     breaking_changes = []
@@ -198,9 +197,11 @@ def generate_notes(version, commits, filepath, url):
     notes += "\n"
 
     # Add new notes at the top and write out existing content.
+    notes_file.seek(0)
     notes_file.write(notes)
     for line in old_lines:
         notes_file.write(line)
+    notes_file.close()
 
 
 def get_change_list(commits, url):

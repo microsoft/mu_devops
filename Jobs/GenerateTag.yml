@@ -37,10 +37,11 @@ jobs:
         fetchTags: true
         persistCredentials: true
         path: "target"
+        fetchDepth: 0
 
       - checkout: mu_devops
         path: "mu_devops"
-        fetchDepth: 0
+        fetchDepth: 1
 
       - template: ../Steps/SetupPythonPreReqs.yml
         parameters:
@@ -52,6 +53,17 @@ jobs:
         displayName: "Install Dependencies"
 
       - ${{ parameters.extra_prepare_steps }}
+
+      # Checking the parameters should occur after extra_prepare_steps in case
+      # the caller is using those steps to initialize a consumed variable.
+      - script: |
+          if [ -z "${{ parameters.major_version }}"] || \
+             [ -z "${{ parameters.git_name }}"] || \
+             [ -z "${{ parameters.git_email }}"]
+          then
+            echo "##vso[task.complete result=Failed;]"
+          fi
+        displayName: "Check Parameters"
 
       - script: |
           git config --global user.name "${{ parameters.git_name }}"
