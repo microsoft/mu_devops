@@ -163,7 +163,7 @@ def generate_notes(version, commits, filepath, url):
         if is_breaking_change(commit.message):
             breaking_changes.append(commit)
         elif is_security_change(commit.message):
-            security_changes.append[commit]
+            security_changes.append(commit)
         elif is_new_feature(commit.message):
             features.append(commit)
         else:
