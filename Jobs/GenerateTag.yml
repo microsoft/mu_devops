@@ -1,0 +1,88 @@
+## @file
+# Template file used to generate tags on ADO. This template requires that the
+# consumer specifies this repository as a resource named mu_devops.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+  - name: major_version
+    displayName: The major version.
+    type: string
+    default: ""
+  - name: git_name
+    displayName: Name to use for creating tag.
+    type: string
+    default: ""
+  - name: git_email
+    displayName: Email to use for creating tag.
+    type: string
+    default: ""
+  - name: notes_file
+    displayName: Path to the notes file to generate.
+    type: string
+    default: "ReleaseNotes.md"
+  - name: extra_prepare_steps
+    displayName: Extra Prepare Steps
+    type: stepList
+    default:
+      - script: echo No extra prepare steps provided
+
+jobs:
+  - job: Create_Release_Tag
+    steps:
+      - checkout: self
+        clean: true
+        fetchTags: true
+        persistCredentials: true
+        path: "target"
+        fetchDepth: 0
+
+      - checkout: mu_devops
+        path: "mu_devops"
+        fetchDepth: 1
+
+      - template: ../Steps/SetupPythonPreReqs.yml
+        parameters:
+          install_pip_modules: false
+
+      - script: |
+          python -m pip install --upgrade pip
+          pip install GitPython
+        displayName: "Install Dependencies"
+
+      - ${{ parameters.extra_prepare_steps }}
+
+      # Checking the parameters should occur after extra_prepare_steps in case
+      # the caller is using those steps to initialize a consumed variable.
+      - script: |
+          if [ -z "${{ parameters.major_version }}"] || \
+             [ -z "${{ parameters.git_name }}"] || \
+             [ -z "${{ parameters.git_email }}"]
+          then
+            echo "##vso[task.complete result=Failed;]"
+          fi
+        displayName: "Check Parameters"
+
+      - script: |
+          git config --global user.name "${{ parameters.git_name }}"
+          git config --global user.email "${{ parameters.git_email }}"
+        displayName: "Setup Git"
+
+      - script: |
+          python mu_devops/Scripts/TagGenerator/TagGenerator.py -r target/ --major ${{ parameters.major_version }} -v --printadovar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri)
+        displayName: "Run Tag Generator"
+        workingDirectory: $(Agent.BuildDirectory)
+
+      - script: |
+          set -e
+          git branch
+          git add ${{ parameters.notes_file }}
+          git commit -m "Release notes for $(tag_name)"
+          git tag $(tag_name)
+          git push origin HEAD:$(Build.SourceBranchName)
+          git push origin $(tag_name)
+        continueOnError: false
+        displayName: "Create Tag"
+        workingDirectory: $(Agent.BuildDirectory)/target
