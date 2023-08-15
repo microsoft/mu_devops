@@ -192,7 +192,7 @@ def generate_notes(version, commits, filepath, url):
 
     notes += "\n## Contributors\n\n"
     for contributor in contributors:
-        notes += f"- {contributor.name} <<{contributor.email}>>"
+        notes += f"- {contributor.name} <<{contributor.email}>>\n"
 
     notes += "\n"
 
