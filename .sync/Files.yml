@@ -549,3 +549,15 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
+# Rust - Formatting configuration
+  - files:
+    - source: .sync/rust_config/Makefile.toml
+      dest: Makefile.toml
+    - source: .sync/rust_config/rust-toolchain.toml
+      dest: rust-toolchain.toml
+      template: true
+    - source: .sync/rust_config/rustfmt.toml
+      dest: rustfmt.toml
+    repos: |
+      microsoft/mu_basecore
+      microsoft/mu_plus
