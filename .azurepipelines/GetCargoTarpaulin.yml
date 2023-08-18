@@ -1,0 +1,54 @@
+## @file
+# Azure Pipeline to download Cargo Tarpaulin and save it as a pipeline artifact that
+# can be accessed by other pipelines.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+schedules:
+# At 1:00 on Monday
+# https://crontab.guru/#0_1_*_*_1
+- cron: 0 1 * * 1
+  branches:
+    include:
+    - main
+  always: true
+
+jobs:
+- job: Update_Cargo_Tarpaulin
+  displayName: Update Cargo Tarpaulin
+
+  pool:
+    vmImage: windows-latest
+
+  steps:
+  - checkout: self
+    clean: true
+    fetchDepth: 1
+    fetchTags: false
+
+  - script: pip install requests --upgrade
+    displayName: Install and Upgrade pip Modules
+    condition: succeeded()
+
+  - task: PythonScript@0
+    displayName: Download and Stage Cargo Tarpaulin
+    env:
+      BINARIES_DIR: "$(Build.BinariesDirectory)"
+      BINARY_NAME: "cargo-tarpaulin"
+      DOWNLOAD_DIR: "$(Build.ArtifactStagingDirectory)"
+      REPO_URL: "https://api.github.com/repos/xd009642/tarpaulin/releases"
+    inputs:
+      scriptSource: filePath
+      scriptPath: Scripts/DownloadCargoBinaryFromGitHub/DownloadCargoBinaryFromGitHub.py
+      workingDirectory: $(Agent.BuildDirectory)
+    condition: succeeded()
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Cargo Tarpaulin
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(Build.BinariesDirectory)
+      ArtifactName: Binaries
+    condition: succeeded()
