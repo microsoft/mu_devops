@@ -1,0 +1,4 @@
+{% import '../Version.njk' as sync_version -%}
+
+[toolchain]
+channel = "{{ sync_version.rust_toolchain }}"
