@@ -62,6 +62,10 @@ parameters:
   displayName: Extra Install Steps
   type: stepList
   default: []
+- name: extra_post_build_steps
+  displayName: Extra Post-Build Steps
+  type: stepList
+  default: []
 - name: install_tools
   displayName: Install Build Tools
   type: boolean
@@ -157,6 +161,9 @@ steps:
     inputs:
       script: stuart_ci_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
+
+# Potential post-build steps
+- ${{ parameters.extra_post_build_steps }}
 
 # Publish Test Results to Azure Pipelines/TFS
 - task: PublishTestResults@2

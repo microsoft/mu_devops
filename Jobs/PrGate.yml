@@ -35,6 +35,10 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
+- name: extra_post_build_steps
+  displayName: Extra Post-Build Steps
+  type: stepList
+  default: []
 - name: extra_steps
   displayName: Extra Steps
   type: stepList
@@ -148,6 +152,7 @@ jobs:
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
         install_tools: ${{ and(not(eq(item.Value.SelfHostAgent, true)), not(parameters.container_build)) }}
         extra_install_step: ${{ parameters.extra_install_step }}
+        extra_post_build_steps: ${{ parameters.extra_post_build_steps }}
         # This is to handle the matrices that do not specify this.
         ${{ if eq(item.Value.SelfHostAgent, true) }}:
           self_host_agent: true
