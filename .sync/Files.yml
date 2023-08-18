@@ -549,6 +549,14 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
+# Rust - Pipeline Files
+  - files:
+    - source: .sync/azure_pipelines/RustSetupSteps.yml
+      dest: Steps/RustSetupSteps.yml
+      template: true
+    repos: |
+      microsoft/mu_devops
+
 # Rust - Formatting configuration
   - files:
     - source: .sync/rust_config/Makefile.toml

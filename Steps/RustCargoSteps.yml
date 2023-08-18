@@ -1,0 +1,45 @@
+## @file
+# Azure Pipelines step to run common Cargo commands.
+#
+# Cargo should be installed on the system prior to invoking this template.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+
+- task: CmdLine@2
+  displayName: Setup Cargo Dir Permissions (Linux)
+  target: host
+  inputs:
+    script: |
+      /usr/bin/docker exec mu_devops_build_container chown -R vsts_azpcontainer:docker_azpcontainer /.cargo
+      /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.cargo
+      /usr/bin/docker exec mu_devops_build_container chown -R vsts_azpcontainer:docker_azpcontainer /.rustup
+      /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.rustup
+  condition: eq(variables['Agent.OS'], 'Linux')
+
+- task: CmdLine@2
+  displayName: cargo fmt
+  inputs:
+    script: 'cargo fmt --all --check'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    failOnStandardError: true
+  condition: succeeded()
+
+- task: CmdLine@2
+  displayName: cargo make test
+  inputs:
+    script: 'cargo make test'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    failOnStandardError: true
+  condition: succeeded()
+
+- task: CmdLine@2
+  displayName: cargo make build
+  inputs:
+    script: 'cargo make build'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    failOnStandardError: true
+  condition: succeeded()

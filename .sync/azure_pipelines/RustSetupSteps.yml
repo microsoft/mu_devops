@@ -1,0 +1,109 @@
+## @file
+# Azure Pipelines step to run common Rust steps.
+#
+# Cargo should be installed on the system prior to invoking this template.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+{% import '../Version.njk' as sync_version -%}
+
+{% raw %}
+# NOTE: Because this pipeline YAML file is a Nunjucks template, the pipeline syntax of `{{}}` will conflict with
+#       Nunjucks style. Surround pipeline YAML code that uses `{{}}` within `raw` and `endraw` tags
+#       to allow it to pass through Nunjucks processing.
+{% endraw %}
+
+steps:
+
+- script: |
+    python -c "import os; print('##vso[task.setvariable variable=cargoBinPath]{}'.format(os.path.join(os.environ['USERPROFILE'], '.cargo', 'bin')))"
+  displayName: Get Cargo bin Path (Windows)
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+
+- script: |
+    python -c "import os; print('##vso[task.setvariable variable=cargoBinPath]/.cargo/bin')"
+  displayName: Get Cargo bin Path (Linux)
+  condition: eq(variables['Agent.OS'], 'Linux')
+
+- task: CmdLine@2
+  displayName: Setup Cargo Dir Permissions (Linux)
+  target: host
+  inputs:
+    script: |
+      /usr/bin/docker exec mu_devops_build_container chown -R vsts_azpcontainer:docker_azpcontainer /.cargo
+      /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.cargo
+      /usr/bin/docker exec mu_devops_build_container chown -R vsts_azpcontainer:docker_azpcontainer /.rustup
+      /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.rustup
+  condition: eq(variables['Agent.OS'], 'Linux')
+
+#
+# Linux will use a container image pre-loaded with the designated Rust version. Windows does not use a container
+# image, but will have a VM image with a very recent version of Rust installed. This step installs the same toolchain
+# version used in the Linux container for consistency between the two. The cargo-make and cargo-tarpaulin versions
+# placed in the container image are the latest at the time the image is built. That should be equal to or less than
+# the latest version available when the pipeline is run. Get the latest available in the cache pipelines and use
+# those on both Linux and Windows agents for consistency in the pipeline runs.
+#
+- script: |
+    rustup install {{ sync_version.rust_toolchain }}
+    rustup default {{ sync_version.rust_toolchain }}
+  displayName: Install Rust {{ sync_version.rust_toolchain }} (Windows)
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+
+- task: DownloadPipelineArtifact@2
+  displayName: Download Cargo Make (Windows)
+  inputs:
+    buildType: specific
+    project: mu
+    definition: 166
+    targetPath: '$(cargoBinPath)\'
+    itemPattern: '**/cargo-make.exe'
+    artifactName: Binaries
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
+
+- task: DownloadPipelineArtifact@2
+  displayName: Download Cargo Make (Linux)
+  inputs:
+    buildType: specific
+    project: mu
+    definition: 166
+    targetPath: '$(Agent.TempDirectory)'
+    itemPattern: '**/cargo-make'
+    artifactName: Binaries
+  condition: eq(variables['Agent.OS'], 'Linux')
+- script: |
+    cp $AGENT_TEMPDIRECTORY/cargo-make /.cargo/bin
+  displayName: Copy cargo-make
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
+
+- task: DownloadPipelineArtifact@2
+  displayName: Download Cargo Tarpaulin (Windows)
+  inputs:
+    buildType: specific
+    project: mu
+    definition: 167
+    targetPath: '$(cargoBinPath)\'
+    itemPattern: '**/cargo-tarpaulin.exe'
+    artifactName: Binaries
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
+
+- task: DownloadPipelineArtifact@2
+  displayName: Download Cargo Tarpaulin (Linux)
+  inputs:
+    buildType: specific
+    project: mu
+    definition: 167
+    targetPath: '$(Agent.TempDirectory)'
+    itemPattern: '**/cargo-tarpaulin'
+    artifactName: Binaries
+  condition: eq(variables['Agent.OS'], 'Linux')
+- script: |
+    cp $AGENT_TEMPDIRECTORY/cargo-tarpaulin /.cargo/bin
+  displayName: Copy cargo-tarpaulin
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
+
+- script: rustup component add rustfmt rust-src --toolchain {{ sync_version.rust_toolchain }}-x86_64-pc-windows-msvc
+  displayName: rustup add rust-src
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
