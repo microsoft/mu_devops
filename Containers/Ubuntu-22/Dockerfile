@@ -33,9 +33,11 @@ RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
         bison \
         ca-certificates \
+        curl \
         flex \
         git \
         lcov \
+        jq \
         m4 \
         make \
         mono-complete \
@@ -87,6 +89,35 @@ RUN mkdir -p iasl_temp && cd iasl_temp && \
 RUN wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" && \
     dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && \
     apt-get update && apt-get install -y powershell && apt-get clean
+
+#
+# Rust support
+#
+
+ENV CARGO_HOME="$HOME/.cargo"
+ENV RUSTUP_HOME="$HOME/.rustup"
+ENV PATH="$CARGO_HOME/bin:$PATH"
+
+# Install Rust/Cargo and extras (rust-src, rust fmt, cargo-make, cargo-tarpaulin)
+RUN VERSION_URL="https://raw.githubusercontent.com/microsoft/mu_devops/main/.sync/Version.njk" && \
+    RUST_VERSION=$(curl -s ${VERSION_URL} | grep -oP '(?<=rust_toolchain = ").*(?=")') && \
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain ${RUST_VERSION} --profile minimal && \
+    rustup component add rustfmt rust-src --toolchain ${RUST_VERSION}-x86_64-unknown-linux-gnu
+
+RUN mkdir cargo_downloads && \
+    cd cargo_downloads && \
+    TAG_NAME=$(curl -s https://api.github.com/repos/sagiegurari/cargo-make/releases/latest | jq -r '.tag_name') && \
+    DOWNLOAD_URL="https://github.com/sagiegurari/cargo-make/releases/download/$TAG_NAME/cargo-make-v$TAG_NAME-x86_64-unknown-linux-gnu.zip" && \
+    curl -L -o cargo-make.zip "$DOWNLOAD_URL" && \
+    unzip cargo-make.zip && \
+    mv cargo-make-v$TAG_NAME-x86_64-unknown-linux-gnu/cargo-make $CARGO_HOME/bin/ && \
+    TAG_NAME=$(curl -s https://api.github.com/repos/xd009642/tarpaulin/releases/latest | jq -r '.tag_name') && \
+    DOWNLOAD_URL="https://github.com/xd009642/tarpaulin/releases/download/$TAG_NAME/cargo-tarpaulin-x86_64-unknown-linux-gnu.tar.gz" && \
+    curl -L -o cargo-tarpaulin.tar.gz "$DOWNLOAD_URL" && \
+    tar -xzvf cargo-tarpaulin.tar.gz && \
+    mv cargo-tarpaulin $CARGO_HOME/bin/ && \
+    cd .. && \
+    rm -r cargo_downloads
 
 #
 # Alternatives
@@ -145,7 +176,6 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
         autotools-dev \
         bc \
         build-essential \
-        curl \
         dosfstools \
         gcc \
         libglib2.0-dev \
