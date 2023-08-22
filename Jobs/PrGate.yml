@@ -129,7 +129,7 @@ jobs:
     ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows')), ne(item.Value.SelfHostAgent, true)) }}:
       container:
         image: ${{ parameters.linux_container_image }}
-        options: ${{ parameters.linux_container_options }}
+        options: --name mu_devops_build_container ${{ parameters.linux_container_options }}
 
     steps:
     - ${{ parameters.extra_steps }}
