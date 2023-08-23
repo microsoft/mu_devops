@@ -14,9 +14,12 @@ FROM ubuntu:22.04 AS build
 # Versions
 ARG GCC_MAJOR_VERSION=12
 ARG NASM_VERSION=2.16.01
-ARG IASL_VERSION=20210105
 ARG CSPELL_VERSION=5.20.0
 ARG MARKDOWNLINT_VERSION=0.32.2
+
+# Visit this NuGet package version page to see the latest version available
+# https://dev.azure.com/projectmu/acpica/_artifacts/feed/mu_iasl/NuGet/edk2-acpica-iasl/versions
+ARG IASL_VERSION=20210105.0.6
 
 # Set environment variable to avoid interaction.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -43,6 +46,7 @@ RUN apt-get update && \
         python3-venv \
         software-properties-common \
         sudo \
+        unzip \
         uuid-dev \
         wget \
         && \
@@ -74,10 +78,11 @@ RUN wget -O - https://www.nasm.us/pub/nasm/releasebuilds/${NASM_VERSION}/nasm-${
     ./autogen.sh && ./configure && make -j $(nproc) && make install && \
     cd .. && rm -rf nasm-${NASM_VERSION}
 
-RUN wget -O - https://acpica.org/sites/acpica/files/acpica-unix-${IASL_VERSION}.tar.gz | \
-    tar xz && cd acpica-unix-${IASL_VERSION} && \
-    make clean && make -j $(nproc) iasl && make install && \
-    cd .. && rm -rf acpica-unix-${IASL_VERSION}
+RUN mkdir -p iasl_temp && cd iasl_temp && \
+    wget -O iasl_${IASL_VERSION}.nupkg "https://pkgs.dev.azure.com/projectmu/acpica/_apis/packaging/feeds/mu_iasl/nuget/packages/edk2-acpica-iasl/versions/${IASL_VERSION}/content?api-version=6.0-preview.1" && \
+    unzip iasl_${IASL_VERSION}.nupkg -d /iasl_pkg_contents && \
+    find /iasl_pkg_contents -type f -name "iasl" -exec cp {} /usr/bin \; && chmod +x /usr/bin/iasl && \
+    cd .. && rm -rf iasl_temp
 
 RUN wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" && \
     dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && \
