@@ -1,0 +1,119 @@
+## @file
+# Azure Pipelines step template to download Azure Pipeline artifacts.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: artifact_name
+  displayName: Artifact Name
+  type: string
+  default: 'Binaries'
+- name: azure_org_name
+  displayName: Azure Org Name
+  type: string
+  default: 'projectmu'
+- name: azure_proj_name
+  displayName: Azure Project Name
+  type: string
+  default: 'mu'
+- name: azure_pipeline_def_id
+  displayName: Azure Pipeline Definition ID
+  type: string
+  default: '0'
+- name: file_pattern
+  displayName: File Pattern
+  type: string
+  default: '*'
+- name: target_dir
+  displayName: Target Directory
+  type: string
+  default: ''
+- name: target_os
+  displayName: Target OS For Task to Run
+  type: string
+  default: 'Windows_NT,Darwin,Linux'
+- name: task_display_name
+  displayName: Task Display Name
+  type: string
+  default: 'Download Pipeline Artifact'
+- name: work_dir
+  displayName: Work Directory
+  type: string
+  default: ''
+
+steps:
+
+- task: PythonScript@0
+  displayName: ${{ parameters.task_display_name }}
+  env:
+    ARTIFACT_NAME: ${{ parameters.artifact_name }}
+    AZURE_ORG_NAME: ${{ parameters.azure_org_name }}
+    AZURE_PROJ_NAME: ${{ parameters.azure_proj_name }}
+    AZURE_PIPELINE_DEF_ID: ${{ parameters.azure_pipeline_def_id }}
+    FILE_PATTERN: ${{ parameters.file_pattern }}
+    TARGET_DIR: ${{ parameters.target_dir }}
+    WORK_DIR: ${{ parameters.work_dir }}
+  inputs:
+    scriptSource: inline
+    workingDirectory: $(Agent.BuildDirectory)
+    script: |
+        import os
+        import requests
+        import shutil
+        import zipfile
+        from pathlib import Path
+
+        ARTIFACT_NAME = os.environ["ARTIFACT_NAME"]
+        AZURE_ORG_NAME = os.environ["AZURE_ORG_NAME"]
+        AZURE_PROJ_NAME = os.environ["AZURE_PROJ_NAME"]
+        AZURE_PIPELINE_DEF_ID = os.environ["AZURE_PIPELINE_DEF_ID"]
+        FILE_PATTERN = os.environ["FILE_PATTERN"]
+        TARGET_DIR = Path(os.environ["TARGET_DIR"])
+        WORK_DIR = os.environ["WORK_DIR"]
+
+        build_id_url = f"https://dev.azure.com/{AZURE_ORG_NAME}/{AZURE_PROJ_NAME}/_apis/build/builds?definitions={AZURE_PIPELINE_DEF_ID}&$top=1&api-version=6.0"
+
+        # Fetch the list of assets from the GitHub releases
+        response = requests.get(build_id_url)
+        response.raise_for_status()
+        latest_build_id = response.json()["value"][0]["id"]
+
+        artifact_url = f"https://dev.azure.com/{AZURE_ORG_NAME}/{AZURE_PROJ_NAME}/_apis/build/builds/{latest_build_id}/artifacts?artifactName={ARTIFACT_NAME}&api-version=6.0"
+        response = requests.get(artifact_url)
+        response.raise_for_status()
+        download_url = response.json()["resource"]["downloadUrl"]
+
+        print(f"Latest Build ID: {latest_build_id}")
+        print(f"Artifact Download URL: {download_url}")
+
+        download_path = Path(WORK_DIR, "artifact_download", ARTIFACT_NAME).with_suffix(".zip")
+        download_path.parent.mkdir(parents=True)
+        with requests.get(download_url, stream=True) as r:
+            with download_path.open('wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+
+        with zipfile.ZipFile(download_path, 'r') as zip_ref:
+            zip_ref.extractall(download_path.parent)
+
+        unzip_path = download_path.parent / ARTIFACT_NAME
+
+
+        def flatten_copy(src: Path, dst: Path, pattern: str):
+            if not dst.exists():
+                dst.mkdir(parents=True)
+
+            for item in src.rglob(pattern):
+                print(f"Current item is {item}")
+                if item.is_dir():
+                    flatten_copy(item, dst, pattern)
+                else:
+                    shutil.copy2(item, dst)
+
+
+        TARGET_DIR.mkdir(parents=True, exist_ok=True)
+        flatten_copy(unzip_path, TARGET_DIR, FILE_PATTERN)
+        shutil.rmtree(download_path.parent)
+  condition: and(succeeded(), contains('${{ parameters.target_os}}', variables['Agent.OS']))
