@@ -569,3 +569,4 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_plus
+      microsoft/mu_tiano_platforms
