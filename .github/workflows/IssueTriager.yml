@@ -26,7 +26,7 @@ jobs:
         template: [ bug_report.yml, documentation_request.yml, feature_request.yml ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Parse Issue Form
         uses: stefanbuck/github-issue-parser@v3
