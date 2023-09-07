@@ -321,6 +321,8 @@ group:
       microsoft/mu_tiano_plus
 
 # Leaf Workflow - CodeQL
+# Note: This workflow should be used in repos that build firmware
+#       packages from a CI builder (i.e. a CISettings.py file).
 # Note: Lack of Visual Studio support is currently a blocker for
 #       enabling the CodeQL workflow as-is in mu_silicon_arm_tiano.
 #       # microsoft/mu_silicon_arm_tiano
@@ -338,6 +340,18 @@ group:
       microsoft/mu_plus
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
+
+# Leaf Workflow - CodeQL - Platform
+# Note: This workflow should be used in repos that build firmware
+#       packages from a platform builder (i.e. a PlatformBuild.py file).
+# Note: Lack of Visual Studio support is currently a blocker for
+#       enabling the CodeQL workflow as-is in mu_silicon_arm_tiano.
+#       # microsoft/mu_silicon_arm_tiano
+  - files:
+    - source: .sync/workflows/leaf/codeql-platform.yml
+      dest: .github/workflows/codeql-platform.yml
+    repos: |
+      microsoft/mu_tiano_platforms
 
 # Leaf Workflow - Issue Triage
 # Leaf Workflow - Issue Assignment
