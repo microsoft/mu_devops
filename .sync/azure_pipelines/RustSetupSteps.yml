@@ -28,6 +28,7 @@ steps:
     arch = platform.machine()
 
     rust_targets = {
+        ('Windows', 'aarch64'): 'aarch64-pc-windows-msvc',
         ('Windows', 'x86_64'): 'x86_64-pc-windows-msvc',
         ('Windows', 'i386'): 'i686-pc-windows-msvc',
         ('Linux', 'x86_64'): 'x86_64-unknown-linux-gnu',
