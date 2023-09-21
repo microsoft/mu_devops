@@ -104,6 +104,6 @@ steps:
   displayName: Copy cargo-tarpaulin
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
-- script: rustup component add rustfmt rust-src --toolchain {{ sync_version.rust_toolchain }}-aarch64-pc-windows-msvc
+- script: rustup component add rustfmt rust-src --toolchain {{ sync_version.rust_toolchain }}-x86_64-pc-windows-msvc
   displayName: rustup add rust-src
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
