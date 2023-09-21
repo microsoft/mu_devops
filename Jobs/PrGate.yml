@@ -141,7 +141,7 @@ jobs:
 
     steps:
     ${{ if and(not(eq(item.Value.SelfHostAgent, true)), eq(parameters.rust_build, true)) }}:
-      - template: ../Steps/RustSetupSteps.yml@mu_devops
+      - template: ../Steps/RustSetupSteps.yml
     - ${{ parameters.extra_steps }}
     - template: ../Steps/PrGate.yml
       parameters:
