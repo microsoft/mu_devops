@@ -38,7 +38,7 @@ steps:
     itemPattern: "**/*coverage.xml"
 
 - task: DownloadPipelineArtifact@2
-  name: DownloadBuildLogArtifacts
+  name: DownloadBuildDatabaseArtifact
   displayName: Download Log Artifacts
   inputs:
     buildType: 'current'
