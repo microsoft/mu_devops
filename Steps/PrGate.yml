@@ -148,6 +148,19 @@ steps:
     script: stuart_update -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
+- task: CmdLine@2
+  inputs:
+    script: pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
+
+- task: CmdLine@2
+  displayName: Parse ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+  inputs:
+    script: 
+      stuart_parse -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+      cp Report/PARSE_LOG.txt Build/PARSE_LOG.txt
+      cp Report/DATABASE.db Build/DATABASE.db
+    condition: and(gt(variables.pkg_count, 0), succeeded())
+
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
   - task: CmdLine@2
     displayName: Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}

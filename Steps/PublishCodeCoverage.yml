@@ -20,6 +20,15 @@ steps:
 #
 # Download the build
 #
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: ">=3.10.6"
+    architecture: x64
+
+- task: CmdLine@2
+  inputs:
+    script: pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
+
 - task: DownloadPipelineArtifact@2
   name: DownloadBuildLogArtifacts
   displayName: Download Log Artifacts
@@ -27,6 +36,14 @@ steps:
     buildType: 'current'
     targetPath: '$(Build.ArtifactStagingDirectory)/coverage/'
     itemPattern: "**/*coverage.xml"
+
+- task: DownloadPipelineArtifact@2
+  name: DownloadBuildLogArtifacts
+  displayName: Download Log Artifacts
+  inputs:
+    buildType: 'current'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    itemPattern: "**/DATABASE.DB"
 
 - powershell: |
     $coverage_file_count=(Get-ChildItem $(Build.ArtifactStagingDirectory)/coverage/ -Recurse -Include *coverage.xml).count
@@ -38,8 +55,13 @@ steps:
   inputs:
     script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
-      reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
+      reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory) -reporttypes:Cobertura
   condition: gt(variables.coverage_file_count, 0)
+
+- task: CmdLine@2
+  displayName: Convert Coverage Report
+  inputs:
+    script: stuart_report -db $(Build.ArtifactStagingDirectory)/DATABASE.DB -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml $(Build.ArtifactStagingDirectory)/Cobertura.xml
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage
