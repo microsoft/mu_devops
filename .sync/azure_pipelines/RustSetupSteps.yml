@@ -17,6 +17,41 @@
 
 steps:
 
+# Note: This uses a local lookup table as opposed to `rustc -vV` since this is a Rust setup
+#       template that tries to minimize assumptions about Rust tools already on a system.
+- task: PythonScript@0
+  displayName: Get Host Rust Target Triple
+  inputs:
+    scriptSource: inline
+    workingDirectory: $(Agent.BuildDirectory)
+    script: |
+      import os
+      import platform
+
+      system = platform.system()
+      arch = platform.machine()
+
+      rust_targets = {
+          ('Windows', 'x86_64'): 'x86_64-pc-windows-msvc',
+          ('Windows', 'AMD64'): 'x86_64-pc-windows-msvc',
+          ('Windows', 'i386'): 'i686-pc-windows-msvc',
+          ('Windows', 'i686'): 'i686-pc-windows-msvc',
+          ('Linux', 'x86_64'): 'x86_64-unknown-linux-gnu',
+          ('Linux', 'AMD64'): 'x86_64-unknown-linux-gnu',
+          ('Linux', 'aarch64'): 'aarch64-unknown-linux-gnu',
+          ('Linux', 'i386'): 'i686-unknown-linux-gnu',
+          ('Linux', 'i686'): 'i686-unknown-linux-gnu',
+      }
+
+      print(f'System type = {system}')
+      print(f'Architecture = {arch}')
+
+      try:
+          print(f'##vso[task.setvariable variable=rust_target_triple]{rust_targets[(system, arch)]}')
+      except KeyError:
+          print(f'##[error]Unsupported Host Combination! OS = {system}. Architecture = {arch}.')
+          print(f'##vso[task.complete result=Failed;]Unsupported Host Combination! OS = {system}. Architecture = {arch}.')
+
 - script: |
     python -c "import os; print('##vso[task.setvariable variable=cargoBinPath]{}'.format(os.path.join(os.environ['USERPROFILE'], '.cargo', 'bin')))"
   displayName: Get Cargo bin Path (Windows)
@@ -104,6 +139,6 @@ steps:
   displayName: Copy cargo-tarpaulin
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
-- script: rustup component add rustfmt rust-src --toolchain {{ sync_version.rust_toolchain }}-x86_64-pc-windows-msvc
+- script: rustup component add rustfmt rust-src --toolchain {{ sync_version.rust_toolchain }}-$(rust_target_triple)
   displayName: rustup add rust-src
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
