@@ -74,6 +74,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -119,6 +120,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
@@ -164,6 +166,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -187,6 +190,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -206,6 +210,13 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+
+# GitHub Templates - Licensing - Project Mu License - Bot Requires LICENSE file
+  - files:
+    - source: .sync/github_templates/licensing/project_mu_license.txt
+      dest: LICENSE
+    repos: |
+      microsoft/mu_rust_hid
 
 # GitHub Templates - Licensing - Project Mu and TianoCore License
   - files:
@@ -243,6 +254,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -269,6 +281,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -292,6 +305,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -382,6 +396,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -405,6 +420,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -427,6 +443,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -459,6 +476,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -482,6 +500,7 @@ group:
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
+      microsoft/mu_rust_hid
       microsoft/mu_tiano_platforms
 
 # Leaf Workflow - Release Draft
@@ -530,6 +549,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -558,6 +578,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -583,4 +604,5 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_plus
+      microsoft/mu_rust_hid
       microsoft/mu_tiano_platforms
