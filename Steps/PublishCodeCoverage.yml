@@ -43,7 +43,7 @@ steps:
   inputs:
     buildType: 'current'
     targetPath: '$(Build.ArtifactStagingDirectory)'
-    itemPattern: "**/DATABASE.DB"
+    itemPattern: "**/*DATABASE.db"
 
 - powershell: |
     $coverage_file_count=(Get-ChildItem $(Build.ArtifactStagingDirectory)/coverage/ -Recurse -Include *coverage.xml).count
@@ -61,7 +61,7 @@ steps:
 - task: CmdLine@2
   displayName: Convert Coverage Report
   inputs:
-    script: stuart_report -db $(Build.ArtifactStagingDirectory)/DATABASE.DB -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml $(Build.ArtifactStagingDirectory)/Cobertura.xml
+    script: stuart_report -db $(Build.ArtifactStagingDirectory)/DATABASE.DB coverage -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml $(Build.ArtifactStagingDirectory)/Cobertura.xml
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage
