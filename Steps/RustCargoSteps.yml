@@ -7,6 +7,24 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
+parameters:
+- name: format_command
+  displayName: Rust Format Command
+  type: string
+  default: "cargo fmt --all --check"
+- name: test_command
+  displayName: Rust Test Command
+  type: string
+  default: "cargo make test"
+- name: build_command
+  displayName: Rust Build Command
+  type: string
+  default: "cargo make build"
+- name: container_build
+  displayName: Flag for whether this repo should do stuart_setup
+  type: boolean
+  default: false
+
 steps:
 
 - task: CmdLine@2
@@ -18,12 +36,12 @@ steps:
       /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.cargo
       /usr/bin/docker exec mu_devops_build_container chown -R vsts_azpcontainer:docker_azpcontainer /.rustup
       /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.rustup
-  condition: eq(variables['Agent.OS'], 'Linux')
+  condition: and(eq('${{ parameters.container_build }}', 'true'), eq(variables['Agent.OS'], 'Linux'))
 
 - task: CmdLine@2
   displayName: cargo fmt
   inputs:
-    script: 'cargo fmt --all --check'
+    script: ${{ parameters.format_command }}
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     failOnStandardError: true
   condition: succeeded()
@@ -31,7 +49,7 @@ steps:
 - task: CmdLine@2
   displayName: cargo make test
   inputs:
-    script: 'cargo make test'
+    script: ${{ parameters.test_command }}
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     failOnStandardError: true
   condition: succeeded()
@@ -39,7 +57,7 @@ steps:
 - task: CmdLine@2
   displayName: cargo make build
   inputs:
-    script: 'cargo make build'
+    script: ${{ parameters.build_command }}
     workingDirectory: '$(System.DefaultWorkingDirectory)'
     failOnStandardError: true
   condition: succeeded()
