@@ -594,8 +594,6 @@ group:
 
 # Rust - Formatting configuration
   - files:
-    - source: .sync/rust_config/Makefile.toml
-      dest: Makefile.toml
     - source: .sync/rust_config/rust-toolchain.toml
       dest: rust-toolchain.toml
       template: true
@@ -605,4 +603,13 @@ group:
       microsoft/mu_basecore
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_tiano_platforms
+
+# Rust - Makefile (for UEFI builds)
+  - files:
+    - source: .sync/rust_config/Makefile.toml
+      dest: Makefile.toml
+    repos: |
+      microsoft/mu_basecore
+      microsoft/mu_plus
       microsoft/mu_tiano_platforms
