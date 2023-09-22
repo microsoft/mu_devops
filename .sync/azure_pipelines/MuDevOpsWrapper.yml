@@ -86,8 +86,6 @@ jobs:
 {% raw %}
     ${{ if eq(parameters.rust_build, true) }}:
       linux_container_options: --security-opt seccomp=unconfined
-      extra_steps:
-      - template: Steps/RustSetupSteps.yml@mu_devops
     do_ci_build: ${{ parameters.do_ci_build }}
     do_ci_setup: ${{ parameters.do_ci_setup }}
     do_pr_eval: ${{ parameters.do_pr_eval }}
@@ -100,6 +98,7 @@ jobs:
     tool_chain_tag: $(tool_chain_tag)
     vm_image: $(vm_image)
     container_build: ${{ parameters.container_build }}
+    rust_build: ${{ parameters.rust_build }}
 
 - ${{ if eq(parameters.rust_build, true) }}:
   - job: CargoCmds
