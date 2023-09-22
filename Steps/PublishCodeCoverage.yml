@@ -42,7 +42,7 @@ steps:
   displayName: Download Log Artifacts
   inputs:
     buildType: 'current'
-    targetPath: '$(Build.ArtifactStagingDirectory)'
+    targetPath: '$(Build.ArtifactStagingDirectory)/database/'
     itemPattern: "**/*DATABASE.db"
 
 - powershell: |
@@ -61,7 +61,8 @@ steps:
 - task: CmdLine@2
   displayName: Convert Coverage Report
   inputs:
-    script: stuart_report -db $(Build.ArtifactStagingDirectory)/DATABASE.DB coverage -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml $(Build.ArtifactStagingDirectory)/Cobertura.xml
+    script: stuart_report -db $(Build.ArtifactStagingDirectory)/database/**/*.db coverage -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml $(Build.ArtifactStagingDirectory)/Cobertura.xml
+  condition: gt(variables.coverage_file_count, 0)
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage
