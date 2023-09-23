@@ -21,7 +21,7 @@ parameters:
   type: string
   default: "cargo make build"
 - name: container_build
-  displayName: Flag for whether this repo should do stuart_setup
+  displayName: Flag for whether a container is being used
   type: boolean
   default: false
 
