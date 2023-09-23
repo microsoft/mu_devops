@@ -117,7 +117,7 @@ jobs:
     - ${{ parameters.extra_cargo_steps }}
     - template: Steps/RustCargoSteps.yml@mu_devops
       parameters:
-        container_build: ${{ parameters.container_build }}
+        container_build: true
 
 - ${{ parameters.extra_jobs }}
 {% endraw %}
