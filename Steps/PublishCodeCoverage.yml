@@ -28,6 +28,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
+    script: pip install --upgrade git+https://github.com/javagedes/edk2-pytool-library@remove-autoincrement-id
 
 - task: DownloadPipelineArtifact@2
   name: DownloadBuildLogArtifacts

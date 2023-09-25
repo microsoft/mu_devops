@@ -97,7 +97,9 @@ steps:
 - task: CmdLine@2
   displayName: Set Custom Branch For Edk2-pytool-extensions
   inputs:
-    script: pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
+    script: |
+      pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
+      pip install --upgrade git+https://github.com/javagedes/edk2-pytool-library@remove-autoincrement-id
 
 # Set Default Package Info
 - bash: |
