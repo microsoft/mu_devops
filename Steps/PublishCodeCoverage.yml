@@ -26,6 +26,7 @@ steps:
     architecture: x64
 
 - task: CmdLine@2
+  displayName: Install Special Pytool Extensions
   inputs:
     script: pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
     script: pip install --upgrade git+https://github.com/javagedes/edk2-pytool-library@remove-autoincrement-id
