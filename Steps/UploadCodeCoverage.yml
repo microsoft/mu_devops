@@ -19,6 +19,7 @@ steps:
 - powershell: |
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
+    .\codecov.exe -h
     .\codecov.exe -t ${{ parameters.codecov_token }} -f ${{ parameters.report }}
   displayName: Upload Code Coverage to Codecov.io
   condition: eq(variables['Agent.OS'], 'Windows_NT')
