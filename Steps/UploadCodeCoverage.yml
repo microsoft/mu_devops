@@ -10,7 +10,7 @@ parameters:
   displayName: Codecov.io Token
   type: string
   default: ''
-- name: report
+- name: report_dir
   displayName: Code Coverage Report
   type: string
   default: ''
@@ -19,13 +19,13 @@ steps:
 - powershell: |
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
-    .\codecov.exe -t ${{ parameters.codecov_token }} -f ${{ parameters.report }}
+    .\codecov.exe -t ${{ parameters.codecov_token }} -s ${{ parameters.report }} -v
   displayName: Upload Code Coverage to Codecov.io (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: |
     curl -Os https://uploader.codecov.io/latest/linux/codecov
     chmod +x codecov
-    ./codecov -t ${{ parameters.codecov_token }} -f ${{ parameters.report }}
+    ./codecov -t ${{ parameters.codecov_token }} -s ${{ parameters.report }} -v
   displayName: Upload Code Coverage to Codecov.io (Linux)
   condition: eq(variables['Agent.OS'], 'Linux')
