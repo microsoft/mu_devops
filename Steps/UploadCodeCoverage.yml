@@ -16,14 +16,14 @@ parameters:
   default: ''
 
 steps:
-  script: |
+- script: |
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -Outfile codecov.exe
     .\codecov.exe -t ${{ codecov_token }} -f ${{ parameters.report }}
   displayName: Upload Code Coverage to Codecov.io
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
-  script: |
+- script: |
     curl -Os https://uploader.codecov.io/latest/linux/codecov
     chmod +x codecov
     ./codecov -t ${{ codecov_token }} -f ${{ parameters.report }}
