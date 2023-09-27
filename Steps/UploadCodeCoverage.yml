@@ -1,0 +1,29 @@
+## @file
+# Azure Pipelines step template upload code coverage to codecov.io
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: codecov_token
+  displayName: Codecov.io Token
+  type: string
+  default: ''
+- name: report
+  type: Code Coverage Report
+  type: string
+  default: ''
+
+steps:
+  script: |
+    stuff
+  displayName: Upload Code Coverage to Codecov.io
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+
+  script: |
+    curl -Os https://uploader.codecov.io/latest/linux/codecov
+    chmod +x codecov
+    ./codecov -t ${{ codecov_token }} -f ${{ parameters.report }}
+  displayName: Upload Code Coverage to Codecov.io
+  condition: eq(variables['Agent.OS'], 'Linux')
