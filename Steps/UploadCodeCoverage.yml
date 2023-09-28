@@ -60,7 +60,7 @@ steps:
         with open(checksum_filename, 'wb') as f:
           f.write(response.content)
       else:
-        print(f'##[error]Failed to download Checksum file. }')
+        print(f'##[error]Failed to download Checksum file. Error code: {response.status_code}.')
         print(f'##vso[task.complete result=Failed;]Failed to download Checksum file. Error code: {response.status_code}.')
 
       with open(checksum_filename, 'r') as f:
