@@ -46,16 +46,25 @@ steps:
       else:
         print(f'##[error]Unsupported Host System! System = {system}.')
         print(f'##vso[task.complete result=Failed;]Unsupported Host System! System = {system}.')
+        return
 
       response = requests.get(url)
       if response.status_code == 200:
         with open(filename, 'wb') as f:
           f.write(response.content)
+      else:
+        print(f'##[error]Failed to download Uploader.')
+        print(f'##vso[task.complete result=Failed;]Failed to download Uploader.')
+        return
 
       response = requests.get(checksum_url)
       if response.status_code == 200:
         with open(checksum_filename, 'wb') as f:
           f.write(response.content)
+      else:
+        print(f'##[error]Failed to download Checksum file.')
+        print(f'##vso[task.complete result=Failed;]Failed to download Checksum file.')
+        return
 
       with open(checksum_filename, 'r') as f:
         expected_hash = f.read().split(' ')[0]
