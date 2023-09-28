@@ -17,8 +17,17 @@ parameters:
   displayName: Code Coverage Report
   type: string
   default: ''
+- name: install_dependencies
+  displayName: Install Pypi Dependencies
+  type: boolean
+  default: true
 
 steps:
+- ${{ if eq(parameters.install_dependencies, true) }}:
+  - script: |
+      pip install requests
+    displayName: Install Python Dependencies for Codecov Uploader
+
 - task: PythonScript@0
   displayName: Download and Verify Codecov Uploader
   inputs:
