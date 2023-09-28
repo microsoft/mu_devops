@@ -1,0 +1,92 @@
+## @file
+# Azure Pipelines step template upload code coverage to codecov.io
+#
+# Follows the codecov.io documentation for uploading code coverage reports:
+# https://docs.codecov.com/docs/codecov-uploader
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: codecov_token
+  displayName: Codecov.io Token
+  type: string
+  default: ''
+- name: report_dir
+  displayName: Code Coverage Report
+  type: string
+  default: ''
+- name: install_dependencies
+  displayName: Install Pypi Dependencies
+  type: boolean
+  default: true
+
+steps:
+- ${{ if eq(parameters.install_dependencies, true) }}:
+  - script: |
+      pip install requests
+    displayName: Install Python Dependencies for Codecov Uploader
+
+- task: PythonScript@0
+  displayName: Download and Verify Codecov Uploader
+  inputs:
+    scriptSource: inline
+    script: |
+      import platform
+      import requests
+      import hashlib
+      import os
+
+      system = platform.system()
+
+      if system == 'Windows':
+        url = 'https://uploader.codecov.io/latest/windows/codecov.exe'
+        filename = 'codecov.exe'
+        checksum_url = 'https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM'
+        checksum_filename = 'codecov.exe.SHA256SUM'
+        print(f'##vso[task.setvariable variable=codecov_uploader_cmd].\{filename}')
+      elif system == 'Linux':
+        url = 'https://uploader.codecov.io/latest/linux/codecov'
+        filename = 'codecov'
+        checksum_url = 'https://uploader.codecov.io/latest/linux/codecov.SHA256SUM'
+        checksum_filename = 'codecov.SHA256SUM'
+        print(f'##vso[task.setvariable variable=codecov_uploader_cmd]./{filename}')
+      else:
+        print(f'##[error]Unsupported Host System! System = {system}.')
+        print(f'##vso[task.complete result=Failed;]Unsupported Host System! System = {system}.')
+
+      response = requests.get(url)
+      if response.status_code == 200:
+        with open(filename, 'wb') as f:
+          f.write(response.content)
+      else:
+        print(f'##[error]Failed to download Uploader. Error code: {response.status_code}.')
+        print(f'##vso[task.complete result=Failed;]Failed to download Uploader. Error code: {response.status_code}.')
+
+      response = requests.get(checksum_url)
+      if response.status_code == 200:
+        with open(checksum_filename, 'wb') as f:
+          f.write(response.content)
+      else:
+        print(f'##[error]Failed to download Checksum file. Error code: {response.status_code}.')
+        print(f'##vso[task.complete result=Failed;]Failed to download Checksum file. Error code: {response.status_code}.')
+
+      with open(checksum_filename, 'r') as f:
+        expected_hash = f.read().split(' ')[0]
+
+      actual_hash = hashlib.new('sha256')
+      with open(filename, 'rb') as f:
+        for chunk in iter(lambda: f.read(4096), b''):
+          actual_hash.update(chunk)
+
+      if expected_hash != actual_hash.hexdigest():
+        print(f'##[error]Checksum did not match. Expected: {expected_hash}; Actual: {actual_hash.hexdigest()}.')
+        print(f'##vso[task.complete result=Failed;]Hash Mismatch.')
+
+      if system == 'Linux':
+        os.chmod(filename, 0o755)
+
+- script: |
+    $(codecov_uploader_cmd) -t ${{ parameters.codecov_token }} -s ${{ parameters.report_dir }} -Z
+  displayName: Upload Code Coverage to Codecov.io
