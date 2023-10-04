@@ -73,10 +73,12 @@ steps:
     scriptSource: 'inline'
     script: |
       import json
-      results = json.load(open('$(Build.ArtifactStagingDirectory)/Coverage/Cobertura.json'))
 
-      all_files = len(results)
-      covered_files = len([file for file, covered in results.items() if covered])
+      with open("$(Build.ArtifactStagingDirectory)/Coverage/Cobertura.json",) as f:
+        data = json.load(f)
+
+      all_files = len(data)
+      covered_files = len([file for file, covered in data.items() if covered])
 
       print(covered_files / all_files)
       # print(f'##vso[task.complete result=Failed;]Failed coverage check')
