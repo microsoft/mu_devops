@@ -30,7 +30,7 @@ steps:
   inputs:
     script: |
       pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
-      pip install --upgrade edk2-pytool-library==0.18.1
+      pip install --upgrade git+https://github.com/javagedes/edk2-pytool-library@parser-updates
 
 - task: DownloadPipelineArtifact@2
   name: DownloadBuildLogArtifacts
@@ -64,8 +64,22 @@ steps:
 - task: CmdLine@2
   displayName: Convert Coverage Report
   inputs:
-    script: stuart_report -db $(Build.ArtifactStagingDirectory)/database/**/*.db coverage -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml $(Build.ArtifactStagingDirectory)/Cobertura.xml
+    script: stuart_report -db $(Build.ArtifactStagingDirectory)/database/**/*.db coverage -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml $(Build.ArtifactStagingDirectory)/Cobertura.xml --by-package
   condition: gt(variables.coverage_file_count, 0)
+
+- task: PythonScript@0
+  displayName: Detect Coverage
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      import json
+      results = json.load(open('$(Build.ArtifactStagingDirectory)/Coverage/Cobertura.json'))
+
+      all_files = len(results)
+      covered_files = len([file for file, covered in results.items() if covered])
+
+      print(covered_files / all_files)
+      # print(f'##vso[task.complete result=Failed;]Failed coverage check')
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage

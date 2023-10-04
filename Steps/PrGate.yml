@@ -99,7 +99,7 @@ steps:
   inputs:
     script: |
       pip install --upgrade git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
-      pip install --upgrade edk2-pytool-library==0.18.1
+      pip install --upgrade git+https://github.com/javagedes/edk2-pytool-library@parser-updates
 
 # Set Default Package Info
 - bash: |
