@@ -24,7 +24,7 @@ steps:
 - ${{ if eq(parameters.install_python, true) }}:
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: ">=3.10.6"
+      versionSpec: "3.12"
       architecture: x64
 
 - ${{ if eq(parameters.install_pip_modules, true) }}:
