@@ -1,0 +1,109 @@
+parameters:
+- name: tool_chain
+  type: string
+  default: ''
+- name: rust_build
+  type: boolean
+  default: false
+- name: container_build
+  type: boolean
+  default: false
+- name: linux_container_image
+  type: string
+  default: ''
+- name: linux_container_options
+  type: string
+  default: ''
+- name: ci_file
+  type: string
+  default: '.pytool/CISettings.py'
+- name: do_setup
+  type: boolean
+  default: false
+- name: do_ci_setup
+  type: boolean
+  default: false
+- name: vm_image
+  type: string
+  default: ''
+- name: matrix
+  type: object
+# Example:
+# build_matrix:
+#   QemuQ35Pkg:
+#     Package: QemuQ35Pkg
+#     ActivePlatform: QemuQ35Pkg/QemuQ35Pkg.dsc
+#     BuildFile: "Platforms/QemuQ35Pkg/PlatformBuild.py"
+
+jobs:
+
+- ${{ each item in parameters.matrix }}:
+  - job: Coverage_${{ item.Key }}
+    timeoutInMinutes: 120
+
+    workspace:
+      clean: all
+    
+    pool:
+      vmImage: ${{ parameters.vm_image }}
+    
+    # Use a container if one was specified.
+    ${{ if and(eq(parameters.container_build, true), not(contains(parameters.vm_image, 'windows'))) }}:
+      container:
+        image: ${{ parameters.linux_container_image }}
+        options: --name mu_devops_build_container ${{ parameters.linux_container_options }}
+
+    steps:
+    - ${{ if eq(parameters.rust_build, true) }}:
+      - template: ../Steps/RustSetupSteps.yml
+    - checkout: self
+      clean: True
+      fetchDepth: 0
+    - template: ../Steps/SetupPythonPreReqs.yml
+    - template: ../Steps/InstallCoverageTools.yml
+    # Temporary until edk2-pytools is updated
+    - script: |
+        pip install --upgrade --force git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
+        pip install --upgrade --force git+https://github.com/javagedes/edk2-pytool-library@parser-updates
+    
+    # First, we will compile and run unit tests to get code coverage information
+    - ${{ if eq(parameters.do_setup, true) }}:
+      - script: stuart_setup -c ${{ parameters.ci_file }} -t NOOPT -p ${{ item.Value.Package }} CODE_COVERAGE=TRUE TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+        displayName: Stuart Setup For Unit Tests
+    - ${{ if eq(parameters.do_ci_setup, true) }}:
+      - script: stuart_ci_setup -c ${{ parameters.ci_file }} -t NOOPT -p ${{ item.Value.Package }} CODE_COVERAGE=TRUE TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+        displayName: Stuart CI Setup For Unit Test
+    - script: stuart_update -c ${{ parameters.ci_file }} -t NOOPT -p ${{ item.Value.Package }} CODE_COVERAGE=TRUE TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+      displayName: Stuart Update For Unit Tests
+    - script: stuart_ci_build -c ${{ parameters.ci_file }} -t NOOPT -p ${{ item.Value.Package }} CODE_COVERAGE=TRUE TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+      displayName: Stuart CI Build For Unit Tests
+
+    # Next we will run stuart_parse to get the environment information we need
+    - ${{ if and(ne(item.Value.ActivePlatform, ''), ne(item.Value.BuildFile, '')) }}:
+      - script: stuart_setup -c ${{ item.Value.BuildFile }} TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+        displayName: Stuart Setup Build File For Stuart Parse
+      - script: stuart_update -c ${{ item.Value.BuildFile }} TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+        displayName: Stuart Update Build File For Stuart Parse
+      - script: stuart_parse -c ${{ item.Value.BuildFile }} TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+        displayName: Stuart Parse on Build File
+      - script: stuart_report coverage Build/coverage.xml --by-platform --dsc ${{ item.Value.ActivePlatform }} -o Build/coverage.xml
+        displayName: Generate Coverage Report
+    - ${{ if and(eq(item.Value.ActivePlatform, ''), eq(item.Value.BuildFile, '')) }}:
+      - script: stuart_parse -c ${{ parameters.ci_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+        displayName: Stuart Parse on CI File
+      - script: stuart_report coverage Build/coverage.xml --by-package -p ${{ item.Value.Package }} -o Build/coverage.xml
+        displayName: Generate Coverage Report
+    - script: dotnet tool install -g dotnet-reportgenerator-globaltool
+      displayName: Install Report Generator Tool
+    - script: 'reportgenerator -reports:"Build/coverage.xml" -targetdir:"Build/Coverage" -reporttypes:"HtmlSummary;JsonSummary;Cobertura"'
+      displayName: Run Report Generator Tool
+
+    # Publish the reports
+    - template: ../Steps/OtherCopyAndPublish.yml
+      parameters: 
+        artifacts_other: Coverage/**/*
+        artifacts_identifier: ${{item.Value.Package}}_Coverage
+    # Publish the logs
+    - template: ../Steps/CommonLogCopyAndPublish.yml
+      parameters:
+        artifacts_identifier: ${{ item.Value.Package }}
