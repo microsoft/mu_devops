@@ -88,6 +88,7 @@ jobs:
         displayName: Stuart Parse on Build File
       - script: stuart_report coverage Build/coverage.xml --by-platform --dsc ${{ item.Value.ActivePlatform }} -o Build/coverage.xml
         displayName: Generate Coverage Report
+      - script: stuart_report usage -o Build/Reports/UsageReport.html
     - ${{ if and(eq(item.Value.ActivePlatform, ''), eq(item.Value.BuildFile, '')) }}:
       - script: stuart_parse -c ${{ parameters.ci_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
         displayName: Stuart Parse on CI File
@@ -95,14 +96,14 @@ jobs:
         displayName: Generate Coverage Report
     - script: dotnet tool install -g dotnet-reportgenerator-globaltool
       displayName: Install Report Generator Tool
-    - script: 'reportgenerator -reports:"Build/coverage.xml" -targetdir:"Build/Coverage" -reporttypes:"HtmlSummary;JsonSummary;Cobertura"'
+    - script: 'reportgenerator -reports:"Build/coverage.xml" -targetdir:"Build/Reports" -reporttypes:"HtmlSummary;JsonSummary;Cobertura"'
       displayName: Run Report Generator Tool
 
     # Publish the reports
     - template: ../Steps/OtherCopyAndPublish.yml
       parameters: 
-        artifacts_other: Coverage/**/*
-        artifacts_identifier: ${{item.Value.Package}}_Coverage
+        artifacts_other: Reports/**/*
+        artifacts_identifier: ${{item.Value.Package}}_Reports
     # Publish the logs
     - template: ../Steps/CommonLogCopyAndPublish.yml
       parameters:
