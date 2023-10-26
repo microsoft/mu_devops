@@ -38,7 +38,7 @@ parameters:
 jobs:
 
 - ${{ each item in parameters.matrix }}:
-  - job: Coverage_${{ item.Key }}
+  - job: Reports_${{ item.Key }}
     timeoutInMinutes: 120
 
     workspace:
