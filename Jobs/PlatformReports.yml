@@ -86,6 +86,8 @@ jobs:
     - script: stuart_update -c ${{ parameters.ci_file }} -t NOOPT -p ${{ item.Value.Package }} CODE_COVERAGE=TRUE TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
       displayName: Stuart Update For Unit Tests
     - script: stuart_ci_build -c ${{ parameters.ci_file }} -t NOOPT -p ${{ item.Value.Package }} CODE_COVERAGE=TRUE TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
+      env:
+        RUST_ENV_CHECK_TOOL_EXCLUSIONS: "cargo fmt"
       displayName: Stuart CI Build For Unit Tests
 
     # Next we will run stuart_parse to get the environment information we need
