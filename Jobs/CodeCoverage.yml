@@ -88,7 +88,10 @@ jobs:
         displayName: Stuart Parse on Build File
       - script: stuart_report coverage Build/coverage.xml --by-platform --dsc ${{ item.Value.ActivePlatform }} -o Build/coverage.xml
         displayName: Generate Coverage Report
-      - script: stuart_report usage -o Build/Reports/UsageReport.html
+      - script: |
+          pip install jinja2 plotly
+          stuart_report usage -o Build/Reports/UsageReport.html
+        displayName: Generate Module Usage Report
     - ${{ if and(eq(item.Value.ActivePlatform, ''), eq(item.Value.BuildFile, '')) }}:
       - script: stuart_parse -c ${{ parameters.ci_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain }}
         displayName: Stuart Parse on CI File
