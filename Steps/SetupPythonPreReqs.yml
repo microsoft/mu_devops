@@ -35,3 +35,8 @@ steps:
   - script: pip install ${{ parameters.pip_requirement_files }} --upgrade
     displayName: Install and Upgrade pip Modules
     condition: succeeded()
+  
+  - script: |
+      pip install --upgrade --force git+https://github.com/javagedes/edk2-pytool-extensions@report-parser-sqlite3
+      pip install --upgrade --force git+https://github.com/javagedes/edk2-pytool-library@parser-updates
+    displayName: Install temp pytools
