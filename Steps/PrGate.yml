@@ -173,11 +173,22 @@ steps:
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.calculate_code_coverage, true) }}:
+  - task: PythonScript@0
+    displayName: Check For Coverage File
+    inputs:
+      scriptSource: 'inline'
+      script: |
+        import os
+        if os.path.exists('$(Build.SourcesDirectory)/Build/coverage.xml'):
+          print('##vso[task.setvariable variable=FileExists]true')
+        else:
+          print('##vso[task.setvariable variable=FileExists]false')
+
   - task: CmdLine@2
     displayName: Reorganize Code Coverage
     inputs:
       script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -p $(pkgs_to_build) -o $(Build.SourcesDirectory)/Build/coverage.xml
-    condition: and(gt(variables.pkg_count, 0), succeeded(), exists('$(Build.SourcesDirectory)/Build/coverage.xml'))
+    condition: and(gt(variables.pkg_count, 0), succeeded(), eq(variables.FileExists, 'true'))
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
