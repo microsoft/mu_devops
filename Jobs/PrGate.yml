@@ -35,6 +35,9 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
+- name: calculate_code_coverage
+  displayName: Calculate Code Coverage
+  default: false
 - name: extra_post_build_steps
   displayName: Extra Post-Build Steps
   type: stepList
@@ -155,6 +158,7 @@ jobs:
         do_non_ci_build: ${{ parameters.do_non_ci_build }}
         do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
         do_pr_eval: ${{ parameters.do_pr_eval }}
+        calculate_code_coverage: ${{ parameters.calculate_code_coverage }}
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
         install_tools: ${{ and(not(eq(item.Value.SelfHostAgent, true)), not(parameters.container_build)) }}
         extra_install_step: ${{ parameters.extra_install_step }}
@@ -166,6 +170,7 @@ jobs:
           self_host_agent: false
         extra_build_args: CODE_COVERAGE=TRUE
 
+${{ if eq(parameters.calculate_code_coverage, true) }}:
 - job: PublishCoverage
   dependsOn:
   - ${{ each item in parameters.build_matrix }}:
