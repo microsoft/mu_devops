@@ -178,8 +178,8 @@ steps:
     inputs:
       scriptSource: 'inline'
       script: |
-        import os
-        if os.path.exists('$(Build.SourcesDirectory)/Build/coverage.xml'):
+        import pathlib
+        if pathlib.Path(r"$(Build.SourcesDirectory)", "Build", "coverage.xml").exists():
           print('##vso[task.setvariable variable=FileExists]true')
         else:
           print('##vso[task.setvariable variable=FileExists]false')
