@@ -185,3 +185,7 @@ jobs:
 
     steps:
       - template: ../Steps/PublishCodeCoverage.yml
+        parameters:
+          reorganize_by_inf: true
+          extra_parse_args: -t NOOPT TOOL_CHAIN_TAG=$(tool_chain_tag)
+          build_file: ${{ parameters.build_file }}
