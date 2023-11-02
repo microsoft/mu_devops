@@ -151,12 +151,12 @@ steps:
     script: stuart_update -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
-- ${{ if eq(parameters.calculate_code_coverage, true) }}:
-  - task: CmdLine@2
-    displayName: Stuart Parse ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
-    inputs:
-      script: stuart_parse -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets }} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
-    condition: and(gt(variables.pkg_count, 0), succeeded())
+# - ${{ if eq(parameters.calculate_code_coverage, true) }}:
+#   - task: CmdLine@2
+#     displayName: Stuart Parse ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+#     inputs:
+#       script: stuart_parse -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets }} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
+#     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
   - task: CmdLine@2
@@ -184,11 +184,11 @@ steps:
         else:
           print('##vso[task.setvariable variable=FileExists]false')
 
-  - task: CmdLine@2
-    displayName: Reorganize Code Coverage
-    inputs:
-      script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -p $(pkgs_to_build) -o $(Build.SourcesDirectory)/Build/coverage.xml
-    condition: and(gt(variables.pkg_count, 0), succeeded(), eq(variables.FileExists, 'true'))
+  # - task: CmdLine@2
+  #   displayName: Reorganize Code Coverage
+  #   inputs:
+  #     script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -p $(pkgs_to_build) -o $(Build.SourcesDirectory)/Build/coverage.xml
+  #   condition: and(gt(variables.pkg_count, 0), succeeded(), eq(variables.FileExists, 'true'))
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}

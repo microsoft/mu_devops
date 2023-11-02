@@ -34,12 +34,22 @@ steps:
   displayName: Check For Coverage Files
 
 - task: CmdLine@2
-  displayName: Create Coverage Report
+  displayName: Combine coverage Reports
   inputs:
     script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
       reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
   condition: gt(variables.coverage_file_count, 0)
+
+- task: CmdLine@2
+  displayName: Parse Workspace
+  inputs:
+    script: stuart_parse -c .pytool/CISettings.py
+
+- task: CmdLine@2
+  displayName: Organize report by INF
+  inputs:
+    script: stuart_report coverage $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml --by-package -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage
