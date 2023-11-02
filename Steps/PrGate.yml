@@ -50,9 +50,6 @@ parameters:
   displayName: Perform non-CI Stuart Setup
   type: boolean
   default: false
-- name: calculate_code_coverage
-  displayName: Calculate Code Coverage
-  default: false
 - name: do_pr_eval
   displayName: Perform Stuart PR Evaluation
   type: boolean
@@ -151,13 +148,6 @@ steps:
     script: stuart_update -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
-# - ${{ if eq(parameters.calculate_code_coverage, true) }}:
-#   - task: CmdLine@2
-#     displayName: Stuart Parse ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
-#     inputs:
-#       script: stuart_parse -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets }} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}}
-#     condition: and(gt(variables.pkg_count, 0), succeeded())
-
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
   - task: CmdLine@2
     displayName: Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
@@ -183,12 +173,6 @@ steps:
           print('##vso[task.setvariable variable=FileExists]true')
         else:
           print('##vso[task.setvariable variable=FileExists]false')
-
-  # - task: CmdLine@2
-  #   displayName: Reorganize Code Coverage
-  #   inputs:
-  #     script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -p $(pkgs_to_build) -o $(Build.SourcesDirectory)/Build/coverage.xml
-  #   condition: and(gt(variables.pkg_count, 0), succeeded(), eq(variables.FileExists, 'true'))
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}

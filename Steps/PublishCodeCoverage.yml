@@ -52,7 +52,7 @@ steps:
   displayName: Check For Coverage Files
 
 - task: CmdLine@2
-  displayName: Combine coverage Reports
+  displayName: Merge Coverage Reports
   inputs:
     script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
