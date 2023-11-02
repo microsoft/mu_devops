@@ -176,7 +176,7 @@ steps:
   - task: CmdLine@2
     displayName: Reorganize Code Coverage
     inputs:
-      script: stuart_report coverage Build/coverage.xml --by-package -p $(pkgs_to_build) -o Build/coverage.xml
+      script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -p $(pkgs_to_build) -o $(Build.SourcesDirectory)/Build/coverage.xml
     condition: and(gt(variables.pkg_count, 0), succeeded(), exists('$(Build.SourcesDirectory)/Build/coverage.xml'))
 
 # Potential post-build steps
