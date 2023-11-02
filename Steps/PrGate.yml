@@ -177,6 +177,7 @@ steps:
     displayName: Reorganize Code Coverage
     inputs:
       script: stuart_report coverage Build/coverage.xml --by-package -p $(pkgs_to_build) -o Build/coverage.xml
+    condition: and(gt(variables.pkg_count, 0), succeeded(), exists('$(Build.SourcesDirectory)/Build/coverage.xml'))
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
