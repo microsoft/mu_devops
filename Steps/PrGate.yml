@@ -162,18 +162,6 @@ steps:
       script: stuart_ci_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
-- ${{ if eq(parameters.calculate_code_coverage, true) }}:
-  - task: PythonScript@0
-    displayName: Check For Coverage File
-    inputs:
-      scriptSource: 'inline'
-      script: |
-        import pathlib
-        if pathlib.Path(r"$(Build.SourcesDirectory)", "Build", "coverage.xml").exists():
-          print('##vso[task.setvariable variable=FileExists]true')
-        else:
-          print('##vso[task.setvariable variable=FileExists]false')
-
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
 
