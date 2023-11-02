@@ -34,7 +34,7 @@ steps:
 - ${{ if eq(parameters.setup_python, true ) }}:
   - template: SetupPythonPreReqs.yml
     parameters:
-      install_python: ${{ parameters.install_tools }}
+      install_python: true
 #
 # Download the build
 #
