@@ -35,6 +35,10 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
+- name: calculate_code_coverage
+  displayName: Calculate Code Coverage
+  type: boolean
+  default: false
 - name: extra_post_build_steps
   displayName: Extra Post-Build Steps
   type: stepList
@@ -164,19 +168,27 @@ jobs:
           self_host_agent: true
         ${{ else }}:
           self_host_agent: false
-        extra_build_args: CODE_COVERAGE=TRUE
+        ${{ if eq(parameters.calculate_code_coverage, true) }}:
+          extra_build_args: CODE_COVERAGE=TRUE
+        ${{ else }}:
+          extra_build_args: ''
 
-- job: PublishCoverage
-  dependsOn:
-  - ${{ each item in parameters.build_matrix }}:
-    - Build_${{ item.Key }}
-  condition: and(not(Canceled()), not(Failed()))
+- ${{ if eq(parameters.calculate_code_coverage, true) }}:
+  - job: PublishCoverage
+    dependsOn:
+    - ${{ each item in parameters.build_matrix }}:
+      - Build_${{ item.Key }}
+    condition: and(not(Canceled()), not(Failed()))
 
-  workspace:
-    clean: all
+    workspace:
+      clean: all
 
-  pool:
-    vmImage: 'windows-latest'
+    pool:
+      vmImage: 'windows-latest'
 
-  steps:
-    - template: ../Steps/PublishCodeCoverage.yml
+    steps:
+      - template: ../Steps/PublishCodeCoverage.yml
+        parameters:
+          reorganize_by_inf: true
+          extra_parse_args: -t NOOPT TOOL_CHAIN_TAG=$(tool_chain_tag)
+          build_file: ${{ parameters.build_file }}

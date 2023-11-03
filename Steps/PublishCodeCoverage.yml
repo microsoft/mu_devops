@@ -10,6 +10,22 @@ parameters:
   displayName: Perform self checkout step
   type: boolean
   default: true
+- name: setup_python
+  displayName: Setup Python
+  type: boolean
+  default: true
+- name: reorganize_by_inf
+  displayName: Reorganize cobertura report by INF # Requires stuart_report & stuart_parse
+  type: boolean
+  default: false
+- name: extra_parse_args
+  displayName: Extra arguments for stuart_parse
+  type: string
+  default: ''
+- name: build_file
+  displayName: Stuart Build File
+  type: string
+  default: ".pytool/CISettings.py"
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -17,6 +33,10 @@ steps:
     clean: true
     fetchDepth: 1
 
+- ${{ if eq(parameters.setup_python, true ) }}:
+  - template: SetupPythonPreReqs.yml
+    parameters:
+      install_python: true
 #
 # Download the build
 #
@@ -34,12 +54,25 @@ steps:
   displayName: Check For Coverage Files
 
 - task: CmdLine@2
-  displayName: Create Coverage Report
+  displayName: Merge Coverage Reports
   inputs:
     script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
       reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
   condition: gt(variables.coverage_file_count, 0)
+
+- ${{ if eq(parameters.reorganize_by_inf, true) }}:
+  - task: CmdLine@2
+    displayName: Parse Workspace
+    inputs:
+      script: stuart_parse -c ${{ parameters.build_file }} ${{ parameters.extra_parse_args }}
+    condition: gt(variables.coverage_file_count, 0)
+
+  - task: CmdLine@2
+    displayName: Organize report by INF
+    inputs:
+      script: stuart_report coverage $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml --by-package -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml
+    condition: gt(variables.coverage_file_count, 0)
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage
