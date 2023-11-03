@@ -37,6 +37,7 @@ parameters:
   default: true
 - name: calculate_code_coverage
   displayName: Calculate Code Coverage
+  type: boolean
   default: false
 - name: extra_post_build_steps
   displayName: Extra Post-Build Steps
