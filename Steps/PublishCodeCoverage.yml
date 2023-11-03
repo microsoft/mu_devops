@@ -19,7 +19,7 @@ parameters:
   default: false
 - name: extra_parse_args
   displayName: Extra arguments for stuart_parse
-  type: boolean
+  type: string
   default: ''
 - name: build_file
   displayName: Stuart Build File
