@@ -16,6 +16,7 @@ parameters:
   default: true
 - name: reorganize_by_inf
   displayName: Reorganize cobertura report by INF # Requires stuart_report & stuart_parse
+  type: boolean
   default: false
 - name: extra_parse_args
   displayName: Extra arguments for stuart_parse
