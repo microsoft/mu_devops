@@ -54,6 +54,10 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
+- name: calculate_code_coverage
+  displayName: Calculate Code Coverage
+  type: boolean
+  default: false
 - name: extra_build_args
   displayName: Extra Build Command Arguments
   type: string
@@ -161,6 +165,15 @@ steps:
     inputs:
       script: stuart_ci_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
+
+- ${{ if eq(parameters.calculate_code_coverage, true) }}:
+  - template: PublishCodeCoverage.yml
+    parameters:
+      checkout_self: false
+      setup_python: false
+      reorganize_by_inf: true
+      extra_parse_args: '-p $(pkgs_to_build) -t NOOPT -a ${{ parameters.build_archs }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag }} ${{ parameters.extra_build_args }}'
+      build_file: ${{ parameters.build_file }}
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}

@@ -74,9 +74,8 @@ steps:
       script: stuart_report coverage $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml --by-package -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml
     condition: gt(variables.coverage_file_count, 0)
 
-- task: PublishCodeCoverageResults@1
+- task: PublishCodeCoverageResults@2
   displayName: Publish Code Coverage
   inputs:
-    codeCoverageTool: Cobertura
     summaryFileLocation: '$(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml'
   condition: gt(variables.coverage_file_count, 0)
