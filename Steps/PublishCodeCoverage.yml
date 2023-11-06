@@ -85,19 +85,20 @@ steps:
   - task: CmdLine@2
     displayName: Organize report by INF
     inputs:
-      script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -o $(Build.SourcesDirectory)/Build/coverage.xml
+      script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -o $(Build.ArtifactStagingDirectory)/coverage.xml
     condition: eq(variables.coverage_file, true)
 
 - ${{ if eq(parameters.publish_target, 'ado') }}:
   - task: PublishCodeCoverageResults@2
     displayName: Publish Code Coverage
     inputs:
-      summaryFileLocation: '$(Build.SourcesDirectory)/Build/coverage.xml'
+      summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage.xml'
     condition: eq(variables.coverage_file, true)
 
 - ${{ elseif eq(parameters.publish_target, 'codecov') }}:
   - template: UploadCodeCoverage.yml
     parameters:
-      report_dir: '$(Build.SourcesDirectory)/Build'
+      report_dir: '$(Build.ArtifactStagingDirectory)/coverage.xml'
       codecov_token: ${{ variables.CODECOV_TOKEN }}
-      install_dependencies: true 
+      install_dependencies: true
+      condition: eq(variables.coverage_file, true)
