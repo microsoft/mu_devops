@@ -26,6 +26,9 @@ parameters:
   displayName: Stuart Build File
   type: string
   default: ".pytool/CISettings.py"
+- name: publish_target # 'codecov', 'ado'
+  displayName: Publish Code Coverage Target
+  type: string
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -85,8 +88,17 @@ steps:
       script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -o $(Build.SourcesDirectory)/Build/coverage.xml
     condition: eq(variables.coverage_file, true)
 
-- task: PublishCodeCoverageResults@2
-  displayName: Publish Code Coverage
-  inputs:
-    summaryFileLocation: '$(Build.SourcesDirectory)/Build/coverage.xml'
-  condition: eq(variables.coverage_file, true)
+- ${{ if eq(parameters.publish_target, 'ado') }}:
+  - task: PublishCodeCoverageResults@2
+    displayName: Publish Code Coverage
+    inputs:
+      summaryFileLocation: '$(Build.SourcesDirectory)/Build/coverage.xml'
+    condition: eq(variables.coverage_file, true)
+
+- ${{ elseif eq(parameters.publish_target, 'codecov') }}:
+  - template: UploadCodeCoverage.yml
+    parameters:
+      report_dir: '$(Build.SourcesDirectory)/Build'
+      codecov_token: ${{ variables.CODECOV_TOKEN }}
+      install_dependencies: true
+    condition: eq(variables.coverage_file, true) 

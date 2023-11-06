@@ -58,6 +58,10 @@ parameters:
   displayName: Calculate Code Coverage
   type: boolean
   default: false
+- name: coverage_publish_target
+  displayName: Publish Code Coverage Target
+  type: string
+  default: 'ado'
 - name: extra_build_args
   displayName: Extra Build Command Arguments
   type: string
@@ -174,6 +178,7 @@ steps:
       reorganize_by_inf: true
       extra_parse_args: '-p $(pkgs_to_build) -t NOOPT -a ${{ parameters.build_archs }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag }} ${{ parameters.extra_build_args }}'
       build_file: ${{ parameters.build_file }}
+      publish_target: 'codecov'
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
