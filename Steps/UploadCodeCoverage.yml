@@ -22,16 +22,17 @@ parameters:
   type: boolean
   default: true
 - name: condition
-  displayName: Condition
-  type: boolean
-  default: true
+  displayName: Condition # A string true / false
+  type: string
+  default: 'true'
 
 steps:
 - ${{ if eq(parameters.install_dependencies, true) }}:
   - script: |
       pip install requests
     displayName: Install Python Dependencies for Codecov Uploader
-    condition: ${{ parameters.condition }}
+    condition: eq(parameters.condition, true)
+
 - task: PythonScript@0
   displayName: Download and Verify Codecov Uploader
   inputs:
@@ -90,9 +91,9 @@ steps:
 
       if system == 'Linux':
         os.chmod(filename, 0o755)
-    condition: ${{ parameters.condition }}
+    condition: eq(parameters.condition, true)
 
 - script: |
     $(codecov_uploader_cmd) -t ${{ parameters.codecov_token }} -s ${{ parameters.report_dir }} -Z
   displayName: Upload Code Coverage to Codecov.io
-  condition: ${{ parameters.condition }}
+  condition: eq(parameters.condition, true)
