@@ -100,5 +100,4 @@ steps:
     parameters:
       report_dir: '$(Build.SourcesDirectory)/Build'
       codecov_token: ${{ variables.CODECOV_TOKEN }}
-      install_dependencies: true
-    condition: eq(variables.coverage_file, true) 
+      install_dependencies: true 
