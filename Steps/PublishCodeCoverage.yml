@@ -98,6 +98,6 @@ steps:
 - ${{ elseif eq(parameters.publish_target, 'codecov') }}:
   - template: UploadCodeCoverage.yml
     parameters:
-      report_dir: '$(Build.ArtifactStagingDirectory)/coverage.xml'
+      report_dir: '$(Build.ArtifactStagingDirectory)'
       codecov_token: ${{ variables.CODECOV_TOKEN }}
       install_dependencies: true
