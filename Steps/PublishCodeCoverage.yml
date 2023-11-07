@@ -101,4 +101,4 @@ steps:
       report_dir: '$(Build.ArtifactStagingDirectory)/coverage.xml'
       codecov_token: ${{ variables.CODECOV_TOKEN }}
       install_dependencies: true
-      condition: $(variables.coverage_file)
+      condition: ${{ eq(variables.coverage_file, true) }}

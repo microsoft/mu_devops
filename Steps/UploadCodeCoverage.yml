@@ -23,8 +23,8 @@ parameters:
   default: true
 - name: condition
   displayName: Condition # A string true / false
-  type: string
-  default: 'true'
+  type: boolean
+  default: true
 
 steps:
 - ${{ if eq(parameters.install_dependencies, true) }}:
