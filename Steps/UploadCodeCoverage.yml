@@ -27,7 +27,6 @@ steps:
   - script: |
       pip install requests
     displayName: Install Python Dependencies for Codecov Uploader
-    condition: eq(variables.coverage_file, true)
 
 - task: PythonScript@0
   displayName: Download and Verify Codecov Uploader
@@ -87,9 +86,7 @@ steps:
 
       if system == 'Linux':
         os.chmod(filename, 0o755)
-    condition: eq(variables.coverage_file, true)
 
 - script: |
     $(codecov_uploader_cmd) -t ${{ parameters.codecov_token }} -s ${{ parameters.report_dir }} -Z
   displayName: Upload Code Coverage to Codecov.io
-  condition: eq(variables.coverage_file, true)

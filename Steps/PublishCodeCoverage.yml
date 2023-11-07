@@ -14,6 +14,10 @@ parameters:
   displayName: Setup Python
   type: boolean
   default: true
+- name: download_from_artifacts
+  displayName: Download from Artifacts
+  type: boolean
+  default: false
 - name: reorganize_by_inf
   displayName: Reorganize cobertura report by INF # Requires stuart_report & stuart_parse
   type: boolean
@@ -43,61 +47,63 @@ steps:
 #
 # Download the build
 #
-# - task: DownloadPipelineArtifact@2
-#   name: DownloadBuildLogArtifacts
-#   displayName: Download Log Artifacts
-#   inputs:
-#     buildType: 'current'
-#     targetPath: '$(Build.ArtifactStagingDirectory)/coverage/'
-#     itemPattern: "**/*coverage.xml"
+- ${{ if eq(parameters.download_from_artifacts )}}:
+  - task: DownloadPipelineArtifact@2
+    name: DownloadBuildLogArtifacts
+    displayName: Download Log Artifacts
+    inputs:
+      buildType: 'current'
+      targetPath: '$(Build.ArtifactStagingDirectory)/coverage/'
+      itemPattern: "**/*coverage.xml"
 
-# - powershell: |
-#     $coverage_file_count=(Get-ChildItem $(Build.ArtifactStagingDirectory)/coverage/ -Recurse -Include *coverage.xml).count
-#     Write-Host echo "##vso[task.setvariable variable=coverage_file_count]$coverage_file_count"
-#   displayName: Check For Coverage Files
+  - powershell: |
+      $coverage_file_count=(Get-ChildItem $(Build.ArtifactStagingDirectory)/coverage/ -Recurse -Include *coverage.xml).count
+      Write-Host echo "##vso[task.setvariable variable=coverage_file_count]$coverage_file_count"
+    displayName: Check For Coverage Files
 
-# - task: CmdLine@2
-#   displayName: Merge Coverage Reports
-#   inputs:
-#     script: |
-#       dotnet tool install -g dotnet-reportgenerator-globaltool
-#       reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
-#   condition: gt(variables.coverage_file_count, 0)
+  - task: CmdLine@2
+    displayName: Merge Coverage Reports
+    inputs:
+      script: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
+    condition: gt(variables.coverage_file_count, 0)
 
-- task: PythonScript@0
-  displayName: Check For Coverage File
-  inputs:
-    scriptSource: 'inline'
-    script: |
-      import pathlib
-      if pathlib.Path(r"$(Build.SourcesDirectory)", "Build", "coverage.xml").exists():
-        print('##vso[task.setvariable variable=coverage_file]true')
-      else:
-        print('##vso[task.setvariable variable=coverage_file]false')
+-{{ else }}:
+  - task: PythonScript@0
+    displayName: Check For Coverage File
+    inputs:
+      scriptSource: 'inline'
+      script: |
+        import pathlib
+        if pathlib.Path(r"$(Build.SourcesDirectory)", "Build", "coverage.xml").exists():
+          print('##vso[task.setvariable variable=coverage_file_count]1')
+        else:
+          print('##vso[task.setvariable variable=coverage_file_count]0')
 
 - ${{ if eq(parameters.reorganize_by_inf, true) }}:
   - task: CmdLine@2
     displayName: Parse Workspace
     inputs:
       script: stuart_parse -c ${{ parameters.build_file }} ${{ parameters.extra_parse_args }}
-    condition: eq(variables.coverage_file, true)
+    condition: gt(variables.coverage_file_count, 0)
 
   - task: CmdLine@2
     displayName: Organize report by INF
     inputs:
-      script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -o $(Build.ArtifactStagingDirectory)/coverage.xml
-    condition: eq(variables.coverage_file, true)
+      script: stuart_report coverage $(Build.SourcesDirectory)/Build/coverage.xml --by-package -o $(Build.ArtifactStagingDirectory)/Coverage/coverage.xml
+    condition: gt(variables.coverage_file_count, 0)
 
 - ${{ if eq(parameters.publish_target, 'ado') }}:
   - task: PublishCodeCoverageResults@2
     displayName: Publish Code Coverage
     inputs:
-      summaryFileLocation: '$(Build.ArtifactStagingDirectory)/coverage.xml'
-    condition: eq(variables.coverage_file, true)
+      summaryFileLocation: '$(Build.ArtifactStagingDirectory)/Coverage/coverage.xml'
+    condition: gt(variables.coverage_file_count, 0)
 
 - ${{ elseif eq(parameters.publish_target, 'codecov') }}:
   - template: UploadCodeCoverage.yml
     parameters:
-      report_dir: '$(Build.ArtifactStagingDirectory)'
+      report_dir: '$(Build.ArtifactStagingDirectory)/Coverage'
       codecov_token: ${{ variables.CODECOV_TOKEN }}
       install_dependencies: true
