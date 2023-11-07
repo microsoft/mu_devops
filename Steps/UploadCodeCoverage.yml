@@ -27,7 +27,7 @@ steps:
   - script: |
       pip install requests
     displayName: Install Python Dependencies for Codecov Uploader
-    condition: condition: eq(variables.coverage_file, true)
+    condition: eq(variables.coverage_file, true)
 
 - task: PythonScript@0
   displayName: Download and Verify Codecov Uploader
