@@ -14,18 +14,6 @@ parameters:
   displayName: Setup Python
   type: boolean
   default: true
-- name: reorganize_by_inf
-  displayName: Reorganize cobertura report by INF # Requires stuart_report & stuart_parse
-  type: boolean
-  default: false
-- name: extra_parse_args
-  displayName: Extra arguments for stuart_parse
-  type: string
-  default: ''
-- name: build_file
-  displayName: Stuart Build File
-  type: string
-  default: ".pytool/CISettings.py"
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -59,20 +47,6 @@ steps:
       dotnet tool install -g dotnet-reportgenerator-globaltool
       reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/coverage -reporttypes:Cobertura
   condition: gt(variables.coverage_file_count, 0)
-
-- ${{ if eq(parameters.reorganize_by_inf, true) }}:
-  - task: DownloadPipelineArtifact@2
-    displayName: Download Database Artifacts
-    inputs:
-      buildType: 'current'
-      targetPath: '$(Build.ArtifactStagingDirectory)/database/'
-      itemPattern: "**/*DATABASE.db"
-
-  - task: CmdLine@2
-    displayName: Organize report by INF
-    inputs:
-      script: stuart_report -db $(Build.ArtifactStagingDirectory)/database/*.db coverage $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml --by-package -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml
-    condition: gt(variables.coverage_file_count, 0)
 
 - task: PublishCodeCoverageResults@1
   displayName: Publish Code Coverage
