@@ -35,6 +35,8 @@ steps:
       SETUPLOG.txt
       TestSuites.xml
       UPDATE_LOG.txt
+      DATABASE.db
+      PARSE_LOG.txt
     flattenFolders: true
   condition: succeededOrFailed()
 

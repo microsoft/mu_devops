@@ -41,8 +41,7 @@ steps:
 # Download the build
 #
 - task: DownloadPipelineArtifact@2
-  name: DownloadBuildLogArtifacts
-  displayName: Download Log Artifacts
+  displayName: Download Coverage Artifacts
   inputs:
     buildType: 'current'
     targetPath: '$(Build.ArtifactStagingDirectory)/coverage/'
@@ -58,20 +57,21 @@ steps:
   inputs:
     script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
-      reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
+      reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/coverage -reporttypes:Cobertura
   condition: gt(variables.coverage_file_count, 0)
 
 - ${{ if eq(parameters.reorganize_by_inf, true) }}:
-  - task: CmdLine@2
-    displayName: Parse Workspace
+  - task: DownloadPipelineArtifact@2
+    displayName: Download Database Artifacts
     inputs:
-      script: stuart_parse -c ${{ parameters.build_file }} ${{ parameters.extra_parse_args }}
-    condition: gt(variables.coverage_file_count, 0)
+      buildType: 'current'
+      targetPath: '$(Build.ArtifactStagingDirectory)/database/'
+      itemPattern: "**/*DATABASE.db"
 
   - task: CmdLine@2
     displayName: Organize report by INF
     inputs:
-      script: stuart_report coverage $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml --by-package -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml
+      script: stuart_report -db $(Build.ArtifactStagingDirectory)/database/*.db coverage $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml --by-package -o $(Build.ArtifactStagingDirectory)/Coverage/Cobertura.xml
     condition: gt(variables.coverage_file_count, 0)
 
 - task: PublishCodeCoverageResults@1
