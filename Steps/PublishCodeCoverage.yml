@@ -14,10 +14,7 @@ parameters:
   displayName: Setup Python
   type: boolean
   default: true
-- name: download_from_artifacts
-  displayName: Download from Artifacts
-  type: boolean
-  default: false
+
 - name: reorganize_by_inf
   displayName: Reorganize cobertura report by INF # Requires stuart_report & stuart_parse
   type: boolean
@@ -30,9 +27,14 @@ parameters:
   displayName: Stuart Build File
   type: string
   default: ".pytool/CISettings.py"
-- name: publish_target # 'codecov', 'ado'
+- name: publish_target 
   displayName: Publish Code Coverage Target
   type: string
+  default: '' # 'codecov', 'ado'
+- name: coverage_file_location
+  displayName: Download from Artifacts
+  type: string
+  default: '' # 'artifact', 'source'
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -47,7 +49,7 @@ steps:
 #
 # Download the build
 #
-- ${{ if eq(parameters.download_from_artifacts )}}:
+- ${{ if eq(parameters.coverage_file_location, 'artifact') }}:
   - task: DownloadPipelineArtifact@2
     name: DownloadBuildLogArtifacts
     displayName: Download Log Artifacts
@@ -69,7 +71,7 @@ steps:
         reportgenerator -reports:$(Build.ArtifactStagingDirectory)/coverage/**/*coverage.xml -targetdir:$(Build.ArtifactStagingDirectory)/Coverage -reporttypes:Cobertura
     condition: gt(variables.coverage_file_count, 0)
 
--{{ else }}:
+- ${{ elseif eq(parameters.coverage_file_location, 'local') }}:
   - task: PythonScript@0
     displayName: Check For Coverage File
     inputs:
@@ -80,6 +82,12 @@ steps:
           print('##vso[task.setvariable variable=coverage_file_count]1')
         else:
           print('##vso[task.setvariable variable=coverage_file_count]0')
+
+- ${{ else }}:
+  - task: CmdLine@2
+    displayName: Missing coverage_file_location
+    inputs:
+      script: exit 1
 
 - ${{ if eq(parameters.reorganize_by_inf, true) }}:
   - task: CmdLine@2
@@ -107,3 +115,9 @@ steps:
       report_dir: '$(Build.ArtifactStagingDirectory)/Coverage'
       codecov_token: ${{ variables.CODECOV_TOKEN }}
       install_dependencies: true
+
+- ${{ else }}:
+  - task: CmdLine@2
+    displayName: Missing publish_target
+    inputs:
+      script: exit 1
