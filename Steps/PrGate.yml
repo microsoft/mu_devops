@@ -179,6 +179,7 @@ steps:
       extra_parse_args: '-p $(pkgs_to_build) -t NOOPT -a ${{ parameters.build_archs }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag }} ${{ parameters.extra_build_args }}'
       build_file: ${{ parameters.build_file }}
       publish_target: 'codecov'
+      coverage_file_location: 'local'
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
