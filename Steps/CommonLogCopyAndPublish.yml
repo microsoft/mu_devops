@@ -25,6 +25,7 @@ steps:
       **/BUILD_TOOLS_REPORT.json
       **/FD_REPORT.HTML
       **/OVERRIDELOG.TXT
+      **/DATABASE.db
       BASETOOLS_BUILD*.*
       BUILDLOG_*.md
       BUILDLOG_*.txt
@@ -36,7 +37,6 @@ steps:
       TestSuites.xml
       UPDATE_LOG.txt
       DATABASE.db
-      PARSE_LOG.txt
     flattenFolders: true
   condition: succeededOrFailed()
 
