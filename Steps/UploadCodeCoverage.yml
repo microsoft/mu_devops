@@ -105,4 +105,4 @@ steps:
         from edk2toollib.utility_functions import RunCmd
         for cov_file in Path('${{ parameters.report_path }}').rglob('*_coverage.xml'):
           pkg_flag = Path('${{ parameters.report_path }}').stem.split("_")[0]
-          RunCmd('$(codecov_uploader_cmd)', f'-t ${{ paramters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', raise_exception_on_nonzero=True)
+          RunCmd('$(codecov_uploader_cmd)', f'-t ${{ parameters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', raise_exception_on_nonzero=True)
