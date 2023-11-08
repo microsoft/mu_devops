@@ -103,7 +103,14 @@ steps:
       script: |
         from pathlib import Path
         from edk2toollib.utility_functions import RunCmd
+        import io
         for cov_file in Path(r'${{ parameters.report_dir }}').rglob('*_coverage.xml'):
-          pkg_flag = Path(r'${{ parameters.report_dir }}').stem.split("_")[0]
+          pkg_flag = cov_file.stem.split("_")[0]
           print(pkg_flag)
-          RunCmd(r'$(codecov_uploader_cmd)', f'-t ${{ parameters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', raise_exception_on_nonzero=True)
+          outstream = io.StringIO()
+          ret = RunCmd(r'$(codecov_uploader_cmd)', f'-t ${{ parameters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', outstream=outstream)
+          outstream.seek(0)
+          for line in outstream.readlines()
+            print(line)
+          if ret != 0:
+            raise RuntimeError(f'Failed to upload coverage for {cov_file}')
