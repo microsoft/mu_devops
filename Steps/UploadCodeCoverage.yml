@@ -17,6 +17,10 @@ parameters:
   displayName: Code Coverage Report
   type: string
   default: ''
+- name: use_package_flags
+  displayName: Use Package Flags
+  type: boolean
+  default: false
 - name: install_dependencies
   displayName: Install Pypi Dependencies
   type: boolean
@@ -87,6 +91,18 @@ steps:
       if system == 'Linux':
         os.chmod(filename, 0o755)
 
-- script: |
-    $(codecov_uploader_cmd) -t ${{ parameters.codecov_token }} -s ${{ parameters.report_dir }} -Z
-  displayName: Upload Code Coverage to Codecov.io
+- ${{ if eq(parameters.use_package_flags, false) }}:
+  - script: |
+      $(codecov_uploader_cmd) -t ${{ parameters.codecov_token }} -f ${{ parameters.report_path }} -Z
+    displayName: Upload Code Coverage to Codecov.io
+- ${{ else }}:
+  - task: PythonScript@0
+    displayName: Download and Verify Codecov Uploader
+    inputs:
+      scriptSource: inline
+      script: |
+        from pathlib import Path
+        from edk2toollib.utility_functions import RunCmd
+        for cov_file in Path('${{ parameters.report_path }}').rglob('*_coverage.xml'):
+          pkg_flag = Path('${{ parameters.report_path }}').stem.split("_")[0]
+          RunCmd('$(codecov_uploader_cmd)', f'-t ${{ paramters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', raise_exception_on_nonzero=True)

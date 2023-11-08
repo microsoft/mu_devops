@@ -54,6 +54,10 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
+- name: publish_coverage
+  displayName: Publish Code Coverage to codecov.io
+  type: boolean
+  default: false
 - name: extra_build_args
   displayName: Extra Build Command Arguments
   type: string
@@ -161,6 +165,14 @@ steps:
     inputs:
       script: stuart_ci_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
+
+- ${{ if eq(parameters.publish_coverage, true) }}:
+  - template: UploadCodeCoverage.yml
+    parameters:
+      report_dir: 'Build'
+      use_package_flags: true
+      install_dependencies: true
+      codecov_token: $(CODECOV_TOKEN)
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
