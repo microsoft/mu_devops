@@ -97,12 +97,13 @@ steps:
     displayName: Upload Code Coverage to Codecov.io
 - ${{ else }}:
   - task: PythonScript@0
-    displayName: Download and Verify Codecov Uploader
+    displayName: Run Codecov Uploader
     inputs:
       scriptSource: inline
       script: |
         from pathlib import Path
         from edk2toollib.utility_functions import RunCmd
-        for cov_file in Path('${{ parameters.report_dir }}').rglob('*_coverage.xml'):
-          pkg_flag = Path('${{ parameters.report_dir }}').stem.split("_")[0]
-          RunCmd('$(codecov_uploader_cmd)', f'-t ${{ parameters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', raise_exception_on_nonzero=True)
+        for cov_file in Path(r'${{ parameters.report_dir }}').rglob('*_coverage.xml'):
+          pkg_flag = Path(r'${{ parameters.report_dir }}').stem.split("_")[0]
+          print(pkg_flag)
+          RunCmd(r'$(codecov_uploader_cmd)', f'-t ${{ parameters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', raise_exception_on_nonzero=True)
