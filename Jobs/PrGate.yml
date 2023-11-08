@@ -163,7 +163,7 @@ jobs:
         do_non_ci_build: ${{ parameters.do_non_ci_build }}
         do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
         do_pr_eval: ${{ parameters.do_pr_eval }}
-        ${{ if eq(parameters.calculate_code_coverage, true), eq(parameters.coverage_publish_target, 'codecov') }}:
+        ${{ if and(eq(parameters.calculate_code_coverage, true), eq(parameters.coverage_publish_target, 'codecov')) }}:
           publish_coverage: true
         ${{ else }}:
           publish_coverage: false
