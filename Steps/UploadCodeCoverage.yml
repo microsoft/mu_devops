@@ -110,7 +110,7 @@ steps:
           outstream = io.StringIO()
           ret = RunCmd(r'$(codecov_uploader_cmd)', f'-t ${{ parameters.codecov_token }} -f {cov_file} -Z -F {pkg_flag}', outstream=outstream)
           outstream.seek(0)
-          for line in outstream.readlines()
+          for line in outstream.readlines():
             print(line)
           if ret != 0:
             raise RuntimeError(f'Failed to upload coverage for {cov_file}')
