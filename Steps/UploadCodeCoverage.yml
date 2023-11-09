@@ -91,11 +91,6 @@ steps:
       if system == 'Linux':
         os.chmod(filename, 0o755)
 
-# - ${{ if eq(parameters.use_package_flags, false) }}:
-#   - script: |
-#       $(codecov_uploader_cmd) -t ${{ parameters.codecov_token }} -f ${{ parameters.report_dir }} -Z
-#     displayName: Upload Code Coverage to Codecov.io
-# - ${{ else }}:
 - task: PythonScript@0
   displayName: Run Codecov Uploader ${{ parameters.flag }}
   env:
@@ -119,9 +114,4 @@ steps:
         params = f'-f {cov_file} -Z'
         if COV_FLAG:
           params += f' -F {COV_FLAG}'
-        ret = RunCmd(UPLOAD_CMD, params, outstream=outstream)
-        outstream.seek(0)
-        for line in outstream.readlines():
-          print(line)
-        if ret != 0:
-          raise RuntimeError(f'Failed to upload coverage for {cov_file}')
+        RunCmd(UPLOAD_CMD, params, outstream=outstream, raise_exception_on_nonzero=True)
