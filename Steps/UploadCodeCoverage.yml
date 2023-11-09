@@ -118,7 +118,7 @@ steps:
         params = f'-f {cov_file} -Z'
         if COV_FLAG:
           params += ' -F ${COV_FLAG}'
-        ret = RunCmd(COV_CMD), params, outstream=outstream)
+        ret = RunCmd(COV_CMD, params, outstream=outstream)
         outstream.seek(0)
         for line in outstream.readlines():
           print(line)
