@@ -101,6 +101,7 @@ steps:
   env:
     COV_FLAG: ${{ parameters.flag }}
     REPORT_DIR: ${{ parameters.report_dir }}
+    UPLOAD_CMD: $(codecov_uploader_cmd)
   inputs:
     scriptSource: inline
     script: |
@@ -111,14 +112,14 @@ steps:
 
       COV_FLAG = os.environ['COV_FLAG']
       REPORT_DIR = os.environ['REPORT_DIR']
-      COV_CMD = os.environ['codecov_uploader_cmd']
+      UPLOAD_CMD = os.environ['UPLOAD_CMD']
   
       for cov_file in Path(REPORT_DIR).rglob('*coverage.xml'):
         outstream = io.StringIO()
         params = f'-f {cov_file} -Z'
         if COV_FLAG:
           params += ' -F ${COV_FLAG}'
-        ret = RunCmd(COV_CMD, params, outstream=outstream)
+        ret = RunCmd(UPLOAD_CMD, params, outstream=outstream)
         outstream.seek(0)
         for line in outstream.readlines():
           print(line)
