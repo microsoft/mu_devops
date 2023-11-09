@@ -118,7 +118,7 @@ steps:
         outstream = io.StringIO()
         params = f'-f {cov_file} -Z'
         if COV_FLAG:
-          params += ' -F ${COV_FLAG}'
+          params += f' -F {COV_FLAG}'
         ret = RunCmd(UPLOAD_CMD, params, outstream=outstream)
         outstream.seek(0)
         for line in outstream.readlines():
