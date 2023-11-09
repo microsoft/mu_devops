@@ -109,7 +109,7 @@ steps:
           pkg_flag = cov_file.stem.split("_")[0]
           print(pkg_flag)
           outstream = io.StringIO()
-          ret = RunCmd(r'$(codecov_uploader_cmd)', f'-t {os.environ.get("CODECOV_TOKEN")} -f {cov_file} -Z -F {pkg_flag}', outstream=outstream)
+          ret = RunCmd(r'$(codecov_uploader_cmd)', f'-f {cov_file} -Z -F {pkg_flag}', outstream=outstream)
           outstream.seek(0)
           for line in outstream.readlines():
             print(line)
