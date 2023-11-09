@@ -109,7 +109,7 @@ steps:
       import io
       import os
 
-      COV_FLAG = os.envion['COV_FLAG']
+      COV_FLAG = os.environ['COV_FLAG']
       REPORT_DIR = os.environ['REPORT_DIR']
       COV_CMD = os.environ['codecov_uploader_cmd']
   
