@@ -167,12 +167,11 @@ steps:
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.publish_coverage, true) }}:
-  - template: UploadCodeCoverage.yml
-    parameters:
-      report_dir: 'Build'
-      use_package_flags: true
-      install_dependencies: true
-      codecov_token: $(CODECOV_TOKEN)
+  - ${{ each pkg in split(parameters.build_pkgs, ',') }}:
+    - template: UploadCodeCoverage.yml
+      parameters:
+        report_dir: 'Build/${{ pkg }}'
+        flag: ${{ pkg }}
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
