@@ -17,6 +17,10 @@ parameters:
   displayName: Code Coverage Report
   type: string
   default: ''
+- name: flag
+  displayName: Use Package Flags
+  type: string
+  default: ''
 - name: install_dependencies
   displayName: Install Pypi Dependencies
   type: boolean
@@ -87,6 +91,27 @@ steps:
       if system == 'Linux':
         os.chmod(filename, 0o755)
 
-- script: |
-    $(codecov_uploader_cmd) -t ${{ parameters.codecov_token }} -s ${{ parameters.report_dir }} -Z
-  displayName: Upload Code Coverage to Codecov.io
+- task: PythonScript@0
+  displayName: Run Codecov Uploader ${{ parameters.flag }}
+  env:
+    COV_FLAG: ${{ parameters.flag }}
+    REPORT_DIR: ${{ parameters.report_dir }}
+    UPLOAD_CMD: $(codecov_uploader_cmd)
+  inputs:
+    scriptSource: inline
+    script: |
+      from pathlib import Path
+      from edk2toollib.utility_functions import RunCmd
+      import io
+      import os
+
+      COV_FLAG = os.environ['COV_FLAG']
+      REPORT_DIR = os.environ['REPORT_DIR']
+      UPLOAD_CMD = os.environ['UPLOAD_CMD']
+  
+      for cov_file in Path(REPORT_DIR).rglob('*coverage.xml'):
+        outstream = io.StringIO()
+        params = f'-f {cov_file} -Z'
+        if COV_FLAG:
+          params += f' -F {COV_FLAG}'
+        RunCmd(UPLOAD_CMD, params, outstream=outstream, raise_exception_on_nonzero=True)
