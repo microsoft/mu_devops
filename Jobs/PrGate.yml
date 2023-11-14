@@ -177,7 +177,7 @@ jobs:
         ${{ else }}:
           self_host_agent: false
         ${{ if eq(parameters.calculate_code_coverage, true) }}:
-          extra_build_args: CODE_COVERAGE=TRUE
+          extra_build_args: CODE_COVERAGE=TRUE CC_FLATTEN=TRUE CC_FULL=TRUE
         ${{ else }}:
           extra_build_args: ''
 
