@@ -9,10 +9,6 @@
 ##
 
 parameters:
-- name: codecov_token
-  displayName: Codecov.io Token
-  type: string
-  default: ''
 - name: report_dir
   displayName: Code Coverage Report
   type: string
@@ -31,9 +27,11 @@ steps:
   - script: |
       pip install requests
     displayName: Install Python Dependencies for Codecov Uploader
+    condition: ne(variables['CODECOV_TOKEN'], '')
 
 - task: PythonScript@0
   displayName: Download and Verify Codecov Uploader
+  condition: ne(variables['CODECOV_TOKEN'], '')
   inputs:
     scriptSource: inline
     script: |
@@ -93,6 +91,7 @@ steps:
 
 - task: PythonScript@0
   displayName: Run Codecov Uploader ${{ parameters.flag }}
+  condition: ne(variables['CODECOV_TOKEN'], '')
   env:
     COV_FLAG: ${{ parameters.flag }}
     REPORT_DIR: ${{ parameters.report_dir }}
