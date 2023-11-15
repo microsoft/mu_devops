@@ -101,17 +101,25 @@ steps:
     scriptSource: inline
     script: |
       from pathlib import Path
-      from edk2toollib.utility_functions import RunCmd
       import io
       import os
+      import subprocess
 
       COV_FLAG = os.environ['COV_FLAG']
       REPORT_DIR = os.environ['REPORT_DIR']
       UPLOAD_CMD = os.environ['UPLOAD_CMD']
-  
+
       for cov_file in Path(REPORT_DIR).rglob('*coverage.xml'):
-        outstream = io.StringIO()
-        params = f'-f {cov_file} -Z'
+        params = f'{UPLOAD_CMD} -f {cov_file} -Z'
         if COV_FLAG:
           params += f' -F {COV_FLAG}'
-        RunCmd(UPLOAD_CMD, params, outstream=outstream, raise_exception_on_nonzero=True)
+        process = subprocess.Popen(
+          [UPLOAD_CMD, params],
+          stdout=subprocess.PIPE,
+          stderr=subprocess.PIPE)
+        output, error = process.communicate()
+        print(f"##[debug]{output.decode('utf-8')}")
+        if process.returncode != 0:
+          print(f"##[error]{error.decode('utf-8')}")
+          raise Exception(f"{UPLOAD_CMD} failed with Return Code: "
+                          f"{process.returncode}.")
