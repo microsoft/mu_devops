@@ -35,7 +35,7 @@ steps:
   displayName: "Coverage ADO ${{ parameters.flag }}: Publish"
   inputs:
     summaryFileLocation: '${{ parameters.report_dir }}/**/*coverage.xml'
-  condition:  eq( parameters.upload_target, 'ado')
+  condition:  eq( '${{ parameters.upload_target }}' , 'ado')
 #
 # All Steps to upload to codecov.io
 #
@@ -43,11 +43,11 @@ steps:
   - script: |
       pip install requests
     displayName: "Coverage CodeCov ${{ parameters.flag }}: Install Python Dependencies"
-    condition: eq( parameters.upload_target, 'codecov')
+    condition: eq( '${{ parameters.upload_target }}' , 'codecov')
 
 - task: PythonScript@0
   displayName: "Coverage CodeCov ${{ parameters.flag }}: Download and Verify Codecov Uploader"
-  condition:  eq( parameters.upload_target, 'codecov')
+  condition:  eq( '${{ parameters.upload_target }}' , 'codecov')
   inputs:
     scriptSource: inline
     script: |
@@ -107,7 +107,7 @@ steps:
 
 - task: PythonScript@0
   displayName: "Coverage CodeCov ${{ parameters.flag }}: Upload Results"
-  condition:  eq( parameters.upload_target, 'codecov')
+  condition:  eq( '${{ parameters.upload_target }}' , 'codecov')
   env:
     COV_FLAG: ${{ parameters.flag }}
     REPORT_DIR: ${{ parameters.report_dir }}
