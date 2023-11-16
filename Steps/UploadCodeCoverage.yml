@@ -32,8 +32,7 @@ steps:
     echo "Code Coverage Upload Target: ${{ parameters.upload_target }}"
     $coverage_file_count=(Get-ChildItem $(Build.ArtifactStagingDirectory)/coverage/ -Recurse -Include *_coverage.xml).count
     Write-Host echo "##vso[task.setvariable variable=coverage_file_count]$coverage_file_count"
-  displayName: Check For Coverage Files
-  displayName: Detect Code Coverage Target
+  displayName: Detect Code Coverage Target and Files
 #
 # Steps to upload to Azure DevOps
 #
@@ -49,7 +48,7 @@ steps:
   - script: |
       pip install requests
     displayName: "Coverage CodeCov ${{ parameters.flag }}: Install Python Dependencies"
-    condition: and(eq(variables['upload_target'] , 'ado'), gt(variables.coverage_file_count, 0))
+    condition: and(eq(variables['upload_target'] , 'codecov'), gt(variables.coverage_file_count, 0))
 
 - task: PythonScript@0
   displayName: "Coverage CodeCov ${{ parameters.flag }}: Download and Verify Codecov Uploader"
