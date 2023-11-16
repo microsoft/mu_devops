@@ -181,7 +181,7 @@ jobs:
         ${{ else }}:
           extra_build_args: ''
 
-- ${{ if eq(parameters.calculate_code_coverage, true}}:
+- ${{ if eq(parameters.calculate_code_coverage, true) }}:
   - job: PublishCoverage
     dependsOn:
     - ${{ each item in parameters.build_matrix }}:
