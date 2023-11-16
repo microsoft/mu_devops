@@ -131,8 +131,7 @@ steps:
         cmd = f'{UPLOAD_CMD} -f {cov_file} -Z'
         if COV_FLAG:
           cmd += f' -F {COV_FLAG}'
-        
-        print("##[debug]Running: " + cmd")
+
         process = subprocess.Popen(
           cmd,
           stdout=subprocess.PIPE,
