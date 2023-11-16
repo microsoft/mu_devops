@@ -46,7 +46,7 @@ steps:
   - script: |
       pip install requests
     displayName: "Coverage CodeCov ${{ parameters.flag }}: Install Python Dependencies"
-    condition: eq('${{ parameters.upload_target }}','codecov')
+    condition: eq(variables['upload_target'] , 'ado')
 
 - task: PythonScript@0
   displayName: "Coverage CodeCov ${{ parameters.flag }}: Download and Verify Codecov Uploader"
