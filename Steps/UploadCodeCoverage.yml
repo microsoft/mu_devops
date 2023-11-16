@@ -42,7 +42,7 @@ steps:
       REPORT_DIR = os.environ['REPORT_DIR']
 
       print(f'##vso[task.setvariable variable=upload_target]{UPLOAD_TARGET}')
-      print('Code Coveragte Upload Target: {UPLOAD_TARGET}')
+      print(f'Code Coveragte Upload Target: {UPLOAD_TARGET}')
       print(f'##vso[task.setvariable variable=coverage_file_count]{len(list(Path(REPORT_DIR).rglob("*coverage.xml")))}')
 #
 # Steps to upload to Azure DevOps
