@@ -27,7 +27,7 @@ parameters:
   default: 'ado'
 
 steps:
-- script: echo "##vso[task.setvariable variable=upload_target]${{ parameters.upload_target }}
+- script: echo "##vso[task.setvariable variable=upload_target]${{ parameters.upload_target }}"
 #
 # Steps to upload to Azure DevOps
 #
