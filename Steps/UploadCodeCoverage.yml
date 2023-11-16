@@ -27,12 +27,23 @@ parameters:
   default: 'ado'
 
 steps:
-- script: |
-    echo "##vso[task.setvariable variable=upload_target]${{ parameters.upload_target }}"
-    echo "Code Coverage Upload Target: ${{ parameters.upload_target }}"
-    $coverage_file_count=(Get-ChildItem $(Build.ArtifactStagingDirectory)/coverage/ -Recurse -Include *_coverage.xml).count
-    Write-Host echo "##vso[task.setvariable variable=coverage_file_count]$coverage_file_count"
+- task: PythonScript@0
   displayName: Detect Code Coverage Target and Files
+  env:
+    UPLOAD_TARGET: ${{ parameters.upload_target }}
+    REPORT_DIR: ${{ parameters.report_dir }}
+  inputs:
+    scriptSource: inline
+    script: |
+      import os
+      from pathlib import Path
+
+      UPLOAD_TARGET = os.environ['UPLOAD_TARGET']
+      REPORT_DIR = os.environ['REPORT_DIR']
+
+      print(f'##vso[task.setvariable variable=upload_target]{UPLOAD_TARGET}')
+      print('Code Coveragte Upload Target: '{UPLOAD_TARGET}')
+      print(f'##vso[task.setvariable variable=coverage_file_count]{len(list(Path(REPORT_DIR).rglob("*coverage.xml")))}')
 #
 # Steps to upload to Azure DevOps
 #
