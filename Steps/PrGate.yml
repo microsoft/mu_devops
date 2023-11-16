@@ -57,7 +57,7 @@ parameters:
 - name: coverage_publish_target
   displayName: Publish Code coverage to ado, codecov, or nothing
   type: string # 'ado', 'codecov', ''
-  default: false
+  default: ''
 - name: extra_build_args
   displayName: Extra Build Command Arguments
   type: string
