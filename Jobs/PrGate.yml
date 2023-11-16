@@ -181,18 +181,18 @@ jobs:
         ${{ else }}:
           extra_build_args: ''
 
-- ${{ if and(eq(parameters.calculate_code_coverage, true), eq(parameters.coverage_publish_target, 'ado')) }}:
-  - job: PublishCoverage
-    dependsOn:
-    - ${{ each item in parameters.build_matrix }}:
-      - Build_${{ item.Key }}
-    condition: and(not(Canceled()), not(Failed()))
+#- ${{ if and(eq(parameters.calculate_code_coverage, true), eq(parameters.coverage_publish_target, 'ado')) }}:
+- job: PublishCoverage
+  dependsOn:
+  - ${{ each item in parameters.build_matrix }}:
+    - Build_${{ item.Key }}
+  condition: and(not(Canceled()), not(Failed()), eq(parameters.coverage_publish_target, 'ado'))
 
-    workspace:
-      clean: all
+  workspace:
+    clean: all
 
-    pool:
-      vmImage: 'windows-latest'
+  pool:
+    vmImage: 'windows-latest'
 
-    steps:
-      - template: ../Steps/PublishCodeCoverage.yml
+  steps:
+    - template: ../Steps/PublishCodeCoverage.yml
