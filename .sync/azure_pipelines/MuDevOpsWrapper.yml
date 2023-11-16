@@ -42,9 +42,6 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
-- name: calculate_code_coverage
-  displayName: Calculate Code Coverage From Unit Tests
-  default: false
 - name: coverage_publish_target
   displayName: Code Coverage Publish Target
   type: string
