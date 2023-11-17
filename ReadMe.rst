@@ -96,7 +96,7 @@ coverage data:
 
 - **MuDevOpsWrapper.yml** - This is the most user friendly way to perform Core CI. If extending this template, enabling
   code coverage is as simple as setting the parameter `coverage_publish_target` to 'ado' or 'codecov'. `Jobs/PrGate.yml`
-  and `Steps/PrGate.yml` use the same parameter name iwth the same outcome.
+  and `Steps/PrGate.yml` use the same parameter name with the same outcome.
 
 - **Steps/UploadCodeCoverage.yml** - This is the template to directly upload code coverage data. Set `upload_target` to
   'ado' or 'codecov' to upload. The `report_dir` is parameter used to specify the directory to recursivly look for
