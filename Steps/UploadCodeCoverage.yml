@@ -24,7 +24,7 @@ parameters:
 - name: upload_target
   displayName: Upload Target
   type: string
-  default: 'ado'
+  default: 'codecov'
 
 steps:
 - task: PythonScript@0
