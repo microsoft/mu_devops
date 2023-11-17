@@ -38,6 +38,8 @@ Table of Contents
 
 3. `Continuous Integration (CI)`_
 
+   - `Code Coverage`_
+
 4. `Conventions`_
 
 5. `Containers`_
@@ -84,6 +86,21 @@ Continuous Integration (CI)
 There are two broad categories of CI - Core CI and Platform CI. You may see these terms used in the repo.
   - **Core CI** - Focused on building and testing all packages in Edk2 without an actual target platform.
   - **Platform CI** - Focused on building a single target platform and confirming functionality on that platform.
+
+Code Coverage
+-------------
+
+mu_devops provides azure pipeline templates for uploading code coverage to the pipline currently executing, or directly
+to codecov.io for public github repositories that use azure pipelines. There are two supported ways to upload code
+coverage data:
+
+- **MuDevOpsWrapper.yml** - This is the most user friendly way to perform Core CI. If extending this template, enabling
+  code coverage is as simple as setting the parameter `coverage_publish_target` to 'ado' or 'codecov'. `Jobs/PrGate.yml`
+  and `Steps/PrGate.yml` use the same parameter name iwth the same outcome.
+
+- **Steps/UploadCodeCoverage.yml** - This is the template to directly upload code coverage data. Set `upload_target` to
+  'ado' or 'codecov' to upload. The `report_dir` is parameter used to specify the directory to recursivly look for
+  \*coverage.xml files to upload 
 
 Conventions
 ===========
