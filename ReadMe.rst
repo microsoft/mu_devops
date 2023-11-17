@@ -99,7 +99,7 @@ coverage data:
   and `Steps/PrGate.yml` use the same parameter name with the same outcome.
 
 - **Steps/UploadCodeCoverage.yml** - This is the template to directly upload code coverage data. Set `upload_target` to
-  'ado' or 'codecov' to upload. The `report_dir` is parameter used to specify the directory to recursivly look for
+  'ado' or 'codecov' to upload. `report_dir` is parameter used to specify the directory to recursivly look for
   \*coverage.xml files to upload 
 
 Conventions
