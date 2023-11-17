@@ -42,8 +42,10 @@ steps:
       REPORT_DIR = os.environ['REPORT_DIR']
 
       print(f'##vso[task.setvariable variable=upload_target]{UPLOAD_TARGET}')
-      print(f'Code Coveragte Upload Target: {UPLOAD_TARGET}')
+      print(f'Code Coverage Upload Target: {UPLOAD_TARGET}')
+
       print(f'##vso[task.setvariable variable=coverage_file_count]{len(list(Path(REPORT_DIR).rglob("*coverage.xml")))}')
+      print(f'Code Coverage Files: {list(Path(REPORT_DIR).rglob("*coverage.xml"))}')
 #
 # Steps to upload to Azure DevOps
 #
@@ -147,7 +149,8 @@ steps:
         process = subprocess.Popen(
           cmd,
           stdout=subprocess.PIPE,
-          stderr=subprocess.PIPE)
+          stderr=subprocess.PIPE,
+          shell=True)
         output, error = process.communicate()
         print(f"##[debug]{output.decode('utf-8')}")
         if process.returncode != 0:
