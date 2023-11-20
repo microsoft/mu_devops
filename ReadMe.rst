@@ -91,16 +91,9 @@ Code Coverage
 -------------
 
 mu_devops provides azure pipeline templates for uploading code coverage to the pipline currently executing, or directly
-to codecov.io for public github repositories that use azure pipelines. There are two supported ways to upload code
-coverage data:
-
-- **MuDevOpsWrapper.yml** - This is the most user friendly way to perform Core CI. If extending this template, enabling
-  code coverage is as simple as setting the parameter `coverage_publish_target` to 'ado' or 'codecov'. `Jobs/PrGate.yml`
-  and `Steps/PrGate.yml` use the same parameter name with the same outcome.
-
-- **Steps/UploadCodeCoverage.yml** - This is the template to directly upload code coverage data. Set `upload_target` to
-  'ado' or 'codecov' to upload. `report_dir` is parameter used to specify the directory to recursivly look for
-  \*coverage.xml files to upload 
+to codecov.io for public github repositories that use azure pipelines. No matter the yaml file you are using, whether
+it be `MuDevOpsWrapper.yml`, `Jobs/PrGate.yml`, `Steps/PrGate.yml` or `Steps/UploadCodeCoverage.yml` itself, the only a
+action that needs to be taken is to set an environment variable `coverage_upload_target` to ado or codecov.
 
 Conventions
 ===========

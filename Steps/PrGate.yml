@@ -1,6 +1,8 @@
 ## @file
 # Azure Pipelines step template to build for a pull request.
 #
+# To upload coverage results, set `coverage_upload_target` to `ado` or `codecov`.
+#
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##

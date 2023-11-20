@@ -1,6 +1,9 @@
 ## @file
 # Azure Pipelines step template upload code coverage to codecov.io
 #
+# Set `coverage_upload_target` to `codecov` or `ado` rather than passing it
+# as a parameter to this template.
+#
 # Follows the codecov.io documentation for uploading code coverage reports:
 # https://docs.codecov.com/docs/codecov-uploader
 #
