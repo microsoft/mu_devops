@@ -1,6 +1,8 @@
 ## @file
 # Template file used to build supported packages.
 #
+# To upload coverage results, set `coverage_upload_target` to `ado` or `codecov`.
+#
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Copyright (c) 2020 - 2021, ARM Limited. All rights reserved.<BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -35,10 +37,6 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
-- name: coverage_publish_target
-  displayName: Code Coverage Publish Target
-  type: string
-  default: 'ado' # 'ado', 'codecov', ''
 - name: extra_post_build_steps
   displayName: Extra Post-Build Steps
   type: stepList
@@ -159,7 +157,6 @@ jobs:
         do_non_ci_build: ${{ parameters.do_non_ci_build }}
         do_non_ci_setup: ${{ parameters.do_non_ci_setup }}
         do_pr_eval: ${{ parameters.do_pr_eval }}
-        coverage_publish_target: ${{ parameters.coverage_publish_target }}
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
         install_tools: ${{ and(not(eq(item.Value.SelfHostAgent, true)), not(parameters.container_build)) }}
         extra_install_step: ${{ parameters.extra_install_step }}
