@@ -45,11 +45,7 @@ parameters:
 - name: coverage_publish_target
   displayName: Code Coverage Publish Target
   type: string
-  values:
-  - 'ado'
-  - 'codecov'
-  - 'none'
-  default: 'ado'
+  default: 'ado', 'codecov', ''
 - name: container_build
   displayName: Flag for whether this repo should do stuart_setup
   type: boolean
