@@ -21,17 +21,51 @@ parameters:
   displayName: Install Pypi Dependencies
   type: boolean
   default: true
+- name: upload_target
+  displayName: Upload Target
+  type: string
+  default: 'codecov'
 
 steps:
+- task: PythonScript@0
+  displayName: Detect Code Coverage Target and Files
+  env:
+    UPLOAD_TARGET: ${{ parameters.upload_target }}
+    REPORT_DIR: ${{ parameters.report_dir }}
+  inputs:
+    scriptSource: inline
+    script: |
+      import os
+      from pathlib import Path
+
+      UPLOAD_TARGET = os.environ['UPLOAD_TARGET']
+      REPORT_DIR = os.environ['REPORT_DIR']
+
+      print(f'##vso[task.setvariable variable=upload_target]{UPLOAD_TARGET}')
+      print(f'Code Coverage Upload Target: {UPLOAD_TARGET}')
+
+      print(f'##vso[task.setvariable variable=coverage_file_count]{len(list(Path(REPORT_DIR).rglob("*coverage.xml")))}')
+      print(f'Code Coverage Files: {list(Path(REPORT_DIR).rglob("*coverage.xml"))}')
+#
+# Steps to upload to Azure DevOps
+#
+- task: PublishCodeCoverageResults@2
+  displayName: "Coverage ADO ${{ parameters.flag }}: Publish"
+  inputs:
+    summaryFileLocation: '${{ parameters.report_dir }}/**/*coverage.xml'
+  condition:  and(eq(variables['upload_target'] , 'ado'), gt(variables.coverage_file_count, 0))
+#
+# All Steps to upload to codecov.io
+#
 - ${{ if eq(parameters.install_dependencies, true) }}:
   - script: |
       pip install requests
-    displayName: Install Python Dependencies for Codecov Uploader
-    condition: ne(variables['CODECOV_TOKEN'], '')
+    displayName: "Coverage CodeCov ${{ parameters.flag }}: Install Python Dependencies"
+    condition: and(eq(variables['upload_target'] , 'codecov'), gt(variables.coverage_file_count, 0))
 
 - task: PythonScript@0
-  displayName: Download and Verify Codecov Uploader
-  condition: ne(variables['CODECOV_TOKEN'], '')
+  displayName: "Coverage CodeCov ${{ parameters.flag }}: Download and Verify Codecov Uploader"
+  condition:  and(eq(variables['upload_target'] , 'codecov'), gt(variables.coverage_file_count, 0))
   inputs:
     scriptSource: inline
     script: |
@@ -90,8 +124,8 @@ steps:
         os.chmod(filename, 0o755)
 
 - task: PythonScript@0
-  displayName: Run Codecov Uploader ${{ parameters.flag }}
-  condition: ne(variables['CODECOV_TOKEN'], '')
+  displayName: "Coverage CodeCov ${{ parameters.flag }}: Upload Results"
+  condition:  and(eq(variables['upload_target'] , 'codecov'), gt(variables.coverage_file_count, 0))
   env:
     COV_FLAG: ${{ parameters.flag }}
     REPORT_DIR: ${{ parameters.report_dir }}
@@ -109,13 +143,14 @@ steps:
       UPLOAD_CMD = os.environ['UPLOAD_CMD']
 
       for cov_file in Path(REPORT_DIR).rglob('*coverage.xml'):
-        params = f'{UPLOAD_CMD} -f {cov_file} -Z'
+        cmd = f'{UPLOAD_CMD} -f {cov_file} -Z'
         if COV_FLAG:
-          params += f' -F {COV_FLAG}'
+          cmd += f' -F {COV_FLAG}'
         process = subprocess.Popen(
-          [UPLOAD_CMD, params],
+          cmd,
           stdout=subprocess.PIPE,
-          stderr=subprocess.PIPE)
+          stderr=subprocess.PIPE,
+          shell=True)
         output, error = process.communicate()
         print(f"##[debug]{output.decode('utf-8')}")
         if process.returncode != 0:
