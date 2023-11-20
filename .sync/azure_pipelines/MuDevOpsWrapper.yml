@@ -48,7 +48,7 @@ parameters:
   values:
   - 'ado'
   - 'codecov'
-  - ''
+  - 'none'
   default: 'ado' # 'ado', 'codecov', ''
 - name: container_build
   displayName: Flag for whether this repo should do stuart_setup
