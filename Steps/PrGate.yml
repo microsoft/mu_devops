@@ -54,10 +54,6 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
-- name: coverage_publish_target
-  displayName: Publish Code coverage to ado, codecov, or nothing
-  type: string # 'ado', 'codecov', ''
-  default: ''
 - name: extra_build_args
   displayName: Extra Build Command Arguments
   type: string
@@ -171,7 +167,7 @@ steps:
     parameters:
       report_dir: 'Build/${{ pkg }}'
       flag: ${{ pkg }}
-      upload_target: ${{ parameters.coverage_publish_target }}
+      upload_target: $(coverage_publish_target)
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}

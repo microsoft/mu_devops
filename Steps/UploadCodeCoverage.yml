@@ -21,16 +21,12 @@ parameters:
   displayName: Install Pypi Dependencies
   type: boolean
   default: true
-- name: upload_target
-  displayName: Upload Target
-  type: string
-  default: 'codecov'
 
 steps:
 - task: PythonScript@0
   displayName: Detect Code Coverage Target and Files
   env:
-    UPLOAD_TARGET: ${{ parameters.upload_target }}
+    UPLOAD_TARGET: ${{ variables.coverage_upload_target }}
     REPORT_DIR: ${{ parameters.report_dir }}
   inputs:
     scriptSource: inline
