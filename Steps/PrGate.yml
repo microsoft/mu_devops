@@ -167,7 +167,6 @@ steps:
     parameters:
       report_dir: 'Build/${{ pkg }}'
       flag: ${{ pkg }}
-      upload_target: $(coverage_publish_target)
 
 # Potential post-build steps
 - ${{ parameters.extra_post_build_steps }}
