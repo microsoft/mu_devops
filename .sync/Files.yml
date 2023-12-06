@@ -173,7 +173,6 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
-      microsoft/secureboot_objects
 
 # GitHub Templates - Issues
 #
@@ -263,7 +262,6 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
-      microsoft/secureboot_objects
 
 # Leaf Workflow - Apply Labels
   - files:
@@ -406,6 +404,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # Leaf Workflow - Label Sync
   - files:
@@ -430,6 +429,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # Leaf Workflow - Mark Stale Issues and Pull Requests
   - files:
@@ -508,6 +508,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_rust_hid
       microsoft/mu_tiano_platforms
+      microsoft/secureboot_objects
 
 # Leaf Workflow - Release Draft
 # Note: This group has two files synced that allow separate configuration for
@@ -560,6 +561,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # Leaf Workflow - Submodule Release Update
   - files:
