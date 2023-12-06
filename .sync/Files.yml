@@ -79,6 +79,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # CI Configuration - Markdown Lint - Mu Documentation Repo Settings
   - files:
@@ -124,6 +125,7 @@ group:
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # dependabot - Track GitHub Actions, PIP Modules, and Git Submodules
   - files:
@@ -171,6 +173,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # GitHub Templates - Issues
 #
@@ -195,6 +198,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # GitHub Templates - Licensing - Project Mu License
   - files:
@@ -259,6 +263,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # Leaf Workflow - Apply Labels
   - files:
@@ -448,6 +453,7 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+      microsoft/secureboot_objects
 
 # Leaf Workflow - Mark Stale Issues and Pull Requests (Mu DevOps Adjustment)
 # Prevents the reusable workflow file from being overwritten by the leaf workflow
