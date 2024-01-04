@@ -28,6 +28,10 @@ parameters:
     type: stepList
     default:
       - script: echo No extra prepare steps provided
+  - name: custom_tag_format
+    displayName: Use custom tag format
+    type: string
+    default: "False"
 
 jobs:
   - job: Create_Release_Tag
@@ -71,7 +75,7 @@ jobs:
         displayName: "Setup Git"
 
       - script: |
-          python mu_devops/Scripts/TagGenerator/TagGenerator.py -r target/ --major ${{ parameters.major_version }} -v --printadovar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri)
+          python mu_devops/Scripts/TagGenerator/TagGenerator.py -r target/ --major ${{ parameters.major_version }} -v --printadovar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri) -c ${{ parameters.custom_tag_format }}
         displayName: "Run Tag Generator"
         workingDirectory: $(Agent.BuildDirectory)
 

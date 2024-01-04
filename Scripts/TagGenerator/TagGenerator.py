@@ -18,37 +18,43 @@ def main():
     args = get_cli_options()
     repo = Repo(args.repo)
     log_level = logging.DEBUG if args.verbose else logging.INFO
+    is_custom_tag = args.custom_tag.lower() == 'true'
     logging.basicConfig(format="%(levelname)s - %(message)s", level=log_level)
 
     logging.debug(f"Generating tag name for: {repo.head.commit}")
 
     # Get the previous tag and increment values as needed.
-    prev_tag, breaking, commits = get_last_tag(repo, args.first)
+    prev_tag, breaking, commits = get_last_tag(repo, args.first, is_custom_tag)
+
+    logging.debug(f"custom_tag set to: " + str(is_custom_tag))
 
     # Generate the new tag name
-    minor = 0
-    patch = 0
-    if prev_tag is not None:
-        if prev_tag.commit == repo.head.commit:
-            logging.info("No changes since last tag")
-            return
+    if is_custom_tag is False:
+        minor = 0
+        patch = 0
+        if prev_tag is not None:
+            if prev_tag.commit == repo.head.commit:
+                logging.info("No changes since last tag")
+                return
 
-        version_split = prev_tag.name.split('.')
-        if version_split[0] == args.major:
-            minor = int(version_split[1])
-            patch = int(version_split[2])
-            if breaking:
-                minor += 1
-                patch = 0
+            version_split = prev_tag.name.split('.')
+            if version_split[0] == args.major:
+                minor = int(version_split[1])
+                patch = int(version_split[2])
+                if breaking:
+                    minor += 1
+                    patch = 0
+                else:
+                    patch += 1
             else:
-                patch += 1
-        else:
-            logging.critical(
-                f"Different major version. {version_split[0]} -> {args.major}")
-            if int(version_split[0]) > int(args.major):
-                raise Exception("Major version has decreased!")
+                logging.critical(
+                    f"Different major version. {version_split[0]} -> {args.major}")
+                if int(version_split[0]) > int(args.major):
+                    raise Exception("Major version has decreased!")
 
-    version = f"{args.major}.{minor}.{patch}"
+        version = f"{args.major}.{minor}.{patch}"
+    else:
+        version = f"{args.major}"
     logging.info(f"New tag: {version}")
 
     # Before going further, ensure this is not a duplicate. This can happen if
@@ -87,12 +93,14 @@ def get_cli_options():
                         help="Indicates this is expected to be the first tag.")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Enabled verbose script prints.")
+    parser.add_argument("-c", "--custom_tag", default=False,
+                        help="Use custom tag format from the --major argument.")
 
     args = parser.parse_args()
     return args
 
 
-def get_last_tag(repo, first):
+def get_last_tag(repo, first, custom_tag):
     """Retrieves the last tag name in the given HEAD history. This will
     exclude any tag that does not match the #.#.# format.
 
@@ -106,11 +114,14 @@ def get_last_tag(repo, first):
 
     # Find all the eligible tags first.
     tags = []
-    pattern = re.compile("^[0-9]+\.[0-9]+\.[0-9]+$")
+    if custom_tag is False:
+        pattern = re.compile("^[0-9]+\.[0-9]+\.[0-9]+$")
+
     for tag in repo.tags:
-        if pattern.match(tag.name) is None:
-            logging.debug(f"Skipping unrecognized tag format. Tag: {tag}")
-            continue
+        if custom_tag is False:
+            if pattern.match(tag.name) is None:
+                logging.debug(f"Skipping unrecognized tag format. Tag: {tag}")
+                continue
 
         tags.append(tag)
 
@@ -127,8 +138,9 @@ def get_last_tag(repo, first):
 
         included_commits.append(commit)
 
-    if not first:
-        raise Exception("No previous tag found!")
+    if custom_tag is False:
+        if not first:
+            raise Exception("No previous tag found!")
 
     # No tag found, return all commits and non-breaking.
     logging.info("No previous tag found.")
