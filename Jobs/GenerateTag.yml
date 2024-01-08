@@ -75,7 +75,7 @@ jobs:
         displayName: "Setup Git"
 
       - script: |
-         python mu_devops/Scripts/TagGenerator/TagGenerator.py -r target/ --major ${{ parameters.major_version }} -v --printadovar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri)
+          python mu_devops/Scripts/TagGenerator/TagGenerator.py -r target/ --major ${{ parameters.major_version }} -v --printadovar tag_name --notes target/${{ parameters.notes_file }} --url $(Build.Repository.Uri)
         displayName: "Run Tag Generator"
         workingDirectory: $(Agent.BuildDirectory)
         condition: and(succeededOrFailed(), eq('${{parameters.custom_tag_string}}', 'None'))
