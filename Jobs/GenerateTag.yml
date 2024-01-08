@@ -31,7 +31,7 @@ parameters:
   - name: custom_tag_format
     displayName: Use custom tag format
     type: string
-    default: "False"
+    default: ""
 
 jobs:
   - job: Create_Release_Tag

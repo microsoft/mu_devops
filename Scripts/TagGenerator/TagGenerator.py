@@ -18,18 +18,17 @@ def main():
     args = get_cli_options()
     repo = Repo(args.repo)
     log_level = logging.DEBUG if args.verbose else logging.INFO
-    is_custom_tag = args.custom_tag.lower() == 'true'
     logging.basicConfig(format="%(levelname)s - %(message)s", level=log_level)
 
     logging.debug(f"Generating tag name for: {repo.head.commit}")
 
     # Get the previous tag and increment values as needed.
-    prev_tag, breaking, commits = get_last_tag(repo, args.first, is_custom_tag)
+    prev_tag, breaking, commits = get_last_tag(repo, args.first, args.custom_tag)
 
-    logging.debug(f"custom_tag set to: " + str(is_custom_tag))
+    logging.info(f"custom_tag is: " + str(args.custom_tag))
 
     # Generate the new tag name
-    if is_custom_tag is False:
+    if args.custom_tag is None:
         minor = 0
         patch = 0
         if prev_tag is not None:
@@ -93,7 +92,7 @@ def get_cli_options():
                         help="Indicates this is expected to be the first tag.")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Enabled verbose script prints.")
-    parser.add_argument("-c", "--custom_tag", default=False,
+    parser.add_argument("-c", "--custom_tag", default=None,
                         help="Use custom tag format from the --major argument.")
 
     args = parser.parse_args()
@@ -114,11 +113,11 @@ def get_last_tag(repo, first, custom_tag):
 
     # Find all the eligible tags first.
     tags = []
-    if custom_tag is False:
+    if custom_tag is None:
         pattern = re.compile("^[0-9]+\.[0-9]+\.[0-9]+$")
 
     for tag in repo.tags:
-        if custom_tag is False:
+        if custom_tag is None:
             if pattern.match(tag.name) is None:
                 logging.debug(f"Skipping unrecognized tag format. Tag: {tag}")
                 continue
@@ -138,7 +137,7 @@ def get_last_tag(repo, first, custom_tag):
 
         included_commits.append(commit)
 
-    if custom_tag is False:
+    if custom_tag is None:
         if not first:
             raise Exception("No previous tag found!")
 
