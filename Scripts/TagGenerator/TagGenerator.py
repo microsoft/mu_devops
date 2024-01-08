@@ -25,7 +25,7 @@ def main():
     # Get the previous tag and increment values as needed.
     prev_tag, breaking, commits = get_last_tag(repo, args.first, args.custom_tag)
 
-    logging.info(f"custom_tag is: " + str(args.custom_tag))
+    logging.info(f"custom_tag is: {str(args.custom_tag)}")
 
     # Generate the new tag name
     if args.custom_tag is None:
