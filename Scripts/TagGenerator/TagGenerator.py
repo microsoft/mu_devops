@@ -53,7 +53,7 @@ def main():
 
         version = f"{args.major}.{minor}.{patch}"
     else:
-        version = f"{args.major}"
+        version = f"{args.custom_tag}"
     logging.info(f"New tag: {version}")
 
     # Before going further, ensure this is not a duplicate. This can happen if
