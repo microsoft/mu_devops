@@ -93,7 +93,7 @@ def get_cli_options():
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Enabled verbose script prints.")
     parser.add_argument("-c", "--custom_tag", default=None,
-                        help="Use custom tag format from the --major argument.")
+                        help="The custom tag string.")
 
     args = parser.parse_args()
     return args
