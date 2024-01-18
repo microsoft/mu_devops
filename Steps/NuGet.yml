@@ -9,47 +9,47 @@
 ##
 
 parameters:
-  - name: artifacts_identifier
-    displayName: Artifacts Identifier
-    type: string
-    default: "Artifacts"
-  - name: custom_nuget_prep_step_list
-    displayName: Custom NuGet Package Step List
-    type: stepList
-    default:
-      - script: echo No custom NuGet prep steps provided
-  - name: include_binaries
-    displayName: Include build binaries in the Nuget package
-    type: boolean
-    default: true
-  - name: include_logs
-    displayName: Include build logs in the Nuget package
-    type: boolean
-    default: false
-  - name: include_other
-    displayName: Include other build artifacts in the Nuget package
-    type: boolean
-    default: false
-  - name: license_file_path
-    displayName: License File Path (Absolute Path)
-    type: string
-    default: ""
+- name: artifacts_identifier
+  displayName: Artifacts Identifier
+  type: string
+  default: 'Artifacts'
+- name: custom_nuget_prep_step_list
+  displayName: Custom NuGet Package Step List
+  type: stepList
+  default:
+    - script: echo No custom NuGet prep steps provided
+- name: include_binaries
+  displayName: Include build binaries in the Nuget package
+  type: boolean
+  default: true
+- name: include_logs
+  displayName: Include build logs in the Nuget package
+  type: boolean
+  default: false
+- name: include_other
+  displayName: Include other build artifacts in the Nuget package
+  type: boolean
+  default: false
+- name: license_file_path
+  displayName: License File Path (Absolute Path)
+  type: string
+  default: ''
 
-  #
-  # Nuget Package Configuration Data
-  #
+#
+# Nuget Package Configuration Data
+#
 
-  # The package config file path is relative to the source code workspace root directory.
-  - name: nuget_package_config_file_path
-    displayName: Nuget Package Config File Path
-    type: string
-    default: ""
+# The package config file path is relative to the source code workspace root directory.
+- name: nuget_package_config_file_path
+  displayName: Nuget Package Config File Path
+  type: string
+  default: ''
 
-  # The package version should always be specified and accurate.
-  - name: nuget_package_version
-    displayName: Nuget Package Version
-    type: string
-    default: ""
+# The package version should always be specified and accurate.
+- name: nuget_package_version
+  displayName: Nuget Package Version
+  type: string
+  default: ''
 
 steps:
   - bash: |
@@ -64,8 +64,8 @@ steps:
     displayName: Validate License File Path
 
   - bash: |
-      ARTIFACTS_IDENTIFIER_PATH=$(echo "${{ parameters.artifacts_identifier }}" | tr " " "_")
-      echo "##vso[task.setvariable variable=artifacts_identifier_path]$ARTIFACTS_IDENTIFIER_PATH"
+     ARTIFACTS_IDENTIFIER_PATH=$(echo "${{ parameters.artifacts_identifier }}" | tr " " "_")
+     echo "##vso[task.setvariable variable=artifacts_identifier_path]$ARTIFACTS_IDENTIFIER_PATH"
 
   #
   # Binary Artifact Download
@@ -76,18 +76,18 @@ steps:
     name: DownloadBinaryBuildArtifacts
     displayName: Download Binary Artifacts
     inputs:
-      buildType: "current"
-      downloadType: "single"
-      artifactName: "Binaries ${{ parameters.artifacts_identifier }}"
-      downloadPath: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)"
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'Binaries ${{ parameters.artifacts_identifier }}'
+      downloadPath: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)'
     condition: eq('${{ parameters.include_binaries }}', 'true')
 
   - task: CopyFiles@2
     displayName: "Copy Binaries to Staged Nuget Package"
     inputs:
-      SourceFolder: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/Binaries ${{ parameters.artifacts_identifier }}"
-      targetFolder: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/package_contents/binaries"
-      contents: "**"
+      SourceFolder: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/Binaries ${{ parameters.artifacts_identifier }}'
+      targetFolder: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/package_contents/binaries'
+      contents: '**'
       flattenFolders: true
     condition: and(succeeded(), eq('${{ parameters.include_binaries }}', 'true'))
 
@@ -100,18 +100,18 @@ steps:
     name: DownloadLogBuildArtifacts
     displayName: Download Log Artifacts
     inputs:
-      buildType: "current"
-      downloadType: "single"
-      artifactName: "Logs ${{ parameters.artifacts_identifier }}"
-      downloadPath: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)"
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'Logs ${{ parameters.artifacts_identifier }}'
+      downloadPath: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)'
     condition: eq('${{ parameters.include_logs }}', 'true')
 
   - task: CopyFiles@2
     displayName: "Copy Logs to Staged Nuget Package"
     inputs:
-      SourceFolder: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/Logs ${{ parameters.artifacts_identifier }}"
-      targetFolder: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/package_contents/logs"
-      contents: "**"
+      SourceFolder: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/Logs ${{ parameters.artifacts_identifier }}'
+      targetFolder: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/package_contents/logs'
+      contents: '**'
       flattenFolders: true
     condition: and(succeeded(), eq('${{ parameters.include_logs }}', 'true'))
 
@@ -124,18 +124,18 @@ steps:
     name: DownloadOtherBuildArtifacts
     displayName: Download Other Artifacts
     inputs:
-      buildType: "current"
-      downloadType: "single"
-      artifactName: "Other ${{ parameters.artifacts_identifier }}"
-      downloadPath: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)"
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'Other ${{ parameters.artifacts_identifier }}'
+      downloadPath: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)'
     condition: eq('${{ parameters.include_other }}', 'true')
 
   - task: CopyFiles@2
     displayName: "Copy Binaries to Staged Nuget Package"
     inputs:
-      SourceFolder: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/Other ${{ parameters.artifacts_identifier }}"
-      targetFolder: "$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/package_contents/other"
-      contents: "**"
+      SourceFolder: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/Other ${{ parameters.artifacts_identifier }}'
+      targetFolder: '$(Build.StagingDirectory)/Nuget/$(artifacts_identifier_path)/package_contents/other'
+      contents: '**'
       flattenFolders: true
     condition: and(succeeded(), eq('${{ parameters.include_other }}', 'true'))
 
@@ -154,7 +154,7 @@ steps:
       NUGET_PACKAGE_CONFIG_FILE_PATH: ${{ parameters.nuget_package_config_file_path }}
       NUGET_PACKAGE_VERSION: ${{ parameters.nuget_package_version }}
     inputs:
-      targetType: "inline"
+      targetType: 'inline'
       script: |
         apiKey=$NUGET_KEY
         configFilePath=$NUGET_PACKAGE_CONFIG_FILE_PATH
