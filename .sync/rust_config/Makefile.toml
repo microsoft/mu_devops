@@ -48,11 +48,13 @@ description = """Builds a single rust package.
 Customizations:
     -p [development|release]: Builds in debug or release. Default: development
     -e ARCH=[IA32|X64|AARCH64|LOCAL]: Builds with specifed arch. Default: X64
+    -e FEATURES=[feature,...]: Builds with the specified features. Default: none
 
 Example:
     `cargo make build RustModule`
     `cargo make -p release build RustModule`
     `cargo make -e ARCH=IA32 build RustLib`
+    `cargo make -e FEATURES=feature1,feature2 build RustLib`
 """
 clear = true
 command = "cargo"
