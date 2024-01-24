@@ -14,7 +14,7 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 
-{% import '../../Version.njk' as sync_version -%}
+# {% import '../../Version.njk' as sync_version -%}
 
 name: Apply Issue and PR Labels
 

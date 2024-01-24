@@ -17,6 +17,11 @@ jobs:
     name: Merge
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
     # The action cannot take multiple authors right now, so call with each author
     # separately.
     strategy:

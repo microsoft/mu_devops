@@ -17,6 +17,8 @@ name: React to Issue Assignment
 on:
   issues:
     types: assigned
+  permissions:
+    issues: write
 
 jobs:
   apply:
