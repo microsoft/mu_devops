@@ -24,6 +24,8 @@ jobs:
   sync:
     name: Sync
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
 
     steps:
       - name: Sync Labels
