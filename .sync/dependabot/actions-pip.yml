@@ -71,3 +71,12 @@ updates:
       - "type:dependencies"
       - "type:dependabot"
     rebase-strategy: "disabled"
+    ignore:
+      - dependency-name: edk2-pytool-library
+      - dependency-name: edk2-pytool-extensions
+      - dependency-name: edk2-basetools
+      - dependency-name: antlr4-python3-runtime
+      - dependency-name: regex
+      - dependency-name: lcov-cobertura
+      - dependency-name: pygount
+      - dependency-name: toml
