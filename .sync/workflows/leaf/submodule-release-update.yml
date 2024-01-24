@@ -24,6 +24,7 @@ jobs:
   repo_submodule_update:
     name: Check for Submodule Releases
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
       pull-requests: write

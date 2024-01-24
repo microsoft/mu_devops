@@ -15,9 +15,11 @@ jobs:
   adjust-labels:
     name: Adjust Issue Labels
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       issues: write
+
     steps:
       - uses: actions/checkout@v4
 

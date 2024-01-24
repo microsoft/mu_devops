@@ -45,6 +45,7 @@ jobs:
   update_release_draft:
     name: Update Release Draft
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
       pull-requests: write
