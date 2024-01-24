@@ -352,8 +352,8 @@ jobs:
         import shutil
         from pathlib import Path
 
-        # Only this plugin is needed for CodeQL
-        plugins_to_keep = ['CompilerPlugin']
+        # Only these two plugins are needed for CodeQL
+        plugins_to_keep = ['CodeQL', 'CompilerPlugin']
 
         plugin_dir = Path(os.environ['PYTOOL_PLUGIN_DIR']).absolute()
         if plugin_dir.is_dir():
