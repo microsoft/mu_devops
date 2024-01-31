@@ -46,6 +46,10 @@ jobs:
     name: Update Release Draft
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: Download Version Information
         id: download_ver_info

@@ -25,6 +25,9 @@ jobs:
     name: Sync
     runs-on: ubuntu-latest
 
+    permissions:
+      issues: write
+
     steps:
       - name: Sync Labels
         uses: EndBug/label-sync@v2

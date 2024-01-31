@@ -25,6 +25,10 @@ jobs:
     name: Check for Submodule Releases
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      pull-requests: write
+
     steps:
       - name: Update Submodules to Latest Release
         uses: microsoft/mu_devops/.github/actions/submodule-release-updater@{{ sync_version.mu_devops }}

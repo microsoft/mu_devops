@@ -26,4 +26,9 @@ on:
 
 jobs:
   check:
+
+    permissions:
+      issues: write
+      pull-requests: write
+
     uses: microsoft/mu_devops/.github/workflows/Stale.yml@{{ sync_version.mu_devops }}
