@@ -12,7 +12,7 @@ form such as PR links in tag notes.
 This script uses the `major.minor.patch` versioning scheme, but diverges from semantic
 versioning in some significant ways.
 
-- `major version` - Indicates the EDKII release tag that the repo is compiled against, e.g. `202302`.
+- `major version` - Indicates the EDKII release tag that the repo is compiled against, e.g. `202311`.
 - `minor version` - Indicates the breaking change number since the last major version change.
 - `patch version` - Indicates the number of non-breaking changes since the last minor version.
 
