@@ -29,5 +29,10 @@ on:
 
 jobs:
   draft:
+
+    permissions:
+      contents: write
+      pull-requests: write
+
     uses: microsoft/mu_devops/.github/workflows/ReleaseDrafter.yml@{{ sync_version.mu_devops }}
     secrets: inherit

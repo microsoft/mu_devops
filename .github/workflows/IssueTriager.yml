@@ -24,6 +24,9 @@ jobs:
     strategy:
       matrix:
         template: [ bug_report.yml, documentation_request.yml, feature_request.yml ]
+    
+    permissions:
+      issues: write
 
     steps:
       - uses: actions/checkout@v4
