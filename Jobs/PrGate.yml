@@ -170,4 +170,4 @@ jobs:
           self_host_agent: true
         ${{ else }}:
           self_host_agent: false
-        extra_build_args: ${{ parameters.extra_build_args}}
+        extra_build_args: ${{ parameters.extra_build_args }}
