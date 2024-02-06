@@ -79,9 +79,9 @@ steps:
 # those on both Linux and Windows agents for consistency in the pipeline runs.
 #
 - script: |
-    rustup install 1.73.0
-    rustup default 1.73.0
-  displayName: Install Rust 1.73.0 (Windows)
+    rustup install 1.74.0
+    rustup default 1.74.0
+  displayName: Install Rust 1.74.0 (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: pip install requests --upgrade
@@ -136,6 +136,6 @@ steps:
   displayName: Copy cargo-tarpaulin
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
-- script: rustup component add rustfmt rust-src --toolchain 1.73.0-$(rust_target_triple)
+- script: rustup component add rustfmt rust-src --toolchain 1.74.0-$(rust_target_triple)
   displayName: rustup add rust-src
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))

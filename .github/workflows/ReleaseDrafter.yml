@@ -10,10 +10,10 @@
 # config file name varies depending on the branch being built.
 #
 #   1. A "latest release branch"
-#      - Example: `release/202302`
+#      - Example: `release/202311`
 #      - Config file: `release-draft-config-n.yml`
 #   2. A "previous release branch"
-#      - Example: `release/202208`
+#      - Example: `release/202302`
 #      - Config file: `release-draft-config-n-1.yml`
 #   3. A "main branch"
 #      - Example: `main`
@@ -76,7 +76,7 @@ jobs:
       - name: Build a ${{ env.latest_mu_branch }} Draft
         if: ${{ startsWith(github.ref, env.latest_mu_branch_full) }}
         id: update_draft_n
-        uses: release-drafter/release-drafter@v5.25.0
+        uses: release-drafter/release-drafter@v6.0.0
         with:
           # Note: Path is relative to .github/
           config-name: release-draft-config-n.yml
@@ -85,7 +85,7 @@ jobs:
       - name: Build a ${{ env.previous_mu_branch }} Draft
         if: ${{ startsWith(github.ref, env.previous_mu_branch_full) }}
         id: update_draft_n_1
-        uses: release-drafter/release-drafter@v5.25.0
+        uses: release-drafter/release-drafter@v6.0.0
         with:
           # Note: Path is relative to .github/
           config-name: release-draft-config-n-1.yml
@@ -94,7 +94,7 @@ jobs:
       - name: Build the New Release Draft
         if: ${{ !startsWith(github.ref, 'refs/heads/release') }}
         id: update_draft_non_release
-        uses: release-drafter/release-drafter@v5.25.0
+        uses: release-drafter/release-drafter@v6.0.0
         with:
           # Note: Path is relative to .github/
           config-name: release-draft-config.yml

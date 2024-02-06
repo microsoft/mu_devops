@@ -512,7 +512,7 @@ group:
 
 # Leaf Workflow - Release Draft
 # Note: This group has two files synced that allow separate configuration for
-#       n (e.g. "release/202302") and n-1 (e.g. "release/202208") branches.
+#       n (e.g. "release/202311") and n-1 (e.g. "release/202302") branches.
   - files:
     - source: .sync/workflows/leaf/release-draft.yml
       dest: .github/workflows/release-draft.yml
