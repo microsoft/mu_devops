@@ -37,6 +37,10 @@ parameters:
   displayName: Perform Stuart PR Evaluation
   type: boolean
   default: true
+- name: extra_build_args
+  displayName: Extra Build Command Arguments
+  type: string
+  default: 'CODE_COVERAGE=TRUE CC_FLATTEN=TRUE CC_FULL=TRUE'
 - name: extra_post_build_steps
   displayName: Extra Post-Build Steps
   type: stepList
@@ -166,4 +170,4 @@ jobs:
           self_host_agent: true
         ${{ else }}:
           self_host_agent: false
-        extra_build_args: CODE_COVERAGE=TRUE CC_FLATTEN=TRUE CC_FULL=TRUE
+        extra_build_args: ${{ parameters.extra_build_args }}
