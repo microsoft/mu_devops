@@ -44,8 +44,8 @@ if len(releases) == 0:
 # Download assets
 for asset in releases[0]['assets']:
     name = asset['name'].lower()
-    if ("x86_64-pc-windows-msvc" in name or "x86_64-unknown-linux-gnu" in name
-       and asset['name'].endswith(('.zip', '.tar.gz'))):
+    if (("x86_64-pc-windows-msvc.full" in name or "x86_64-unknown-linux-gnu.full" in name)
+       and asset['name'].endswith(('.zip', '.tar.gz', '.tgz'))):
         filepath = DOWNLOAD_DIR / asset['name']
         print(f"Downloading {asset['name']}...")
         with requests.get(asset['browser_download_url'], stream=True) as r:
@@ -61,7 +61,7 @@ for filename in DOWNLOAD_DIR.iterdir():
     if filename.name.endswith('.zip'):
         with zipfile.ZipFile(filename, 'r') as zip_ref:
             zip_ref.extractall(extracted_dir)
-    elif filename.name.endswith('.tar.gz'):
+    elif filename.name.endswith(('.tar.gz', '.tgz')):
         with tarfile.open(filename, 'r:gz') as tar:
             tar.extractall(path=extracted_dir)
 
