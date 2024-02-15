@@ -44,7 +44,7 @@ if len(releases) == 0:
 # Download assets
 for asset in releases[0]['assets']:
     name = asset['name'].lower()
-    if (("x86_64-pc-windows-msvc.full" in name or "x86_64-unknown-linux-gnu.full" in name)
+    if (("x86_64-pc-windows-msvc" in name or "x86_64-unknown-linux-gnu" in name)
        and asset['name'].endswith(('.zip', '.tar.gz', '.tgz'))):
         filepath = DOWNLOAD_DIR / asset['name']
         print(f"Downloading {asset['name']}...")
