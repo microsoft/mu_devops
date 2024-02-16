@@ -2,3 +2,7 @@
 
 [toolchain]
 channel = "{{ sync_version.rust_toolchain }}"
+
+[tool]
+cargo-make = "{{ sync_version.cargo_make }}"
+cargo-tarpaulin = "{{ sync_version.cargo_tarpaulin }}"

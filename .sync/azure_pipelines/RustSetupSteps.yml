@@ -93,51 +93,41 @@ steps:
 
 - template: DownloadAzurePipelineArtifact.yml
   parameters:
-    task_display_name: Download Cargo Make (Windows)
+    task_display_name: Download Cargo Binstall (Windows)
     artifact_name: Binaries
-    azure_pipeline_def_id: 166
-    file_pattern: "**/cargo-make.exe"
+    azure_pipeline_def_id: 169
+    file_pattern: "**/cargo-binstall.exe"
     target_dir: "$(cargoBinPath)"
     target_os: "Windows_NT"
     work_dir: "$(Agent.TempDirectory)"
 
 - template: DownloadAzurePipelineArtifact.yml
   parameters:
-    task_display_name: Download Cargo Make (Linux)
+    task_display_name: Download Cargo Binstall (Linux)
     artifact_name: Binaries
-    azure_pipeline_def_id: 166
-    file_pattern: "**/cargo-make"
+    azure_pipeline_def_id: 169
+    file_pattern: "**/cargo-binstall"
     target_dir: "$(Agent.TempDirectory)"
     target_os: "Linux"
     work_dir: "$(Agent.TempDirectory)"
+
 - script: |
-    cp $AGENT_TEMPDIRECTORY/cargo-make /.cargo/bin
-  displayName: Copy cargo-make
+    cp $AGENT_TEMPDIRECTORY/cargo-binstall /.cargo/bin
+  displayName: Copy cargo-binstall
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
-- template: DownloadAzurePipelineArtifact.yml
-  parameters:
-    task_display_name: Download Cargo Tarpaulin (Windows)
-    artifact_name: Binaries
-    azure_pipeline_def_id: 167
-    file_pattern: "**/cargo-tarpaulin.exe"
-    target_dir: "$(cargoBinPath)"
-    target_os: "Windows_NT"
-    work_dir: "$(Agent.TempDirectory)"
-
-- template: DownloadAzurePipelineArtifact.yml
-  parameters:
-    task_display_name: Download Cargo Tarpaulin (Linux)
-    artifact_name: Binaries
-    azure_pipeline_def_id: 167
-    file_pattern: "**/cargo-tarpaulin"
-    target_dir: "$(Agent.TempDirectory)"
-    target_os: "Linux"
-    work_dir: "$(Agent.TempDirectory)"
 - script: |
-    cp $AGENT_TEMPDIRECTORY/cargo-tarpaulin /.cargo/bin
-  displayName: Copy cargo-tarpaulin
+    sudo chmod +x /.cargo/bin/cargo-binstall
+  displayName: Make cargo-binstall executable
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
+
+- script: |
+    cargo binstall -y cargo-make --version {{ sync_version.cargo_make_version }}
+  displayName: Install cargo-make
+
+- script: |
+    cargo binstall -y cargo-tarpaulin --version {{ sync_version.cargo_tarpaulin_version }}
+  displayName: Install cargo-tarpaulin
 
 - script: rustup component add rustfmt rust-src --toolchain {{ sync_version.rust_toolchain }}-$(rust_target_triple)
   displayName: rustup add rust-src
