@@ -142,7 +142,7 @@ steps:
   # This step provides an opportunity for custom preparation steps to run before publishing
   - ${{ parameters.custom_nuget_prep_step_list }}
 
-  - task: NuGetAuthenticate@0
+  - task: NuGetAuthenticate@1
     displayName: Authenticate Local Feed
 
   - task: Bash@3
