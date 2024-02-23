@@ -346,6 +346,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/codeql.yml
       dest: .github/workflows/codeql.yml
+      template: true
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
@@ -367,6 +368,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/codeql-platform.yml
       dest: .github/workflows/codeql-platform.yml
+      template: true
     repos: |
       microsoft/mu_tiano_platforms
 
