@@ -82,9 +82,13 @@ steps:
 # those on both Linux and Windows agents for consistency in the pipeline runs.
 #
 - script: |
-    rustup install {{ sync_version.rust_toolchain }}
-    rustup default {{ sync_version.rust_toolchain }}
+    rustup install --no-self-update {{ sync_version.rust_toolchain }}
   displayName: Install Rust {{ sync_version.rust_toolchain }} (Windows)
+  condition: eq(variables['Agent.OS'], 'Windows_NT')
+
+- script: |
+    rustup default {{ sync_version.rust_toolchain }}
+  displayName: Set Rust {{ sync_version.rust_toolchain }} (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: pip install requests --upgrade
