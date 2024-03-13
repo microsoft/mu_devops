@@ -79,12 +79,9 @@ steps:
 # those on both Linux and Windows agents for consistency in the pipeline runs.
 #
 - script: |
-    rustup install --no-self-update 1.74.0
-  displayName: Install Rust 1.74.0 (Windows)
-  condition: eq(variables['Agent.OS'], 'Windows_NT')
-- script: |
+    rustup install 1.74.0
     rustup default 1.74.0
-  displayName: Set Rust 1.74.0 (Windows)
+  displayName: Install Rust 1.74.0 (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: pip install requests --upgrade
