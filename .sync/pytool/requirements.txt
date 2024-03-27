@@ -1,0 +1,28 @@
+## @file
+# EDK II Python PIP requirements file
+#
+# This file provides the list of python components to install using PIP to
+# support the usage of stuart invocables
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+# https://pypi.org/project/pip/
+# https://pip.pypa.io/en/stable/user_guide/#requirements-files
+# https://pip.pypa.io/en/stable/reference/pip_install/#requirements-file-format
+# https://www.python.org/dev/peps/pep-0440/#version-specifiers
+##
+edk2-pytool-library==0.20.0
+edk2-pytool-extensions~=0.27.0
+edk2-basetools==0.1.49
+antlr4-python3-runtime==4.13.1
+regex
+lcov-cobertura==2.0.2
+pygount==1.6.1
+toml==0.10.2
