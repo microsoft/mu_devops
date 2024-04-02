@@ -35,6 +35,7 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_plus
       microsoft/mu_silicon_arm_tiano
@@ -69,6 +70,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_uefi_variable
@@ -115,6 +117,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -143,6 +146,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_uefi_variable
@@ -162,6 +166,7 @@ group:
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -186,6 +191,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -251,6 +257,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -278,6 +285,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -302,6 +310,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -326,6 +335,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -351,6 +361,7 @@ group:
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -395,6 +406,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -420,6 +432,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -444,6 +457,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -478,6 +492,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -504,6 +519,7 @@ group:
     repos: |
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -552,6 +568,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -582,6 +599,7 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
