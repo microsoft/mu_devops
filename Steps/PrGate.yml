@@ -92,6 +92,8 @@ steps:
     fetchDepth: 0
     # Note: Depth cannot be limited if PR Eval is used
 
+- template: SetupGitConfig.yml
+
 - template: SetupPythonPreReqs.yml
   parameters:
     install_python: ${{ parameters.install_tools }}

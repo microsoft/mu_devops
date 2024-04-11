@@ -1,0 +1,22 @@
+## @file
+# Azure Pipelines step to setup Git config settings on the pipeline
+# used when building firmware code.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+parameters:
+- name: disable_autocrlf
+  displayName: Disable Git Auto CRLF
+  type: boolean
+  default: true
+
+steps:
+
+- ${{ if eq(parameters.disable_autocrlf, true) }}:
+  - task: CmdLine@2
+    displayName: Apply Git Config Settings
+    inputs:
+      script:
+        git config --system core.autocrlf false

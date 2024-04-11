@@ -75,6 +75,8 @@ steps:
     # Note: Depth cannot be limited if PR Eval is used. A pipeline may choose
     #       to use a shallow checkout if PR eval is not used.
 
+- template: SetupGitConfig.yml
+
 - template: SetupPythonPreReqs.yml
   parameters:
     install_python: ${{ parameters.install_tools }}
