@@ -72,6 +72,7 @@ steps:
       import requests
       import hashlib
       import os
+      from requests.adapters import HTTPAdapter, Retry
 
       system = platform.system()
 
@@ -90,8 +91,14 @@ steps:
       else:
         print(f'##[error]Unsupported Host System! System = {system}.')
         print(f'##vso[task.complete result=Failed;]Unsupported Host System! System = {system}.')
+      
+      session = requests.Session()
+      retries = Retry(total=5,
+                backoff_factor=1,
+                status_forcelist=[ 500, 502, 503, 504 ])
+      session.mount('https://', HTTPAdapter(max_retries=retries))
 
-      response = requests.get(url)
+      response = session.get(url)
       if response.status_code == 200:
         with open(filename, 'wb') as f:
           f.write(response.content)
@@ -99,7 +106,7 @@ steps:
         print(f'##[error]Failed to download Uploader. Error code: {response.status_code}.')
         print(f'##vso[task.complete result=Failed;]Failed to download Uploader. Error code: {response.status_code}.')
 
-      response = requests.get(checksum_url)
+      response = session.get(checksum_url)
       if response.status_code == 200:
         with open(checksum_filename, 'wb') as f:
           f.write(response.content)
@@ -145,14 +152,20 @@ steps:
         cmd = f'{UPLOAD_CMD} -f {cov_file} -Z'
         if COV_FLAG:
           cmd += f' -F {COV_FLAG}'
-        process = subprocess.Popen(
-          cmd,
-          stdout=subprocess.PIPE,
-          stderr=subprocess.PIPE,
-          shell=True)
-        output, error = process.communicate()
-        print(f"##[debug]{output.decode('utf-8')}")
+        loop = 0
+        process = 0
+        while loop < 5 and process == 0:
+          process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True)
+          output, error = process.communicate()
+          print(f"##[debug]{output.decode('utf-8')}")
+          loop = loop + 1
+
         if process.returncode != 0:
           print(f"##[error]{error.decode('utf-8')}")
           raise Exception(f"{UPLOAD_CMD} failed with Return Code: "
                           f"{process.returncode}.")
+
