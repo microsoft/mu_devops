@@ -152,9 +152,9 @@ steps:
         cmd = f'{UPLOAD_CMD} -f {cov_file} -Z'
         if COV_FLAG:
           cmd += f' -F {COV_FLAG}'
-        loop = 0
+
         process = 0
-        while loop < 5 and process == 0:
+        for loop in range(0,5):
           process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
@@ -162,7 +162,8 @@ steps:
             shell=True)
           output, error = process.communicate()
           print(f"##[debug]{output.decode('utf-8')}")
-          loop = loop + 1
+          if process.returncode == 0:
+            return
 
         if process.returncode != 0:
           print(f"##[error]{error.decode('utf-8')}")
