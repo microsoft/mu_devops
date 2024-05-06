@@ -164,7 +164,7 @@ steps:
           output, error = process.communicate()
           print(f"##[debug]{output.decode('utf-8')}")
           if process.returncode == 0:
-            continue
+            break
           time.sleep(.5*loop)
 
         if loop == 4 and process.returncode != 0:
