@@ -164,10 +164,10 @@ steps:
           output, error = process.communicate()
           print(f"##[debug]{output.decode('utf-8')}")
           if process.returncode == 0:
-            return
+            continue
           time.sleep(.5*loop)
 
-        if process.returncode != 0:
+        if loop == 4 and process.returncode != 0:
           print(f"##[error]{error.decode('utf-8')}")
           raise Exception(f"{UPLOAD_CMD} failed with Return Code: "
                           f"{process.returncode}.")
