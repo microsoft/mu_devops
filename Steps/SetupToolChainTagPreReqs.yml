@@ -6,32 +6,27 @@
 ##
 
 parameters:
-- name: install_pip_modules
-  displayName: Install PIP Modules
-  type: boolean
-  default: true
 - name: install_python
   displayName: Install Python
   type: boolean
   default: true
-- name: pip_requirement_files
-  displayName: Pip Requirement Files
+- name: tool_chain_tag
+  displayName: Tool Chain Tag
   type: string
-  default: -r pip-requirements.txt
+  default: ''
 
 steps:
 
-- ${{ if eq(parameters.install_python, true) }}:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: "3.12"
-      architecture: x64
+- ${{ if and(eq(parameters.install_python, true), contains(parameters.tool_chain_tag, 'CLANGPDB')) }}:
+  - powershell:
+    wget https://apt.llvm.org/llvm.sh
+    chmod +x llvm.sh
+    sudo ./llvm.sh 18
+    displayName: Install LLVM 18 on Linux
+    condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
-- ${{ if eq(parameters.install_pip_modules, true) }}:
-  - script: python -m pip install --upgrade pip setuptools wheel
-    displayName: Install Wheel and SetupTools
-    condition: succeeded()
-
-  - script: pip install ${{ parameters.pip_requirement_files }} --upgrade
-    displayName: Install and Upgrade pip Modules
-    condition: succeeded()
+  - powershell:
+    choco install llvm --version=18.1.5"
+    choco install make"
+    displayName: Install LLVM 18 on Windows
+    condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
