@@ -96,6 +96,11 @@ steps:
   parameters:
     install_python: ${{ parameters.install_tools }}
 
+- template: SetupToolChainTagPreReqs.yml
+  parameters:
+    install_python: ${{ parameters.install_tools }}
+    tool_chain_tag: ${{ parameters.tool_chain_tag }}
+
 # Set Default Package Info
 - bash: |
     echo "##vso[task.setvariable variable=pkgs_to_build]${{ parameters.build_pkgs }}"
