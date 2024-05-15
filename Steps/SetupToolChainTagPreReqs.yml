@@ -20,7 +20,7 @@ steps:
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
 - powershell:
-    choco install llvm --version=18.1.5;
+    choco install llvm;
     choco install make;
   displayName: Install LLVM 18 on Windows
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
