@@ -72,6 +72,10 @@ parameters:
   displayName: Install Build Tools
   type: boolean
   default: true
+- name: install_pip_modules
+  displayName: Install PIP Modules
+  type: boolean
+  default: true
 - name: tool_chain_tag
   displayName: Tool Chain (e.g. VS2022)
   type: string
@@ -95,6 +99,7 @@ steps:
 - template: SetupPythonPreReqs.yml
   parameters:
     install_python: ${{ parameters.install_tools }}
+    install_pip_modules: ${{ parameters.install_pip_modules }}
 
 # Set Default Package Info
 - bash: |
