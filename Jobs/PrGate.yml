@@ -151,7 +151,6 @@ jobs:
     - ${{ if and(contains(parameters.tool_chain_tag, CLANGPDB), ne(item.Value.SelfHostAgent, true)) }}:
       - template: ../Steps/SetupToolChainTagPreReqs.yml
         parameters:
-          install_tool_chain: true
           tool_chain_tag: ${{ parameters.tool_chain_tag }}
     - ${{ parameters.extra_steps }}
     - template: ../Steps/PrGate.yml

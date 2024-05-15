@@ -6,10 +6,6 @@
 ##
 
 parameters:
-- name: install_tool_chain
-  displayName: Install Python
-  type: boolean
-  default: true
 - name: tool_chain_tag
   displayName: Tool Chain Tag
   type: string
@@ -17,7 +13,7 @@ parameters:
 
 steps:
 
-- ${{ if and(eq(parameters.install_tool_chain, true), contains(parameters.tool_chain_tag, 'CLANGPDB')) }}:
+- ${{ if contains(parameters.tool_chain_tag, 'CLANGPDB') }}:
   - powershell:
     wget https://apt.llvm.org/llvm.sh
     chmod +x llvm.sh
