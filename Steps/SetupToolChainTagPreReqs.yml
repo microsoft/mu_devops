@@ -20,7 +20,7 @@ steps:
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
 - powershell:
-    $env:ChocolateyInstall=$(Agent.TempDirectory)\MAKE; choco install make --force; Write-Host "##vso[task.prependpath]$(Agent.TempDirectory)\MAKE\bin"
+    $env:ChocolateyInstall="$(Agent.TempDirectory)\MAKE"; choco install make --force; Write-Host "##vso[task.prependpath]$(Agent.TempDirectory)\MAKE\bin"
     choco install llvm --version=18.1.5 --install-arguments="'/NCRC /S /D=$(Agent.TempDirectory)\LLVM'" --force; Write-Host "##vso[task.prependpath]$(Agent.TempDirectory)\LLVM\bin"
   displayName: Install LLVM 18 on Windows
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
