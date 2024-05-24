@@ -128,14 +128,14 @@ steps:
 - task: CmdLine@2
   displayName: Build
   inputs:
-    script: stuart_build -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} TARGET=${{ parameters.build_target}} -a ${{ parameters.build_arch}} ${{ parameters.build_flags}}
+    script: stuart_build -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} TARGET=${{ parameters.build_target}} ${{ parameters.build_flags}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # Run
 - task: CmdLine@2
   displayName: Run to Shell
   inputs:
-    script: stuart_build -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} TARGET=${{ parameters.build_target}} -a ${{ parameters.build_arch}} ${{ parameters.build_flags}} ${{ parameters.run_flags }} --FlashOnly
+    script: stuart_build -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} TARGET=${{ parameters.build_target}} ${{ parameters.build_flags}} ${{ parameters.run_flags }} --FlashOnly
   condition: and(and(gt(variables.pkg_count, 0), succeeded()), eq(variables['Run'], true))
   timeoutInMinutes: ${{ parameters.run_timeout }}
 
