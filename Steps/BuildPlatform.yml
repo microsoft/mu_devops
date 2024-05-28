@@ -18,10 +18,6 @@ parameters:
   displayName: Other Artifacts to Publish
   type: string
   default: ''
-- name: build_arch
-  displayName: Architectures (e.g. IA32, X64)
-  type: string
-  default: ''
 - name: build_base_tools
   displayName: Build BaseTools
   type: boolean
@@ -96,21 +92,21 @@ steps:
 - task: CmdLine@2
   displayName: Check if ${{ parameters.build_pkg }} Needs Testing
   inputs:
-    script: stuart_pr_eval -c ${{ parameters.build_file }} -t ${{ parameters.build_target}} -a ${{ parameters.build_arch}} --pr-target $(pr_compare_branch) --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
+    script: stuart_pr_eval -c ${{ parameters.build_file }} -t ${{ parameters.build_target}} --pr-target $(pr_compare_branch) --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
   condition: eq(variables['Build.Reason'], 'PullRequest')
 
  # Setup repo
 - task: CmdLine@2
   displayName: Setup
   inputs:
-    script: stuart_setup -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} -t ${{ parameters.build_target}} -a ${{ parameters.build_arch}} ${{ parameters.build_flags}}
+    script: stuart_setup -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} -t ${{ parameters.build_target}} ${{ parameters.build_flags}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # Stuart Update
 - task: CmdLine@2
   displayName: Update
   inputs:
-    script: stuart_update -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} -t ${{ parameters.build_target}} -a ${{ parameters.build_arch}} ${{ parameters.build_flags}}
+    script: stuart_update -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} -t ${{ parameters.build_target}} ${{ parameters.build_flags}}
   condition: and(gt(variables.pkg_count, 0), succeeded())
 
 # build basetools
