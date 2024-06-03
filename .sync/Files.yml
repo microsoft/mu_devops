@@ -77,6 +77,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -125,6 +126,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
@@ -174,6 +176,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -196,6 +199,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -221,6 +225,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -248,6 +253,7 @@ group:
       dest: LICENSE
     repos: |
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
 
 # GitHub Templates - Licensing - Project Mu and TianoCore License
   - files:
@@ -287,6 +293,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -315,6 +322,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -340,6 +348,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -436,6 +445,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -462,6 +472,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -487,6 +498,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -522,6 +534,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -547,6 +560,7 @@ group:
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
       microsoft/secureboot_objects
 
@@ -598,6 +612,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -629,6 +644,7 @@ group:
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
@@ -653,6 +669,7 @@ group:
       microsoft/mu_basecore
       microsoft/mu_plus
       microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
 
 # Rust - Makefile (for UEFI builds)
