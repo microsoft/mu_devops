@@ -72,6 +72,10 @@ parameters:
   displayName: Install Build Tools
   type: boolean
   default: true
+- name: install_pip_modules
+  displayName: Install PIP Modules
+  type: boolean
+  default: true
 - name: tool_chain_tag
   displayName: Tool Chain (e.g. VS2022)
   type: string
@@ -95,6 +99,7 @@ steps:
 - template: SetupPythonPreReqs.yml
   parameters:
     install_python: ${{ parameters.install_tools }}
+    install_pip_modules: ${{ parameters.install_pip_modules }}
 
 # Set Default Package Info
 - bash: |
@@ -152,9 +157,9 @@ steps:
 
 - ${{ if eq(parameters.do_non_ci_build, true) }}:
   - task: CmdLine@2
-    displayName: Build and Test ${{ parameters.build_pkgs }} ${{ parameters.build_archs}}
+    displayName: Build ${{ parameters.build_pkgs }}
     inputs:
-      script: stuart_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} -a ${{ parameters.build_archs}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
+      script: stuart_build -c ${{ parameters.build_file }} -p $(pkgs_to_build) -t ${{ parameters.build_targets}} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} ${{ parameters.extra_build_args}}
     condition: and(gt(variables.pkg_count, 0), succeeded())
 
 - ${{ if eq(parameters.do_ci_build, true) }}:
