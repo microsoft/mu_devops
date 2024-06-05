@@ -250,6 +250,7 @@ runs:
             elif available_sem_ver == current_sem_ver and current_tag_commit_hash != submodule_repo.commit(actual_current_tag).hexsha:
                 # This means that the current commit hash is part of the available tag but not at the tag.
                 needs_update = True
+                current_tag = current_tag_commit_hash[:7]
 
             if needs_update:
                 print(f"::notice title=Version Update Ready!::{submod_repo} can be "
