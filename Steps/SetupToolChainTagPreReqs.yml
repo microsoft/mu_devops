@@ -1,0 +1,20 @@
+## @file
+# Azure Pipelines step to setup Python pre-requisites.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+steps:
+- powershell:
+    wget https://apt.llvm.org/llvm.sh;
+    chmod +x llvm.sh;
+    sudo ./llvm.sh 18;
+  displayName: Install LLVM 18 on Linux;
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
+
+- powershell:
+    choco install make --force; Write-Host "##vso[task.prependpath]$env:ChocolateyInstall\bin\";
+    choco install llvm --version=18.1.5 --install-arguments="'/NCRC /S /D=$(Agent.TempDirectory)\LLVM'" --force; Write-Host "##vso[task.prependpath]$(Agent.TempDirectory)\LLVM\bin\";
+  displayName: Install LLVM 18 on Windows
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
