@@ -5,12 +5,6 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
-parameters:
-- name: tool_chain_tag
-  displayName: Tool Chain Tag
-  type: string
-  default: ''
-
 steps:
 - powershell:
     wget https://apt.llvm.org/llvm.sh;
