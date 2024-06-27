@@ -76,6 +76,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -125,6 +126,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -175,6 +177,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -198,6 +201,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -224,6 +228,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -252,6 +257,7 @@ group:
     - source: .sync/github_templates/licensing/project_mu_license.txt
       dest: LICENSE
     repos: |
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
 
@@ -292,6 +298,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -321,6 +328,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -347,6 +355,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -444,6 +453,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -471,6 +481,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -497,6 +508,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -533,6 +545,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -559,6 +572,7 @@ group:
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
@@ -611,6 +625,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -643,6 +658,7 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_silicon_arm_tiano
@@ -668,6 +684,7 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
