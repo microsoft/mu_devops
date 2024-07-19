@@ -88,6 +88,10 @@ parameters:
   displayName: Indicate if this is a selfhost agent
   type: boolean
   default: false
+- name: publish_artifacts
+  displayName: Publish Artifacts
+  type: boolean
+  default: true
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -202,19 +206,28 @@ steps:
     testRunTitle: ${{ parameters.build_pkgs }}  # Optional
     publishRunAttachments: true                 # Optional
 
-# Copy build logs to the artifact staging directory
-- template: CommonLogCopyAndPublish.yml
-  parameters:
-    artifacts_identifier: ${{ parameters.artifacts_identifier }}
+- ${{ if eq(parameters.publish_artifacts, true) }}:
+  # Copy build logs to the artifact staging directory
+  - template: CommonLogCopy.yml
+    parameters:
+      artifacts_identifier: ${{ parameters.artifacts_identifier }}
 
-# Copy build binaries to the artifact staging directory
-- template: BinaryCopyAndPublish.yml
-  parameters:
-    artifacts_binary: ${{ parameters.artifacts_binary }}
-    artifacts_identifier: ${{ parameters.artifacts_identifier }}
+  # Copy build binaries to the artifact staging directory
+  - template: BinaryCopy.yml
+    parameters:
+      artifacts_binary: ${{ parameters.artifacts_binary }}
+      artifacts_identifier: ${{ parameters.artifacts_identifier }}
 
-# Copy other files to the artifact staging directory
-- template: OtherCopyAndPublish.yml
-  parameters:
-    artifacts_other: ${{ parameters.artifacts_other }}
-    artifacts_identifier: ${{ parameters.artifacts_identifier }}
+  # Copy other files to the artifact staging directory
+  - template: OtherCopy.yml
+    parameters:
+      artifacts_other: ${{ parameters.artifacts_other }}
+      artifacts_identifier: ${{ parameters.artifacts_identifier }}
+
+  - task: PublishPipelineArtifact@1
+    continueOnError: true
+    displayName: Publish Build Binaries
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)
+      artifactName: Binaries ${{ parameters.artifacts_identifier }}
+    condition: succeededOrFailed()

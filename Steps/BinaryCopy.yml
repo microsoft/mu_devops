@@ -35,12 +35,3 @@ steps:
       ${{ parameters.artifacts_binary }}
     flattenFolders: true
   condition: and(succeededOrFailed(), eq(variables.artifacts_present, 'true'))
-
-# Publish build artifacts to Azure Artifacts/TFS or a file share
-- task: PublishBuildArtifacts@1
-  continueOnError: true
-  displayName: Publish Build Binaries
-  inputs:
-    pathtoPublish: "$(Build.ArtifactStagingDirectory)/Binaries"
-    artifactName: "Binaries ${{ parameters.artifacts_identifier }}"
-  condition: and(succeededOrFailed(), eq(variables.artifacts_present, 'true'))

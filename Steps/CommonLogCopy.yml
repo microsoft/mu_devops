@@ -37,11 +37,3 @@ steps:
       UPDATE_LOG.txt
     flattenFolders: true
   condition: succeededOrFailed()
-
-- task: PublishBuildArtifacts@1
-  continueOnError: true
-  displayName: Publish Build Logs
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/Logs'
-    artifactName: 'Logs ${{ parameters.artifacts_identifier }}'
-  condition: succeededOrFailed()
