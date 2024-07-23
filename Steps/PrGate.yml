@@ -206,28 +206,19 @@ steps:
     testRunTitle: ${{ parameters.build_pkgs }}  # Optional
     publishRunAttachments: true                 # Optional
 
-- ${{ if eq(parameters.publish_artifacts, true) }}:
-  # Copy build logs to the artifact staging directory
-  - template: CommonLogCopyAndPublish.yml
-    parameters:
-      artifacts_identifier: ${{ parameters.artifacts_identifier }}
+# Copy build logs to the artifact staging directory
+- template: CommonLogCopyAndPublish.yml
+  parameters:
+    artifacts_identifier: ${{ parameters.artifacts_identifier }}
 
-  # Copy build binaries to the artifact staging directory
-  - template: BinaryCopyAndPublish.yml
-    parameters:
-      artifacts_binary: ${{ parameters.artifacts_binary }}
-      artifacts_identifier: ${{ parameters.artifacts_identifier }}
+# Copy build binaries to the artifact staging directory
+- template: BinaryCopyAndPublish.yml
+  parameters:
+    artifacts_binary: ${{ parameters.artifacts_binary }}
+    artifacts_identifier: ${{ parameters.artifacts_identifier }}
 
-  # Copy other files to the artifact staging directory
-  - template: OtherCopyAndPublish.yml
-    parameters:
-      artifacts_other: ${{ parameters.artifacts_other }}
-      artifacts_identifier: ${{ parameters.artifacts_identifier }}
-
-  - task: PublishPipelineArtifact@1
-    continueOnError: true
-    displayName: Publish Build Binaries
-    inputs:
-      targetPath: $(Build.ArtifactStagingDirectory)
-      artifactName: Binaries ${{ parameters.artifacts_identifier }}
-    condition: succeededOrFailed()
+# Copy other files to the artifact staging directory
+- template: OtherCopyAndPublish.yml
+  parameters:
+    artifacts_other: ${{ parameters.artifacts_other }}
+    artifacts_identifier: ${{ parameters.artifacts_identifier }}
