@@ -208,18 +208,18 @@ steps:
 
 - ${{ if eq(parameters.publish_artifacts, true) }}:
   # Copy build logs to the artifact staging directory
-  - template: CommonLogCopy.yml
+  - template: CommonLogCopyAndPublish.yml
     parameters:
       artifacts_identifier: ${{ parameters.artifacts_identifier }}
 
   # Copy build binaries to the artifact staging directory
-  - template: BinaryCopy.yml
+  - template: BinaryCopyAndPublish.yml
     parameters:
       artifacts_binary: ${{ parameters.artifacts_binary }}
       artifacts_identifier: ${{ parameters.artifacts_identifier }}
 
   # Copy other files to the artifact staging directory
-  - template: OtherCopy.yml
+  - template: OtherCopyAndPublish.yml
     parameters:
       artifacts_other: ${{ parameters.artifacts_other }}
       artifacts_identifier: ${{ parameters.artifacts_identifier }}
