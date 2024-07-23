@@ -148,7 +148,7 @@ jobs:
     steps:
     - ${{ if and(eq(parameters.rust_build, true), ne(item.Value.SelfHostAgent, true)) }}:
       - template: ../Steps/RustSetupSteps.yml
-    - ${{ if and(contains(parameters.tool_chain_tag, CLANGPDB), ne(item.Value.SelfHostAgent, true)) }}:
+    - ${{ if and(contains(parameters.tool_chain_tag, 'CLANGPDB'), ne(item.Value.SelfHostAgent, true)) }}:
       - template: ../Steps/SetupToolChainTagPreReqs.yml
     - ${{ parameters.extra_steps }}
     - template: ../Steps/PrGate.yml
