@@ -88,6 +88,10 @@ parameters:
   displayName: Indicate if this is a selfhost agent
   type: boolean
   default: false
+- name: publish_artifacts
+  displayName: Publish Artifacts
+  type: boolean
+  default: true
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -206,15 +210,18 @@ steps:
 - template: CommonLogCopyAndPublish.yml
   parameters:
     artifacts_identifier: ${{ parameters.artifacts_identifier }}
+    publish_artifacts: ${{ parameters.publish_artifacts }}
 
 # Copy build binaries to the artifact staging directory
 - template: BinaryCopyAndPublish.yml
   parameters:
     artifacts_binary: ${{ parameters.artifacts_binary }}
     artifacts_identifier: ${{ parameters.artifacts_identifier }}
+    publish_artifacts: ${{ parameters.publish_artifacts }}
 
 # Copy other files to the artifact staging directory
 - template: OtherCopyAndPublish.yml
   parameters:
     artifacts_other: ${{ parameters.artifacts_other }}
     artifacts_identifier: ${{ parameters.artifacts_identifier }}
+    publish_artifacts: ${{ parameters.publish_artifacts }}

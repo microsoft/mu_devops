@@ -11,6 +11,10 @@ parameters:
   displayName: Artifacts Identifier
   type: string
   default: 'Artifacts'
+- name: publish_artifacts
+  displayName: Publish Artifacts
+  type: boolean
+  default: true
 
 steps:
 - task: CopyFiles@2
@@ -38,10 +42,11 @@ steps:
     flattenFolders: true
   condition: succeededOrFailed()
 
-- task: PublishBuildArtifacts@1
-  continueOnError: true
-  displayName: Publish Build Logs
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/Logs'
-    artifactName: 'Logs ${{ parameters.artifacts_identifier }}'
-  condition: succeededOrFailed()
+- ${{ if eq(parameters.publish_artifacts, true) }}:
+  - task: PublishPipelineArtifact@1
+    continueOnError: true
+    displayName: Publish Build Logs
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/Logs'
+      artifactName: 'Logs ${{ parameters.artifacts_identifier }}'
+    condition: succeededOrFailed()

@@ -15,6 +15,10 @@ parameters:
   displayName: Other Artifacts to Publish
   type: string
   default: ''
+- name: publish_artifacts
+  displayName: Publish Artifacts
+  type: boolean
+  default: true
 
 steps:
 - bash: |
@@ -37,10 +41,11 @@ steps:
   condition: and(succeededOrFailed(), eq(variables.artifacts_present, 'true'))
 
 # Publish build artifacts to Azure Artifacts/TFS or a file share
-- task: PublishBuildArtifacts@1
-  continueOnError: true
-  displayName: Publish Other Files
-  inputs:
-    pathtoPublish: "$(Build.ArtifactStagingDirectory)/Other"
-    artifactName: "Other ${{ parameters.artifacts_identifier }}"
-  condition: and(succeededOrFailed(), eq(variables.artifacts_present, 'true'))
+- ${{ if eq(parameters.publish_artifacts, true) }}:
+  - task: PublishPipelineArtifact@1
+    continueOnError: true
+    displayName: Publish Other Files
+    inputs:
+      targetPath: "$(Build.ArtifactStagingDirectory)/Other"
+      artifactName: "Other ${{ parameters.artifacts_identifier }}"
+    condition: and(succeededOrFailed(), eq(variables.artifacts_present, 'true'))
