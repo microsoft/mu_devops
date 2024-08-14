@@ -4,9 +4,14 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
+parameters:
+- name: extra_npm_args
+  displayName: Extra npm arguments
+  type: string
+  default: ''
 
 steps:
 
-- script: npm install -g markdownlint-cli@0.32.2
+- script: npm install -g markdownlint-cli@0.32.2 ${{ parameters.extra_npm_args }}
   displayName: Install Markdown Linter
   condition: succeeded()
