@@ -72,6 +72,10 @@ parameters:
   displayName: Install Build Tools
   type: boolean
   default: true
+- name: extra_npm_args
+  displayName: Extra npm arguments
+  type: string
+  default: ''
 - name: install_pip_modules
   displayName: Install PIP Modules
   type: boolean
@@ -125,9 +129,13 @@ steps:
 
 - ${{ if eq(parameters.install_tools, true) }}:
   - template: InstallSpellCheck.yml
+    parameters:
+      extra_npm_args: ${{ parameters.extra_npm_args }}
 
 - ${{ if eq(parameters.install_tools, true) }}:
   - template: InstallMarkdownLint.yml
+    parameters:
+      extra_npm_args: ${{ parameters.extra_npm_args }}
 
 - ${{ if eq(parameters.install_tools, true) }}:
   - template: InstallCoverageTools.yml
