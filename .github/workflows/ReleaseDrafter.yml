@@ -10,10 +10,10 @@
 # config file name varies depending on the branch being built.
 #
 #   1. A "latest release branch"
-#      - Example: `release/202311`
+#      - Example: `release/202405`
 #      - Config file: `release-draft-config-n.yml`
 #   2. A "previous release branch"
-#      - Example: `release/202302`
+#      - Example: `release/202311`
 #      - Config file: `release-draft-config-n-1.yml`
 #   3. A "main branch"
 #      - Example: `main`
