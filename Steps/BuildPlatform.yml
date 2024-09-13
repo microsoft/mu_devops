@@ -22,6 +22,10 @@ parameters:
   displayName: Build BaseTools
   type: boolean
   default: false
+- name: do_pr_eval
+  displayName: Perform Stuart PR Evaluation
+  type: boolean
+  default: true
 - name: build_file
   displayName: Build File
   type: string
@@ -88,16 +92,17 @@ steps:
 - bash: echo "##vso[task.setvariable variable=pkg_count]${{ 1 }}"
 
 # trim the package list if this is a PR
-- powershell:
-    $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
-    Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
-  displayName: Workaround for Branch Names
-  condition: eq(variables['Build.Reason'], 'PullRequest')
-- task: CmdLine@2
-  displayName: Check if ${{ parameters.build_pkg }} Needs Testing
-  inputs:
-    script: stuart_pr_eval -c ${{ parameters.build_file }} -t ${{ parameters.build_target}} --pr-target $(pr_compare_branch) --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
-  condition: eq(variables['Build.Reason'], 'PullRequest')
+- ${{ if eq(parameters.do_pr_eval, true) }}:
+  - powershell:
+      $TargetBranch = "$(System.PullRequest.targetBranch)".replace('refs/heads/', '');
+      Write-Host "##vso[task.setvariable variable=pr_compare_branch]origin/$TargetBranch";
+    displayName: Workaround for Branch Names
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+  - task: CmdLine@2
+    displayName: Check if ${{ parameters.build_pkg }} Needs Testing
+    inputs:
+      script: stuart_pr_eval -c ${{ parameters.build_file }} -t ${{ parameters.build_target}} --pr-target $(pr_compare_branch) --output-count-format-string "##vso[task.setvariable variable=pkg_count]{pkgcount}"
+    condition: eq(variables['Build.Reason'], 'PullRequest')
 
  # Setup repo
 - task: CmdLine@2
