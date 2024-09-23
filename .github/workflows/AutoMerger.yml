@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Auto Merge
         id: auto_merge
-        uses: pascalgn/automerge-action@v0.16.3
+        uses: pascalgn/automerge-action@v0.16.4
         env:
           GITHUB_TOKEN: "${{ secrets.PROJECT_MU_BOT_TOKEN }}"
           MERGE_ERROR_FAIL: "false"     # Do not fail if an auto merge couldn't happen
