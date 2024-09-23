@@ -16,11 +16,13 @@ on:
     branches:
       - main
     paths:
+      - ".sync/Version.njk"
       - "Containers/**/Dockerfile"
   pull_request:
     branches:
       - main
     paths:
+      - ".sync/Version.njk"
       - "Containers/**/Dockerfile"
 
 jobs:
