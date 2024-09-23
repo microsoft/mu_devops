@@ -33,10 +33,12 @@ on:
     branches:
       - main
       - release/*
+      - dev/*
   pull_request:
     branches:
       - main
       - release/*
+      - dev/*
     paths-ignore:
       - '!**.c'
       - '!**.h'
