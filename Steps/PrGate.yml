@@ -64,6 +64,10 @@ parameters:
   displayName: Extra Install Steps
   type: stepList
   default: []
+- name: extra_pre_build_steps
+  displayName: Extra Pre-Build Steps
+  type: stepList
+  default: []
 - name: extra_post_build_steps
   displayName: Extra Post-Build Steps
   type: stepList
@@ -139,6 +143,9 @@ steps:
 
 - ${{ if eq(parameters.install_tools, true) }}:
   - template: InstallCoverageTools.yml
+
+# Potential pre-build steps
+- ${{ parameters.extra_pre_build_steps }}
 
 # Build repo
 - ${{ if eq(parameters.do_ci_setup, true) }}:
