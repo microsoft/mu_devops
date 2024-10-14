@@ -74,6 +74,14 @@ parameters:
   displayName: Publish Artifacts
   type: boolean
   default: true
+- name: skip_setup
+  displayName: Skip Setup
+  type: boolean
+  default: false
+- name: skip_update
+  displayName: Skip Update
+  type: boolean
+  default: false
 
 steps:
 - ${{ if eq(parameters.checkout_self, true) }}:
@@ -109,14 +117,14 @@ steps:
   displayName: Setup
   inputs:
     script: stuart_setup -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} -t ${{ parameters.build_target}} ${{ parameters.build_flags}}
-  condition: and(gt(variables.pkg_count, 0), succeeded())
+  condition: and(and(gt(variables.pkg_count, 0), succeeded()), eq('${{ parameters.skip_setup }}', 'false'))
 
 # Stuart Update
 - task: CmdLine@2
   displayName: Update
   inputs:
     script: stuart_update -c ${{ parameters.build_file }} TOOL_CHAIN_TAG=${{ parameters.tool_chain_tag}} -t ${{ parameters.build_target}} ${{ parameters.build_flags}}
-  condition: and(gt(variables.pkg_count, 0), succeeded())
+  condition: and(and(gt(variables.pkg_count, 0), succeeded()), eq('${{ parameters.skip_update }}', 'false'))
 
 # build basetools
 #   do this after setup and update so that code base dependencies
