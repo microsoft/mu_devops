@@ -109,6 +109,14 @@ group:
     repos: |
       microsoft/mu_feature_mm_supv
 
+# Containers - Dockerfiles
+  - files:
+    - source: .sync/containers/Ubuntu-22/Dockerfile
+      dest: Containers/Ubuntu-22/Dockerfile
+      template: true
+    repos: |
+      microsoft/mu_devops
+
 # dependabot - Track GitHub Actions and PIP Modules
   - files:
     - source: .sync/dependabot/actions-pip.yml
@@ -184,6 +192,14 @@ group:
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
+
+# GitHub Actions - In the Local Repo
+  - files:
+    - source: .sync/actions/submodule-release-updater-action.yml
+      dest: .github/actions/submodule-release-updater/action.yml
+      template: true
+    repos: |
+      microsoft/mu_devops
 
 # GitHub Templates - Contributing
   - files:
@@ -670,6 +686,9 @@ group:
   - files:
     - source: .sync/azure_pipelines/RustSetupSteps.yml
       dest: Steps/RustSetupSteps.yml
+      template: true
+    - source: .sync/azure_pipelines/SetupPythonPreReqs.yml
+      dest: Steps/SetupPythonPreReqs.yml
       template: true
     repos: |
       microsoft/mu_devops
