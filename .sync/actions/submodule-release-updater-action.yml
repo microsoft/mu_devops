@@ -1,0 +1,441 @@
+# A GitHub action to create pull requests for new releases of submodules in a repository.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+
+{% import '../Version.njk' as sync_version -%}
+
+{% raw %}
+# NOTE: Because this pipeline YAML file is a Nunjucks template, the pipeline syntax of `{{}}` will conflict with
+#       Nunjucks style. Surround pipeline YAML code that uses `{{}}` within `raw` and `endraw` tags
+#       to allow it to pass through Nunjucks processing.
+{% endraw %}
+name: 'Submodule Release Updater'
+
+description: 'Checks if new releases are available for submodules and creates pull requests to update them.'
+
+inputs:
+  GH_PAT:
+    description: 'GitHub Personal Access Token (PAT) used to access repos and create pull requests.'
+    required: true
+  GH_USER:
+    description: 'GitHub username used to create pull requests.'
+    required: true
+  GIT_EMAIL:
+    description: 'Email address used for authoring Git commits.'
+    required: true
+  GIT_NAME:
+    description: 'Name used for authoring Git commits.'
+    required: true
+
+{% raw %}
+outputs:
+  submodules-updated:
+    description: "Number of submodules updated."
+    value: ${{ steps.check-for-submodule-updates.outputs.submodule-update-count }}
+{% endraw %}
+runs:
+  using: "composite"
+
+  steps:
+    - name: Set up Python Environment
+      uses: actions/setup-python@v5
+      with:
+        python-version: {{ sync_version.python_version }}
+
+{% raw %}
+    - name: Install PIP Modules
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        pip install GitPython requests semantic-version
+
+    - name: Check for Submodule Updates
+      id: check-for-submodule-updates
+      shell: python
+      env:
+        GITHUB_TOKEN: "${{ inputs.GH_PAT }}"
+        GITHUB_USER: "${{ inputs.GH_USER }}"
+        GIT_EMAIL_ADDRESS: "${{ inputs.GIT_EMAIL }}"
+        GIT_NAME: "${{ inputs.GIT_NAME }}"
+        PR_LABELS: "${{ inputs.PR_LABELS }}"
+      run: |
+        import git
+        import json
+        import os
+        import re
+        import requests
+        import semantic_version
+        import sys
+        from textwrap import dedent
+        from urllib.parse import urlparse
+
+        # Ignore flake8 linter errors for lines that are too long (E501)
+        # flake8: noqa: E501
+
+        AUTHORIZED_ORGANIZATIONS  = "microsoft"                       # Assume "microsoft" org right now
+        GH_REPO                   = os.environ["GITHUB_REPOSITORY"]
+        GH_TOKEN                  = os.environ["GITHUB_TOKEN"]
+        GH_USER                   = os.environ["GITHUB_USER"]
+        GIT_EMAIL_ADDRESS         = os.environ["GIT_EMAIL_ADDRESS"]
+        GIT_NAME                  = os.environ["GIT_NAME"]
+        PR_LABELS                 = ['type:dependencies', 'type:submodules']
+        WORKSPACE_DIR_NAME        = "local_clone"
+        WORKSPACE_PATH            = os.environ["GITHUB_WORKSPACE"]
+
+
+        def _ver_without_prefix(version: str) -> str:
+            if len(version) == 0:
+                return ""
+
+            ver_prefix = version.strip().lower()[0]
+            if ver_prefix == "v":
+                return version[len("v"):]
+
+            return version
+
+
+        # GitHub REST API request and response documentation is available here:
+        # https://docs.github.com/en/rest?apiVersion=2022-11-28
+
+        remote = f"https://{GH_USER}:{GH_TOKEN}@github.com/{GH_REPO}.git"
+        repo_owner, repo_name = GH_REPO.split('/')
+
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "X-GitHub-Api-Version": "2022-11-28"
+        }
+        submodule_headers = headers
+        headers["Authorization"] = f"Bearer {GH_TOKEN}"
+
+        # Clone the repo using local creds
+        workspace_abs_path = os.path.join(WORKSPACE_PATH, WORKSPACE_DIR_NAME)
+        repo = git.Repo.clone_from(remote, workspace_abs_path)
+        repo.config_writer().set_value('user', 'name', GIT_NAME).release()
+        repo.config_writer().set_value('user', 'email', GIT_EMAIL_ADDRESS).release()
+
+        base_branch = None
+        submodules = repo.submodules
+
+        submodule_update_count = 0
+        for submodule in submodules:
+            # The initial "querying" part of this flow relies upon the GitHub REST
+            # API which is must faster to query than initializing submodules
+            # locally
+            parsed_url = urlparse(submodule.url)
+
+            # Only support GitHub repos for now
+            if "github" not in parsed_url.hostname:
+                print("::notice title=GitHub Host Not Found!::This workflow only "
+                      "supports GitHub hosted repos!")
+                continue
+
+            path = parsed_url.path.strip('/')
+            submod_user, submod_repo = os.path.split(path)
+
+            submod_abs_path = os.path.join(workspace_abs_path, submodule.path)
+            submod_repo = submod_repo[:-len(".git")] if submod_repo.endswith(".git") else submod_repo
+
+            authorized_orgs = AUTHORIZED_ORGANIZATIONS.split(',')
+            authorized_orgs = [s.strip() for s in authorized_orgs]
+            if any(org == submod_user for org in authorized_orgs):
+                # Use an auth token if possible to increase the access rate limit
+                submodule_headers["Authorization"] = f"Bearer {GH_TOKEN}"
+
+            # Get the latest release for the submodule
+            response = requests.get(
+                            f"https://api.github.com/repos/"
+                            f"{submod_user}/{submod_repo}/releases/latest",
+                            headers=submodule_headers)
+            if response.status_code == 200:
+                tag = response.json()["tag_name"]
+            else:
+                print(f"::notice title=Submodule Release Not Found!::Failed to "
+                      f"query releases for {submod_repo}. Skipping!")
+                continue
+
+            actual_available_tag = tag
+            available_tag = _ver_without_prefix(tag)
+
+            print(f"::notice title=Available Submodule Tag Found!::Found {actual_available_tag} "
+                  f"as the latest release tag for {submod_repo}.")
+
+            response = requests.get(
+                            f"https://api.github.com/repos/"
+                            f"{submod_user}/{submod_repo}/git/refs/tags/{actual_available_tag}",
+                            headers=submodule_headers)
+            if response.status_code != 200:
+                print(f"::error title=Commit For Release Tag Not Found!::Skipping "
+                      f"submodule {submod_repo}.")
+                continue
+
+            available_tag_commit_hash = response.json()["object"]["sha"]
+
+            print(f"::notice title=New Release Commit Found!::Found "
+                  f"{available_tag_commit_hash} as the commit for {actual_available_tag}.")
+
+            try:
+                available_sem_ver = semantic_version.Version(available_tag)
+                print("::notice title=Semantic Version Tag!::The available tag is "
+                      "recognized as a semantic version.")
+            except ValueError:
+                # Only semantic versioned tags are currently supported
+                print("::notice title=Non-Semantic Version Tag!::Skipping tag not "
+                      "recognized as a semantic version.")
+                continue
+
+            # Get the current submodule commit hash
+            response = requests.get(
+                            f"https://api.github.com/repos/"
+                            f"{repo_owner}/{repo_name}/contents/{submodule.path}",
+                            headers=headers)
+            if response.status_code != 200:
+                print(f"::error title=Submodule Info Not Found!::Failed to find "
+                      f"submodule info for {submod_repo}!")
+                continue
+
+            current_tag_commit_hash = response.json()["sha"]
+
+            print(f"::notice title=Current Submodule Commit Found!::Found "
+                  f"{current_tag_commit_hash} as the commit for {submod_repo}.")
+
+            # Get all of the submodule tags
+            response = requests.get(
+                            f"https://api.github.com/repos/"
+                            f"{submod_user}/{submod_repo}/git/refs/tags",
+                            headers=submodule_headers)
+            if response.status_code != 200:
+                print(f"::error title=Failed to Get Submodule Tags!::Failed to get "
+                      f"tags for {submod_repo}!")
+                continue
+
+            # Find the most recent tag that contains the current commit hash
+            print(f"::notice title=Initializing Submodule...::Initializing "
+                  f"{submod_repo}.")
+            submodule.update(init=True, recursive=False)
+            submodule_repo = git.Repo(submod_abs_path)
+            print(f"::notice title=Initialization Complete!::Done initializing "
+                  f"{submod_repo}.")
+
+            print(f"::notice title=Searching for Latest Tag Used!::Finding most "
+                  f"recent tag used in {submod_repo}...")
+            actual_current_tag = None
+            actual_current_tag_committed_datetime = None
+            for tag in submodule_repo.tags:
+                tag_commit = submodule_repo.commit(tag.commit)
+                if current_tag_commit_hash in \
+                    [commit.hexsha for commit in tag_commit.iter_items(repo=submodule_repo, rev=tag.name)]:
+                    # Find the "nearest" tag that contains the commit
+                    if not actual_current_tag_committed_datetime or \
+                        (tag.commit.committed_datetime < actual_current_tag_committed_datetime):
+                        actual_current_tag = tag.name
+                        actual_current_tag_committed_datetime = tag.commit.committed_datetime
+            print("::notice title=Searching for Latest Tag Used!::Done!")
+
+            if not actual_current_tag:
+                print(f"::notice title=Tag Not Found For Submodule Commit!::Could "
+                      f"not find tag for commit {current_tag_commit_hash}. Skipping submodule.")
+                continue
+
+            current_tag = _ver_without_prefix(actual_current_tag)
+
+            print(f"::notice title=Current Submodule Tag Found!::{submod_repo} is "
+                  f"currently on tag ({current_tag}).")
+
+            try:
+                current_sem_ver = semantic_version.Version(current_tag)
+                print(f"::notice title=Semantic Version Tag!::{current_tag} is "
+                      f"recognized as a semantic version.")
+            except ValueError:
+                # Only semantic versioned tags are currently supported
+                print(f"::notice title=Non-Semantic Version Tag!::Skipping tag "
+                      f"({current_tag}) since it is not recognized as a semantic version.")
+                continue
+
+            if available_sem_ver > current_sem_ver:
+                print(f"::notice title=Version Update Ready!::{submod_repo} can be "
+                      f"updated from {current_tag} to {available_tag}.")
+
+                response = requests.get(
+                                f"https://api.github.com/repos/"
+                                f"{submod_user}/{submod_repo}/compare/{actual_current_tag}...{actual_available_tag}",
+                                headers=submodule_headers)
+                if response.status_code == 200:
+                    print("::notice title=Commit Info Found!::Found commit delta "
+                          "for the tag update.")
+                else:
+                    # Commits should be available for existing tags
+                    print("::error title=Commit Info Not Found!::Could not find "
+                          "commit delta for the tag update}!")
+                    continue
+
+                tag_comp_response = response.json()
+
+                if "commits" not in tag_comp_response:
+                    # Not necessarily an error but no need to gather commit info
+                    # if there are no commits
+                    print(f"::notice title=Commits Not Found!::No new commits "
+                          f"found in the new tag {actual_available_tag}!")
+                    continue
+
+                commit_summary = dedent(f"""
+                Introduces {tag_comp_response["total_commits"]} new commits in [{submodule.name}]({submodule.url}).
+
+                <details>
+                <summary>Commits</summary>
+                <ul>
+                """)
+
+                for commit in tag_comp_response["commits"]:
+                    commit_message = commit["commit"]["message"]
+                    commit_title = commit_message.split("\n")[0]
+
+                    # Since the PR is in a different repo, replace a potential
+                    # PR number in the commit title with an actual link to
+                    # the PR in that repo.
+                    pr_num_pattern = r"#(?P<pr_num>\d+)"
+                    pr_url_template = f"<a href=\"https://github.com/{submod_user}/{submod_repo}/pull/\\g<pr_num>\">#\\g<pr_num></a>"
+
+                    commit_title = re.sub(
+                                    pr_num_pattern,
+                                    pr_url_template,
+                                    commit_title)
+
+                    commit_summary += f"<li><a href=\"{commit['html_url']}\">{commit['sha'][:6]}</a> {commit_title}</li>\n"
+
+                commit_summary += dedent("""
+                </ul>
+                </details>
+                """).strip()
+
+                pr_body = dedent(f"""
+                Bumps {submodule.name} from `{current_tag}` to `{available_tag}`
+
+                {commit_summary}
+                """).strip().strip("\n")
+
+                pr_body += f"\n\nSigned-off-by: {GIT_NAME} <{GIT_EMAIL_ADDRESS}>"
+
+                branch_name = f"projectmubot/submodules/{submod_repo}/{available_tag}"
+
+                # Check if this update already exists on the remote
+                response = requests.get(
+                                f"https://api.github.com/repos/"
+                                f"{repo_owner}/{repo_name}/branches/{branch_name}",
+                                headers=headers)
+                if response.status_code == 200:
+                    print("::notice title=Update Already Exists!::This update "
+                          "has already been pushed before. Skipping it.")
+                    continue
+
+                # Todo: Close PRs that already exist that update to an earlier
+                #       version of a submodule release.
+
+                # Get repo default branch
+                if not base_branch:
+                    response = requests.get(
+                                    f"https://api.github.com/repos/"
+                                    f"{repo_owner}/{repo_name}",
+                                    headers=headers)
+                    if response.status_code == 200:
+                        base_branch = response.json()["default_branch"]
+                    else:
+                        # Commits should be available for existing tags
+                        print(f"::error title=Default Branch Not Found!::Could "
+                              f"not find the default branch for {repo_name}. Exiting.")
+                        sys.exit(1)
+
+                print(f"::notice title=Default Branch Found!::Default branch "
+                      f"for {repo_name} is {base_branch}.")
+
+                # Checkout the default branch
+                try:
+                    repo.git.checkout(base_branch)
+                except git.exc.GitCommandError:
+                    try:
+                        repo.git.checkout('-b', base_branch)
+                    except git.exc.GitCommandError:
+                        print(f"::error title=Git Branch Checkout Failed!::"
+                              f"Could not checkout {base_branch}. Exiting.")
+                        sys.exit(1)
+
+                # Create a local git branch from the default branch
+                try:
+                    new_branch = repo.create_head(branch_name)
+                except OSError:
+                    print(f"::error title=Failed to Create Branch!::Failed to "
+                          f"create the branch needed to update PR. Skipping {submod_repo}.")
+                    continue
+                repo.head.reference = new_branch
+
+                # In the workflow, we assume the "origin" remote is available
+                origin = repo.remote(name="origin")
+                submodule_repo.remotes.origin.fetch()
+
+                # Update the submodule to the release tag commit
+                # This has been shown to fail to apply on the first try so
+                # try up to 3 times
+                for i in range(3):
+                    submodule_repo.git.reset('--hard', available_tag_commit_hash)
+                    if submodule_repo.head.commit.hexsha == available_tag_commit_hash:
+                        break
+                else:
+                    print(f"::error title=Failed to Checkout New Commit!::Failed "
+                          f"to checkout {available_tag_commit_hash}. Skipping.")
+                    continue
+
+                # Commit the change to the local branch
+                repo.git.add(submodule.path)
+                commit_message = pr_body
+                repo.index.commit(commit_message)
+
+                # Push the branch
+                origin.push(new_branch)
+
+                pr_payload = {
+                    "title": f"Bump {submodule.name} from {current_tag} to {available_tag}",
+                    "body": pr_body.replace("'", '"'),
+                    "base": base_branch,
+                    "head": branch_name,
+                }
+
+                # Create the PR
+                response = requests.post(
+                                f"https://api.github.com/repos/"
+                                f"{repo_owner}/{repo_name}/pulls",
+                                json=pr_payload,
+                                headers=headers)
+                if response.status_code != 201:
+                    print("::error title=Failed to Create PR!::Failed to "
+                          "create the PR. Exiting.")
+                    sys.exit(1)
+
+                pr_number = response.json()["number"]
+                pr_url = response.json()["html_url"]
+                submodule_update_count += 1
+                print(f"::notice title=PR Created!::{pr_url}")
+
+                if PR_LABELS:
+                    print(f"::notice title=Adding PR Labels::Adding labels to PR {pr_number}...")
+
+                    # Add labels to the PR
+                    response = requests.post(
+                                    f"https://api.github.com/repos/"
+                                    f"{repo_owner}/{repo_name}/issues/{pr_number}/labels",
+                                    json=PR_LABELS,
+                                    headers=headers)
+                    if response.status_code != 200:
+                        print(f"::error title=Failed to Add Labels!::Could not "
+                              f"add labels to PR {pr_number}.")
+                        sys.exit(1)
+
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+            print(f'submodule-update-count={submodule_update_count}', file=fh)
+{% endraw %}
