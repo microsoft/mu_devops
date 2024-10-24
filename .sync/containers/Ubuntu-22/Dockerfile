@@ -49,6 +49,8 @@ RUN apt-get update && \
         curl \
         flex \
         git \
+        gnupg \
+        gnupg2 \
         lcov \
         jq \
         m4 \
@@ -56,16 +58,20 @@ RUN apt-get update && \
         mono-complete \
         nasm \
         npm \
-        python3 \
-        python3-pip \
-        python3-venv \
         software-properties-common \
         sudo \
         unzip \
         uuid-dev \
         wget \
         && \
+    apt-get update && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
+    add-apt-repository ppa:deadsnakes/ppa -y && \
+    apt-get update && \
     apt-get install --yes --no-install-recommends \
+        {% endraw %}python{{ sync_version.python_version }}{% raw %} \
+        {% endraw %}python{{ sync_version.python_version }}{% raw %}-distutils \
+        {% endraw %}python{{ sync_version.python_version }}{% raw %}-venv \
         g++-${GCC_MAJOR_VERSION} gcc-${GCC_MAJOR_VERSION} \
         gcc-${GCC_MAJOR_VERSION}-x86-64-linux-gnux32 \
         gcc-${GCC_MAJOR_VERSION}-aarch64-linux-gnu \
@@ -73,6 +79,10 @@ RUN apt-get update && \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabi \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabihf \
         && \
+    curl -O https://bootstrap.pypa.io/get-pip.py && \
+    {% endraw %}python{{ sync_version.python_version }}{% raw %} get-pip.py && \
+    {% endraw %}python{{ sync_version.python_version }}{% raw %} -m pip install --upgrade setuptools && \
+    rm get-pip.py && \
     apt-get upgrade -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
