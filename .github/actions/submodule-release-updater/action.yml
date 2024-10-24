@@ -1,8 +1,18 @@
 # A GitHub action to create pull requests for new releases of submodules in a repository.
 #
+# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
+#       instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
+#
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
+
+# NOTE: Because this pipeline YAML file is a Nunjucks template, the pipeline syntax of `{{}}` will conflict with
+#       Nunjucks style. Surround pipeline YAML code that uses `{{}}` within `raw` and `endraw` tags
+#       to allow it to pass through Nunjucks processing.
 
 name: 'Submodule Release Updater'
 
@@ -423,3 +433,4 @@ runs:
 
         with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
             print(f'submodule-update-count={submodule_update_count}', file=fh)
+

@@ -11,6 +11,10 @@
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 
+# NOTE: Because this pipeline YAML file is a Nunjucks template, the pipeline syntax of `{{}}` will conflict with
+#       Nunjucks style. Surround pipeline YAML code that uses `{{}}` within `raw` and `endraw` tags
+#       to allow it to pass through Nunjucks processing.
+
 #
 # The build container layer is intended for pipeline use and is the minimal set
 # of tools required for building Project MU.
@@ -42,6 +46,8 @@ RUN apt-get update && \
         curl \
         flex \
         git \
+        gnupg \
+        gnupg2 \
         lcov \
         jq \
         m4 \
@@ -49,16 +55,20 @@ RUN apt-get update && \
         mono-complete \
         nasm \
         npm \
-        python3 \
-        python3-pip \
-        python3-venv \
         software-properties-common \
         sudo \
         unzip \
         uuid-dev \
         wget \
         && \
+    apt-get update && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
+    add-apt-repository ppa:deadsnakes/ppa -y && \
+    apt-get update && \
     apt-get install --yes --no-install-recommends \
+        python3.12 \
+        python3.12-distutils \
+        python3.12-venv \
         g++-${GCC_MAJOR_VERSION} gcc-${GCC_MAJOR_VERSION} \
         gcc-${GCC_MAJOR_VERSION}-x86-64-linux-gnux32 \
         gcc-${GCC_MAJOR_VERSION}-aarch64-linux-gnu \
@@ -66,6 +76,10 @@ RUN apt-get update && \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabi \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabihf \
         && \
+    curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python3.12 get-pip.py && \
+    python3.12 -m pip install --upgrade setuptools && \
+    rm get-pip.py && \
     apt-get upgrade -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -129,10 +143,11 @@ RUN mkdir cargo_downloads && \
 # Alternatives
 #
 
+
 RUN update-alternatives \
-      --install /usr/bin/python python /usr/bin/python3.10 1 && \
+      --install /usr/bin/python python /usr/bin/python3.12 1 && \
     update-alternatives \
-      --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+      --install /usr/bin/python3 python3 /usr/bin/python3.12 1 && \
     update-alternatives \
       --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_MAJOR_VERSION} 100 \
       --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_MAJOR_VERSION} \
@@ -213,3 +228,4 @@ RUN apt-get update && \
         less \
         && \
     apt-get clean
+
