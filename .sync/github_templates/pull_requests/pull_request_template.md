@@ -9,6 +9,9 @@ For details on how to complete these options and their meaning refer to [CONTRIB
 - [ ] Breaking change?
 - [ ] Includes tests?
 - [ ] Includes documentation?
+{% for additional_checkbox in additional_checkboxes %}
+- [ ] {{ additional_checkbox }}
+{% endfor %}
 
 ## How This Was Tested
 
