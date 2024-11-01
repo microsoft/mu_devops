@@ -403,6 +403,20 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
+# Leaf Workflow - Backport Dev Branch Changes to Release Branch
+  - files:
+    - source: .sync/workflows/leaf/backport-to-release-branch.yml
+      dest: .github/workflows/backport-to-release-branch.yml
+      template: true
+    repos: |
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_silicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_plus
+
 # Leaf Workflow - CodeQL
 # Note: This workflow should be used in repos that build firmware
 #       packages from a CI builder (i.e. a CISettings.py file).
@@ -658,13 +672,29 @@ group:
     repos: |
       microsoft/mu_tiano_platforms
 
+# Pull Request Template - Common Template - Backport Option
+  - files:
+    - source: .sync/github_templates/pull_requests/pull_request_template.md
+      dest: .github/pull_request_template.md
+      template:
+        additional_checkboxes:
+          - Backport to release branch?
+    repos: |
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_silicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_plus
+
 # Pull Request Template - Common Template
   - files:
     - source: .sync/github_templates/pull_requests/pull_request_template.md
       dest: .github/pull_request_template.md
+      template:
+        additional_checkboxes: []
     repos: |
-      microsoft/mu_basecore
-      microsoft/mu_common_intel_min_platform
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
@@ -672,15 +702,10 @@ group:
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
-      microsoft/mu_oem_sample
-      microsoft/mu_plus
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
 
 # Rust - Pipeline Files
   - files:
