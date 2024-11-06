@@ -78,13 +78,13 @@ RUN echo "Installing needed system packages" \
         gcc-${GCC_MAJOR_VERSION}-aarch64-linux-gnu \
         gcc-${GCC_MAJOR_VERSION}-riscv64-linux-gnu \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabi \
-        gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabihf && \
+        gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabihf \
     && curl -O https://bootstrap.pypa.io/get-pip.py \
     && {% endraw %}python{{ sync_version.python_version }}{% raw %} get-pip.py \
     && {% endraw %}python{{ sync_version.python_version }}{% raw %} -m pip install --upgrade setuptools \
     && rm get-pip.py \
     && apt-get upgrade -y && \
-    
+
     echo "\n\n Cleaning cache" \
     && apt-get autoremove \
     && apt-get clean \
@@ -122,7 +122,7 @@ RUN echo "Upgrading pip/lcov_cobertura" \
     && cd .. \
     && rm -rf iasl_temp && \
 
-    echo "\n\n Installing microsoft-prod packages" \
+    echo "\n\n Installing powershell" \
     && wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb" \
     && dpkg -i packages-microsoft-prod.deb \
     && rm packages-microsoft-prod.deb \
@@ -133,7 +133,7 @@ RUN echo "Upgrading pip/lcov_cobertura" \
     && apt-get autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-    
+
 #
 # Rust support
 #
@@ -224,7 +224,7 @@ FROM build AS test
 ARG QEMU_URL="https://gitlab.com/qemu-project/qemu.git" \
     QEMU_BRANCH="v9.0.0"
 
-RUN echo "Installing needed software" \
+RUN echo "Installing needed software to build qemu." \
     && apt-get update \
     && apt-get install --yes --no-install-recommends \
         autoconf \
@@ -274,5 +274,5 @@ RUN echo "Installing nano/less" \
     && apt-get autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-    
+
 {% endraw %}
