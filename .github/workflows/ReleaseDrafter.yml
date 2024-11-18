@@ -11,10 +11,10 @@
 #
 #   1. A "latest release branch"
 #      - Example: `release/202405`
-#      - Config file: `release-draft-config-n.yml`
+#      - Config file: `release-draft-config-n.yml` and `release-draft-config-n-dev.yml`
 #   2. A "previous release branch"
 #      - Example: `release/202311`
-#      - Config file: `release-draft-config-n-1.yml`
+#      - Config file: `release-draft-config-n-1.yml` and `release-draft-config-n-1-dev.yml`
 #   3. A "main branch"
 #      - Example: `main`
 #      - Config file: `release-draft-config.yml`
@@ -68,13 +68,19 @@ jobs:
         run: |
           fileContent=$(cat "${FILE_PATH}")
           latestMuReleaseBranch=$(echo "$fileContent" | grep -oP '(?<=latest_mu_release_branch = ").*(?=")')
+          latestMuDevBranch=$(echo "$latestMuReleaseBranch" | sed 's/release/dev/')
           previousMuReleaseBranch=$(echo "$fileContent" | grep -oP '(?<=previous_mu_release_branch = ").*(?=")')
-          echo "latest_mu_branch=${latestMuReleaseBranch}" >> $GITHUB_ENV
-          echo "latest_mu_branch_full=refs/heads/${latestMuReleaseBranch}" >> $GITHUB_ENV
-          echo "previous_mu_branch=${previousMuReleaseBranch}" >> $GITHUB_ENV
-          echo "previous_mu_branch_full=refs/heads/${previousMuReleaseBranch}" >> $GITHUB_ENV
-      - name: Build a ${{ env.latest_mu_branch }} Draft
-        if: ${{ startsWith(github.ref, env.latest_mu_branch_full) }}
+          previousMuDevBranch=$(echo "$previousMuReleaseBranch" | sed 's/release/dev/')
+          echo "latest_mu_release_branch=${latestMuReleaseBranch}" >> $GITHUB_ENV
+          echo "latest_mu_dev_branch=${latestMuDevBranch}" >> $GITHUB_ENV
+          echo "latest_mu_dev_branch_full=refs/heads/${latestMuDevBranch}" >> $GITHUB_ENV
+          echo "latest_mu_release_branch_full=refs/heads/${latestMuReleaseBranch}" >> $GITHUB_ENV
+          echo "previous_mu_release_branch=${previousMuReleaseBranch}" >> $GITHUB_ENV
+          echo "previous_mu_dev_branch=${latestMuDevBranch}" >> $GITHUB_ENV
+          echo "previous_mu_dev_branch_full=refs/heads/${previousMuDevBranch}" >> $GITHUB_ENV
+          echo "previous_mu_release_branch_full=refs/heads/${previousMuReleaseBranch}" >> $GITHUB_ENV
+      - name: Build a ${{ env.latest_mu_release_branch }} Draft
+        if: ${{ startsWith(github.ref, env.latest_mu_dev_branch_full) }}
         id: update_draft_n
         uses: release-drafter/release-drafter@v6.0.0
         with:
@@ -82,8 +88,48 @@ jobs:
           config-name: release-draft-config-n.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build a ${{ env.previous_mu_branch }} Draft
-        if: ${{ startsWith(github.ref, env.previous_mu_branch_full) }}
+      - name: Draft Release for Current (${{ env.latest_mu_release_branch }}) Release Branch
+        if: steps.update_draft_n.outcome == 'success'
+        run: |
+          # Prepare the release body
+          release_body_path="${{ runner.temp }}/release_body.txt"
+          release_body=$(cat <<'EOF'
+          ${{ steps.update_draft_n.outputs.body }}
+          EOF
+          )
+          release_body="${release_body//\`/\\\`}"
+          echo "${release_body}" > $release_body_path
+          sed -i 's/\\`/`/g' $release_body_path
+
+          # Get the new tag and title
+          new_tag=$(echo "${{ steps.update_draft_n.outputs.tag_name }}" | sed 's/dev-//')
+          new_title=$(echo "${{ steps.update_draft_n.outputs.tag_name }}" | sed 's/dev/release/')
+
+          # Determine the corresponding tag names
+          existing_tag_prefix=""
+          tag_regex="v([0-9]{6}).*\."
+          if [[ $new_tag =~ $tag_regex ]]; then
+            existing_tag_prefix="${BASH_REMATCH[1]}"
+          fi
+
+          # Delete the template dev draft created
+          gh release delete "${{ steps.update_draft_n.outputs.tag_name }}" --repo ${{ github.repository }} --yes
+
+          # Delete any existing draft releases for this release branch
+          for tag in $(gh release list --repo ${{ github.repository }} --json tagName,isPrerelease,isDraft --jq ".[] | select(.isDraft == true and .isPrerelease == false and (.tagName | startswith(\"v$existing_tag_prefix\"))) | .tagName"); do
+            gh release delete "$tag" --repo ${{ github.repository }} --yes
+          done
+
+          gh release create "$new_tag" \
+            --repo "${{ github.repository }}" \
+            --target "${{ env.latest_mu_release_branch_full }}" \
+            --title "$new_title" \
+            --notes-file "$release_body_path" \
+            --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build a ${{ env.previous_mu_release_branch }} Draft
+        if: ${{ startsWith(github.ref, env.previous_mu_dev_branch_full) }}
         id: update_draft_n_1
         uses: release-drafter/release-drafter@v6.0.0
         with:
@@ -91,8 +137,64 @@ jobs:
           config-name: release-draft-config-n-1.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Draft Release for N-1 (${{ env.previous_mu_release_branch }}) Release Branch
+        if: steps.update_draft_n_1.outcome == 'success'
+        run: |
+          # Prepare the release body
+          release_body_path="${{ runner.temp }}/release_body.txt"
+          release_body=$(cat <<'EOF'
+          ${{ steps.update_draft_n_1.outputs.body }}
+          EOF
+          )
+          release_body="${release_body//\`/\\\`}"
+          echo "${release_body}" > $release_body_path
+          sed -i 's/\\`/`/g' $release_body_path
+
+          # Get the new tag and title
+          new_tag=$(echo "${{ steps.update_draft_n_1.outputs.tag_name }}" | sed 's/dev-//')
+          new_title=$(echo "${{ steps.update_draft_n_1.outputs.tag_name }}" | sed 's/dev/release/')
+
+          # Determine the corresponding tag names
+          existing_tag_prefix=""
+          tag_regex="v([0-9]{6}).*\."
+          if [[ $new_tag =~ $tag_regex ]]; then
+            existing_tag_prefix="${BASH_REMATCH[1]}"
+          fi
+
+          # Delete the template dev draft created
+          gh release delete "${{ steps.update_draft_n_1.outputs.tag_name }}" --repo ${{ github.repository }} --yes
+
+          # Delete any existing draft releases for this release branch
+          for tag in $(gh release list --repo ${{ github.repository }} --json tagName,isPrerelease,isDraft --jq ".[] | select(.isDraft == true and .isPrerelease == false and (.tagName | startswith(\"v$existing_tag_prefix\"))) | .tagName"); do
+            gh release delete "$tag" --repo ${{ github.repository }} --yes
+          done
+
+          gh release create "$new_tag" \
+            --repo "${{ github.repository }}" \
+            --target "${{ env.previous_mu_release_branch_full }}" \
+            --title "$new_title" \
+            --notes-file "$release_body_path" \
+            --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create the ${{ env.latest_mu_dev_branch }} Draft
+        if: ${{ startsWith(github.ref, env.latest_mu_dev_branch_full) }}
+        uses: release-drafter/release-drafter@v6.0.0
+        with:
+          # Note: Path is relative to .github/
+          config-name: release-draft-config-n-dev.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create the ${{ env.previous_mu_dev_branch }} Draft
+        if: ${{ startsWith(github.ref, env.previous_mu_dev_branch_full) }}
+        uses: release-drafter/release-drafter@v6.0.0
+        with:
+          # Note: Path is relative to .github/
+          config-name: release-draft-config-n-1-dev.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build the New Release Draft
-        if: ${{ !startsWith(github.ref, 'refs/heads/release') }}
+        if: ${{ !startsWith(github.ref, 'refs/heads/release') && !startsWith(github.ref, 'refs/heads/dev') }}
         id: update_draft_non_release
         uses: release-drafter/release-drafter@v6.0.0
         with:
