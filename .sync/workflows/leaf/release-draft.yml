@@ -25,10 +25,11 @@ name: Update Release Draft
 on:
   push:
     branches:
-      - {{ trigger_branch_name if trigger_branch_name else sync_version.latest_mu_release_branch }}
+      - {{ trigger_branch_name if trigger_branch_name else sync_version.latest_mu_release_branch | replace ("release", "dev") }}
 
 jobs:
   draft:
+    name: Draft Releases
 
     permissions:
       contents: write
