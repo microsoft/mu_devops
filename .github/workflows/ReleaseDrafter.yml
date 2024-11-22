@@ -76,7 +76,7 @@ jobs:
           echo "latest_mu_dev_branch_full=refs/heads/${latestMuDevBranch}" >> $GITHUB_ENV
           echo "latest_mu_release_branch_full=refs/heads/${latestMuReleaseBranch}" >> $GITHUB_ENV
           echo "previous_mu_release_branch=${previousMuReleaseBranch}" >> $GITHUB_ENV
-          echo "previous_mu_dev_branch=${latestMuDevBranch}" >> $GITHUB_ENV
+          echo "previous_mu_dev_branch=${previousMuDevBranch}" >> $GITHUB_ENV
           echo "previous_mu_dev_branch_full=refs/heads/${previousMuDevBranch}" >> $GITHUB_ENV
           echo "previous_mu_release_branch_full=refs/heads/${previousMuReleaseBranch}" >> $GITHUB_ENV
       - name: Build a ${{ env.latest_mu_release_branch }} Draft
