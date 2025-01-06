@@ -19,15 +19,25 @@
 
 {% import '../../../Version.njk' as sync_version -%}
 
+{%- if release_branch %}
+name-template: 'dev-v$RESOLVED_VERSION'
+tag-template: 'dev-v$RESOLVED_VERSION'
+{% else %}
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
+{% endif %}
 
 {# `release_branch` applies a commitish. `latest` then determines the branch to use. -#}
 {# If a commitish is not specified, then the `github.ref` value is implicitly used. -#}
 {%- if release_branch %}
-{% set release_branch = "refs/heads/" + (sync_version.latest_mu_release_branch if latest else sync_version.previous_mu_release_branch) %}
-commitish: {{ release_branch }}
+{%- set latest_mu_dev_branch = "refs/heads/" + (sync_version.latest_mu_release_branch | replace("release", "dev")) %}
+{%- set previous_mu_dev_branch = "refs/heads/" + (sync_version.previous_mu_release_branch | replace("release", "dev")) %}
+{%- set actual_branch = latest_mu_dev_branch if latest else previous_mu_dev_branch %}
+commitish: {{ actual_branch }}
 filter-by-commitish: true
+{% if filter_to_backport %}
+include-labels: ["type:backport"]
+{% endif %}
 {% endif %}
 
 template: |
@@ -35,7 +45,11 @@ template: |
 
   $CHANGES
 
+{% if release_branch %}
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...dev-v$RESOLVED_VERSION
+{% else %}
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+{% endif %}
 
 categories:
   - title: '⚠️ Breaking Changes'

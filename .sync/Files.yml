@@ -614,15 +614,30 @@ group:
   - files:
     - source: .sync/workflows/leaf/release-draft.yml
       dest: .github/workflows/release-draft.yml
-      template: true
+      template:
+        depend_on_backport: true
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
       dest: .github/release-draft-config-n.yml
       template:
+        filter_to_backport: true
+        latest: true
+        release_branch: true
+    - source: .sync/workflows/config/release-draft/release-draft-config.yml
+      dest: .github/release-draft-config-n-dev.yml
+      template:
+        filter_to_backport: false
         latest: true
         release_branch: true
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
       dest: .github/release-draft-config-n-1.yml
       template:
+        filter_to_backport: true
+        latest: false
+        release_branch: true
+    - source: .sync/workflows/config/release-draft/release-draft-config.yml
+      dest: .github/release-draft-config-n-1-dev.yml
+      template:
+        filter_to_backport: false
         latest: false
         release_branch: true
     repos: |
