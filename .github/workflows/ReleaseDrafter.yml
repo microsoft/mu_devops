@@ -100,6 +100,7 @@ jobs:
           release_body="${release_body//\`/\\\`}"
           echo "${release_body}" > $release_body_path
           sed -i 's/\\`/`/g' $release_body_path
+          sed -i '/\**Full Changelog\**:/d' $release_body_path
 
           # Get the new tag and title
           new_tag=$(echo "${{ steps.update_draft_n.outputs.tag_name }}" | sed 's/dev-//')
@@ -149,6 +150,7 @@ jobs:
           release_body="${release_body//\`/\\\`}"
           echo "${release_body}" > $release_body_path
           sed -i 's/\\`/`/g' $release_body_path
+          sed -i '/\**Full Changelog\**:/d' $release_body_path
 
           # Get the new tag and title
           new_tag=$(echo "${{ steps.update_draft_n_1.outputs.tag_name }}" | sed 's/dev-//')
