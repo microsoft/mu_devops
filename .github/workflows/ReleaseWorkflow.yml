@@ -11,9 +11,6 @@ name: Publish
 on:
   workflow_call:
     secrets:
-      GH_PAT:
-        description: 'The GitHub Personal Access Token to use for authenticating with GitHub'
-        required: true
       CRATES_IO_TOKEN:
         description: 'The token to use for authenticating with crates.io'
         required: true
