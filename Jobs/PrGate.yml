@@ -86,6 +86,14 @@ parameters:
   displayName: Variable name that hosts pool name to be used for self-hosted agents
   type: string
   default: ''
+- name: artifacts_binary
+  displayName: Binary Artifacts to Publish
+  type: string
+  default: ''
+- name: artifacts_other
+  displayName: Other Artifacts to Publish
+  type: string
+  default: ''
 - name: os_type
   displayName: OS type on the self-hosted agent pools
   type: string
@@ -158,6 +166,8 @@ jobs:
     - template: ../Steps/PrGate.yml
       parameters:
         artifacts_identifier: '${{ item.Key }} ${{ item.Value.Targets }}'
+        artifacts_binary: ${{ parameters.artifacts_binary }}
+        artifacts_other: ${{ parameters.artifacts_other }}
         build_file: ${{ parameters.build_file }}
         build_pkgs: ${{ item.Value.Pkgs }}
         build_targets: ${{ item.Value.Targets }}
