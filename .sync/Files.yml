@@ -557,6 +557,15 @@ group:
     repos: |
       microsoft/mu_devops
 
+# Leaf Workflow - Publish Release
+  - files:
+    - source: .sync/workflows/leaf/publish-release.yml
+      dest: .github/workflows/publish-release.yml
+    repos: |
+      microsoft/mu_rust_helpers
+      microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
+
 # Leaf Workflow - Pull Request Validator
   - files:
     - source: .sync/workflows/leaf/pull-request-formatting-validator.yml
