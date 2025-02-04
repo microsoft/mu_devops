@@ -1,0 +1,195 @@
+## @file
+# Azure Pipeline to build and publish cargo tools in a format supported by edk2-pytool-extension's external dependency.
+#
+# This template will clone the repository specified in the `repo_url` parameter at the tag specified in the `tag`
+# parameter and then build the tool for X64 and ARM64 for Windows and/or linux. These binaries will be published as a
+# nuget package in an internal format supported by edk2-pytool-extensions.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+parameters:
+  - name: tag
+    displayName: 'Cargo Make Version Tag'
+    type: string
+  - name: repo_url
+    displayName: 'Cargo Tool Repository URL'
+  - name: tool_name
+    displayName: 'Tool name (and nuget config file name)'
+    type: string
+  - name: extra_build_args
+    displayName: 'Extra build arguments'
+    type: string
+    default: ''
+  - name: upload_linux
+    displayName: 'Upload Linux Binaries (X64 and ARM64)'
+    type: boolean
+    default: true
+  - name: upload_windows
+    displayName: 'Upload Windows Binaries (X64 and ARM64)'
+    type: boolean
+    default: true
+  - name: python_version
+    displayName: 'Python Version'
+    type: string
+    default: '3.11'
+  
+variables:
+  - name: windows_image
+    value: 'windows-latest'
+  - name: linux_image
+    value: 'ubuntu-22.04'
+ 
+stages:
+- stage: build_binaries
+  displayName: 'Build ${{ parameters.tool_name }} Artifact(s)'
+  
+  jobs:
+    - job: build_linux
+      displayName: Build Linux Binaries
+
+      condition: eq('${{ parameters.upload_linux }}', 'true')
+
+      pool:
+        vmImage: ${{ variables.linux_image }}
+
+      steps:
+        - checkout: none
+        - bash: |
+            git clone --depth 1 --branch ${{ parameters.tag }} $REPO_URL $REPO_DIR
+          displayName: Checkout Repository
+          env:
+            REPO_URL: ${{ parameters.repo_url }}
+            REPO_DIR: ${{ parameters.tool_name }}
+        
+        - bash: |
+            rustup update
+            rustup target add aarch64-unknown-linux-gnu
+            rustup target add x86_64-unknown-linux-gnu
+          displayName: Setup Rust Targets
+        
+        - bash: cargo install cross
+          displayName: Install cross
+        
+        - bash: |
+            cross build --release --target aarch64-unknown-linux-gnu ${{ parameters.extra_build_args }}
+          displayName: Build ${{ parameters.tool_name }} (Linux ARM64)
+          workingDirectory: ${{ parameters.tool_name }}
+
+        - bash: |
+            cross build --release --target x86_64-unknown-linux-gnu ${{ parameters.extra_build_args }}
+          displayName: Build ${{ parameters.tool_name }} (Linux X86_X64)
+          workingDirectory: ${{ parameters.tool_name }}
+      
+        - bash: |
+            mkdir $(Build.ArtifactStagingDirectory)/Linux-ARM-64
+            mkdir $(Build.ArtifactStagingDirectory)/Linux-x86-64
+            chmod +x ${{ parameters.tool_name }}/target/aarch64-unknown-linux-gnu/release/$TOOL
+            chmod +x ${{ parameters.tool_name }}/target/x86_64-unknown-linux-gnu/release/$TOOL
+            cp ${{ parameters.tool_name }}/target/aarch64-unknown-linux-gnu/release/$TOOL $(Build.ArtifactStagingDirectory)/Linux-ARM-64
+            cp ${{ parameters.tool_name }}/target/x86_64-unknown-linux-gnu/release/$TOOL $(Build.ArtifactStagingDirectory)/Linux-x86-64
+          displayName: Copy Binaries
+          env:
+            TOOL: ${{ parameters.tool_name }}
+
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact: binaries'
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'binaries'
+
+    - job: build_windows
+      displayName: Build Windows Binaries
+      
+      condition: eq('${{ parameters.upload_windows }}', 'true')
+
+      pool:
+        vmImage: ${{ variables.windows_image }}
+      
+      steps:
+      - checkout: none
+      - bash: |
+          git clone --depth 1 --branch ${{ parameters.tag }} $REPO_URL $REPO_DIR
+        displayName: Checkout Repository
+        env:
+          REPO_URL: ${{ parameters.repo_url }}
+          REPO_DIR: ${{ parameters.tool_name }}
+      
+      - bash: |
+          rustup update
+          rustup target add x86_64-pc-windows-msvc
+          rustup target add aarch64-pc-windows-msvc
+        displayName: Setup Rust Targets
+      
+      - bash: |
+          cargo build --release --target aarch64-pc-windows-msvc ${{ parameters.extra_build_args }}
+        displayName: Build ${{ parameters.tool_name }} (Windows-ARM64)
+        workingDirectory: ${{ parameters.tool_name }}
+
+      - bash: |
+          cargo build --release --target x86_64-pc-windows-msvc ${{ parameters.extra_build_args }}
+        displayName: Build ${{ parameters.tool_name }} (Windows-x86_X64)
+        workingDirectory: ${{ parameters.tool_name }}
+      
+      - pwsh: |
+          New-Item -ItemType Directory -Force -Path "$(Build.ArtifactStagingDirectory)/Windows-ARM-64"
+          New-Item -ItemType Directory -Force -Path "$(Build.ArtifactStagingDirectory)/Windows-x86-64"
+          Copy-Item ${{ parameters.tool_name }}/target/aarch64-pc-windows-msvc/release/$env:TOOL -Destination "$(Build.ArtifactStagingDirectory)/Windows-ARM-64"
+          Copy-Item ${{ parameters.tool_name }}/target/x86_64-pc-windows-msvc/release/$env:TOOL -Destination "$(Build.ArtifactStagingDirectory)/Windows-x86-64"
+        displayName: Copy Binaries
+        env:
+          TOOL: ${{ parameters.tool_name }}.exe
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: binaries'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'binaries'
+
+    - job: publish
+      displayName: Publish Binaries
+      
+      dependsOn:
+        - ${{ if eq(parameters.upload_linux, true) }}:
+          - build_linux
+        - ${{ if eq(parameters.upload_windows, true) }}:
+          - build_windows
+
+      pool:
+        vmImage: 'ubuntu-latest'
+      
+      steps:
+        - checkout: self
+
+        - task: UsePythonVersion@0
+          displayName: 'Use Python ${{ parameters.python_version }}'
+          inputs:
+            versionSpec: '${{ parameters.python_version }}'
+
+        - bash: |
+            pip install --upgrade edk2-pytool-extensions
+          displayName: Install edk2-pytool-extensions
+
+        - task: DownloadBuildArtifacts@0
+          displayName: 'Download binaries artifact'
+          inputs:
+            artifactName: 'binaries'
+            downloadPath: '$(Build.ArtifactStagingDirectory)'
+        
+        - task: NuGetAuthenticate@1
+          displayName: Authenticate Local Feed
+        
+        - bash: |
+            nuget-publish --Operation PackAndPush --OutputLog "$(Build.SourcesDirectory)/NugetLog.txt" --ConfigFilePath "$CONF_PATH" --InputFolderPath $(Build.ArtifactStagingDirectory) --Version ${{ parameters.tag }}-rc2 --CustomLicensePath "$LICENSE"
+          env:
+            CONF_PATH: $(Build.SourcesDirectory)/.azurepipelines/nuget/${{ parameters.tool_name }}.yaml
+            LICENSE: $(Build.SourcesDirectory)/.azurepipelines/nuget/license.txt
+          displayName: Publish Nuget Package
+        
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publish Artifact: NugetLog'
+          inputs:
+            PathtoPublish: '$(Build.SourcesDirectory)'
+            ArtifactName: 'NugetLog.txt'
+          condition: always()
+

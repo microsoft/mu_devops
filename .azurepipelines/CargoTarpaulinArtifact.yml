@@ -1,0 +1,28 @@
+## @file
+# Azure Pipeline to build and publish Cargo Tarpaulin in a format supported by edk2-pytool-extension's external
+# dependency.
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+trigger: none
+
+parameters:
+  - name: tag
+    displayName: 'Cargo Tarpaulin Version Tag'
+    type: string
+  - name: python_version
+    displayName: 'Python Version'
+    type: string
+    default: '3.11'
+
+extends:
+  template: templates/CargoToolRepublish.yml
+  parameters:
+    tool_name: 'cargo-tarpaulin'
+    extra_build_args: '--all-features'
+    tag: ${{ parameters.tag }}
+    repo_url: 'https://github.com/xd009642/tarpaulin.git'
+    python_version: ${{ parameters.python_version }}
+    upload_linux: true
+    upload_windows: true
