@@ -67,7 +67,6 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install --yes --no-install-recommends \
         python3.12 \
-        python3.12-distutils \
         python3.12-venv \
         g++-${GCC_MAJOR_VERSION} gcc-${GCC_MAJOR_VERSION} \
         gcc-${GCC_MAJOR_VERSION}-x86-64-linux-gnux32 \

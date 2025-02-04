@@ -70,7 +70,6 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install --yes --no-install-recommends \
         {% endraw %}python{{ sync_version.python_version }}{% raw %} \
-        {% endraw %}python{{ sync_version.python_version }}{% raw %}-distutils \
         {% endraw %}python{{ sync_version.python_version }}{% raw %}-venv \
         g++-${GCC_MAJOR_VERSION} gcc-${GCC_MAJOR_VERSION} \
         gcc-${GCC_MAJOR_VERSION}-x86-64-linux-gnux32 \
