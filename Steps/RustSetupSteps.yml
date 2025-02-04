@@ -123,11 +123,11 @@ steps:
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
 - script: |
-    cargo binstall -y cargo-make --version 0.37.9
+    cargo binstall -y cargo-make --version 0.37.24
   displayName: Install cargo-make
 
 - script: |
-    cargo binstall -y cargo-tarpaulin --version 0.31.2
+    cargo binstall -y cargo-tarpaulin --version 0.31.5
   displayName: Install cargo-tarpaulin
 
 - script: rustup component add rustfmt rust-src --toolchain 1.80.0-$(rust_target_triple)
