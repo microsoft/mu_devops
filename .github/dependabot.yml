@@ -39,6 +39,7 @@ updates:
     labels:
       - "type:dependencies"
       - "type:dependabot"
+      - "type:backport"
     rebase-strategy: "disabled"
 
   - package-ecosystem: "github-actions"
@@ -55,6 +56,7 @@ updates:
     labels:
       - "type:dependencies"
       - "type:dependabot"
+      - "type:backport"
     rebase-strategy: "disabled"
 
   - package-ecosystem: "pip"
@@ -70,4 +72,5 @@ updates:
       - "language:python"
       - "type:dependencies"
       - "type:dependabot"
+      - "type:backport"
     rebase-strategy: "disabled"
