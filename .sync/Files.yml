@@ -111,6 +111,9 @@ group:
 
 # Containers - Dockerfiles
   - files:
+    - source: .sync/containers/Ubuntu-24/Dockerfile
+      dest: Containers/Ubuntu-24/Dockerfile
+      template: true
     - source: .sync/containers/Ubuntu-22/Dockerfile
       dest: Containers/Ubuntu-22/Dockerfile
       template: true

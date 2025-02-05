@@ -35,6 +35,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - image_name: "Ubuntu-24"
+            sub_images: "dev test build"
           - image_name: "Ubuntu-22"
             sub_images: "dev test build"
     env:
