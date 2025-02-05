@@ -32,7 +32,7 @@ ARG MARKDOWNLINT_VERSION=0.32.2
 
 # Visit this NuGet package version page to see the latest version available
 # https://dev.azure.com/projectmu/acpica/_artifacts/feed/mu_iasl/NuGet/edk2-acpica-iasl/versions
-ARG IASL_VERSION=20210105.0.6
+ARG IASL_VERSION=20230628.0.1
 
 # Set environment variable to avoid interaction.
 ENV DEBIAN_FRONTEND=noninteractive
