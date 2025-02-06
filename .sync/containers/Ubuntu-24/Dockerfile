@@ -76,6 +76,7 @@ RUN apt-get update && \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabihf \
         && \
         {% endraw %}python{{ sync_version.python_version }}{% raw %} -m venv /opt/venv && \
+        chmod -R g+w,o+w /opt/venv && \
         /opt/venv/bin/pip install --upgrade pip setuptools && \
         apt-get upgrade -y && \
         apt-get clean && \
