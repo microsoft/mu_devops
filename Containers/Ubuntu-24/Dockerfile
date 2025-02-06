@@ -73,6 +73,7 @@ RUN apt-get update && \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabihf \
         && \
         python3.12 -m venv /opt/venv && \
+        chmod -R g+w,o+w /opt/venv && \
         /opt/venv/bin/pip install --upgrade pip setuptools && \
         apt-get upgrade -y && \
         apt-get clean && \
