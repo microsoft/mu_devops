@@ -33,17 +33,17 @@ parameters:
     displayName: 'Python Version'
     type: string
     default: '3.11'
-  
+
 variables:
   - name: windows_image
     value: 'windows-latest'
   - name: linux_image
     value: 'ubuntu-22.04'
- 
+
 stages:
 - stage: build_binaries
   displayName: 'Build ${{ parameters.tool_name }} Artifact(s)'
-  
+
   jobs:
     - job: build_linux
       displayName: Build Linux Binaries
@@ -61,16 +61,16 @@ stages:
           env:
             REPO_URL: ${{ parameters.repo_url }}
             REPO_DIR: ${{ parameters.tool_name }}
-        
+
         - bash: |
             rustup update
             rustup target add aarch64-unknown-linux-gnu
             rustup target add x86_64-unknown-linux-gnu
           displayName: Setup Rust Targets
-        
+
         - bash: cargo install cross
           displayName: Install cross
-        
+
         - bash: |
             cross build --release --target aarch64-unknown-linux-gnu ${{ parameters.extra_build_args }}
           displayName: Build ${{ parameters.tool_name }} (Linux ARM64)
@@ -80,7 +80,7 @@ stages:
             cross build --release --target x86_64-unknown-linux-gnu ${{ parameters.extra_build_args }}
           displayName: Build ${{ parameters.tool_name }} (Linux X86_X64)
           workingDirectory: ${{ parameters.tool_name }}
-      
+
         - bash: |
             mkdir $(Build.ArtifactStagingDirectory)/Linux-ARM-64
             mkdir $(Build.ArtifactStagingDirectory)/Linux-x86-64
@@ -100,12 +100,12 @@ stages:
 
     - job: build_windows
       displayName: Build Windows Binaries
-      
+
       condition: eq('${{ parameters.upload_windows }}', 'true')
 
       pool:
         vmImage: ${{ variables.windows_image }}
-      
+
       steps:
       - checkout: none
       - bash: |
@@ -114,13 +114,13 @@ stages:
         env:
           REPO_URL: ${{ parameters.repo_url }}
           REPO_DIR: ${{ parameters.tool_name }}
-      
+
       - bash: |
           rustup update
           rustup target add x86_64-pc-windows-msvc
           rustup target add aarch64-pc-windows-msvc
         displayName: Setup Rust Targets
-      
+
       - bash: |
           cargo build --release --target aarch64-pc-windows-msvc ${{ parameters.extra_build_args }}
         displayName: Build ${{ parameters.tool_name }} (Windows-ARM64)
@@ -130,7 +130,7 @@ stages:
           cargo build --release --target x86_64-pc-windows-msvc ${{ parameters.extra_build_args }}
         displayName: Build ${{ parameters.tool_name }} (Windows-x86_X64)
         workingDirectory: ${{ parameters.tool_name }}
-      
+
       - pwsh: |
           New-Item -ItemType Directory -Force -Path "$(Build.ArtifactStagingDirectory)/Windows-ARM-64"
           New-Item -ItemType Directory -Force -Path "$(Build.ArtifactStagingDirectory)/Windows-x86-64"
@@ -148,7 +148,7 @@ stages:
 
     - job: publish
       displayName: Publish Binaries
-      
+
       dependsOn:
         - ${{ if eq(parameters.upload_linux, true) }}:
           - build_linux
@@ -157,7 +157,7 @@ stages:
 
       pool:
         vmImage: 'ubuntu-latest'
-      
+
       steps:
         - checkout: self
 
@@ -175,17 +175,17 @@ stages:
           inputs:
             artifactName: 'binaries'
             downloadPath: '$(Build.ArtifactStagingDirectory)'
-        
+
         - task: NuGetAuthenticate@1
           displayName: Authenticate Local Feed
-        
+
         - bash: |
             nuget-publish --Operation PackAndPush --OutputLog "$(Build.SourcesDirectory)/NugetLog.txt" --ConfigFilePath "$CONF_PATH" --InputFolderPath $(Build.ArtifactStagingDirectory) --Version ${{ parameters.tag }} --CustomLicensePath "$LICENSE"
           env:
             CONF_PATH: $(Build.SourcesDirectory)/.azurepipelines/nuget/${{ parameters.tool_name }}.yaml
             LICENSE: $(Build.SourcesDirectory)/.azurepipelines/nuget/license.txt
           displayName: Publish Nuget Package
-        
+
         - task: PublishBuildArtifacts@1
           displayName: 'Publish Artifact: NugetLog'
           inputs:
