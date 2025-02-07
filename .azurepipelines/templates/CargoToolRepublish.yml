@@ -192,4 +192,3 @@ stages:
             PathtoPublish: '$(Build.SourcesDirectory)'
             ArtifactName: 'NugetLog.txt'
           condition: always()
-
