@@ -180,7 +180,7 @@ stages:
           displayName: Authenticate Local Feed
         
         - bash: |
-            nuget-publish --Operation PackAndPush --OutputLog "$(Build.SourcesDirectory)/NugetLog.txt" --ConfigFilePath "$CONF_PATH" --InputFolderPath $(Build.ArtifactStagingDirectory) --Version ${{ parameters.tag }}-rc2 --CustomLicensePath "$LICENSE"
+            nuget-publish --Operation PackAndPush --OutputLog "$(Build.SourcesDirectory)/NugetLog.txt" --ConfigFilePath "$CONF_PATH" --InputFolderPath $(Build.ArtifactStagingDirectory) --Version ${{ parameters.tag }} --CustomLicensePath "$LICENSE"
           env:
             CONF_PATH: $(Build.SourcesDirectory)/.azurepipelines/nuget/${{ parameters.tool_name }}.yaml
             LICENSE: $(Build.SourcesDirectory)/.azurepipelines/nuget/license.txt
