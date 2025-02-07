@@ -38,7 +38,7 @@ variables:
   - name: windows_image
     value: 'windows-latest'
   - name: linux_image
-    value: 'ubuntu-22.04'
+    value: 'ubuntu-24.04'
 
 stages:
 - stage: build_binaries
