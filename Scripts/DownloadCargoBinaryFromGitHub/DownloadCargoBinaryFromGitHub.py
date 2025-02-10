@@ -41,17 +41,24 @@ if len(releases) == 0:
     print("Failed to find a release.")
     exit(1)
 
+linux_found, windows_found = False, False
+
 # Download assets
-for asset in releases[0]['assets']:
-    name = asset['name'].lower()
-    if (("x86_64-pc-windows-msvc" in name or "x86_64-unknown-linux-gnu" in name)
-       and asset['name'].endswith(('.zip', '.tar.gz', '.tgz'))):
-        filepath = DOWNLOAD_DIR / asset['name']
-        print(f"Downloading {asset['name']}...")
-        with requests.get(asset['browser_download_url'], stream=True) as r:
-            with filepath.open('wb') as f:
-                for chunk in r.iter_content(chunk_size=8192):
-                    f.write(chunk)
+for release in releases:
+    for asset in release['assets']:
+        name = asset['name'].lower()
+        if (("x86_64-pc-windows-msvc" in name or "x86_64-unknown-linux-gnu" in name)
+        and asset['name'].endswith(('.zip', '.tar.gz', '.tgz'))):
+            linux_found = linux_found or "x86_64-unknown-linux-gnu" in name
+            windows_found = windows_found or "x86_64-pc-windows-msvc" in name
+            filepath = DOWNLOAD_DIR / asset['name']
+            print(f"Downloading {asset['name']}...")
+            with requests.get(asset['browser_download_url'], stream=True) as r:
+                with filepath.open('wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+    if linux_found and windows_found:
+        break
 
 # Extract files
 for filename in DOWNLOAD_DIR.iterdir():
