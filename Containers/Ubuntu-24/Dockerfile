@@ -19,7 +19,7 @@
 # The build container layer is intended for pipeline use and is the minimal set
 # of tools required for building Project MU.
 #
-FROM ubuntu:22.04 AS build
+FROM ubuntu:24.04 AS build
 
 # Versions
 ARG GCC_MAJOR_VERSION=12
@@ -29,7 +29,7 @@ ARG MARKDOWNLINT_VERSION=0.32.2
 
 # Visit this NuGet package version page to see the latest version available
 # https://dev.azure.com/projectmu/acpica/_artifacts/feed/mu_iasl/NuGet/edk2-acpica-iasl/versions
-ARG IASL_VERSION=20210105.0.6
+ARG IASL_VERSION=20230628.0.1
 
 # Set environment variable to avoid interaction.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -62,9 +62,6 @@ RUN apt-get update && \
         wget \
         && \
     apt-get update && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
-    add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt-get update && \
     apt-get install --yes --no-install-recommends \
         python3.12 \
         python3.12-venv \
@@ -75,14 +72,14 @@ RUN apt-get update && \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabi \
         gcc-${GCC_MAJOR_VERSION}-arm-linux-gnueabihf \
         && \
-    curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python3.12 get-pip.py && \
-    python3.12 -m pip install --upgrade setuptools && \
-    rm get-pip.py && \
-    apt-get upgrade -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+        python3.12 -m venv /opt/venv && \
+        chmod -R g+w,o+w /opt/venv && \
+        /opt/venv/bin/pip install --upgrade pip setuptools && \
+        apt-get upgrade -y && \
+        apt-get clean && \
+        rm -rf /var/lib/apt/lists/*
 
+ENV PATH="/opt/venv/bin:$PATH"
 ENV GCC5_AARCH64_PREFIX /usr/bin/aarch64-linux-gnu-
 ENV GCC5_ARM_PREFIX     /usr/bin/arm-linux-gnueabi-
 ENV GCC5_RISCV64_PREFIX /usr/bin/riscv64-linux-gnu-
@@ -154,6 +151,7 @@ RUN update-alternatives \
       --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-${GCC_MAJOR_VERSION} \
       --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-${GCC_MAJOR_VERSION} \
       --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_MAJOR_VERSION} && \
+    update-alternatives --remove-all cpp && \
     update-alternatives \
       --install /usr/bin/cpp cpp /usr/bin/cpp-${GCC_MAJOR_VERSION} 100 && \
     update-alternatives \

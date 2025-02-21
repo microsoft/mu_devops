@@ -111,6 +111,9 @@ group:
 
 # Containers - Dockerfiles
   - files:
+    - source: .sync/containers/Ubuntu-24/Dockerfile
+      dest: Containers/Ubuntu-24/Dockerfile
+      template: true
     - source: .sync/containers/Ubuntu-22/Dockerfile
       dest: Containers/Ubuntu-22/Dockerfile
       template: true
@@ -557,6 +560,15 @@ group:
     repos: |
       microsoft/mu_devops
 
+# Leaf Workflow - Publish Release
+  - files:
+    - source: .sync/workflows/leaf/publish-release.yml
+      dest: .github/workflows/publish-release.yml
+    repos: |
+      microsoft/mu_rust_helpers
+      microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
+
 # Leaf Workflow - Pull Request Validator
   - files:
     - source: .sync/workflows/leaf/pull-request-formatting-validator.yml
@@ -614,15 +626,30 @@ group:
   - files:
     - source: .sync/workflows/leaf/release-draft.yml
       dest: .github/workflows/release-draft.yml
-      template: true
+      template:
+        depend_on_backport: true
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
       dest: .github/release-draft-config-n.yml
       template:
+        filter_to_backport: true
+        latest: true
+        release_branch: true
+    - source: .sync/workflows/config/release-draft/release-draft-config.yml
+      dest: .github/release-draft-config-n-dev.yml
+      template:
+        filter_to_backport: false
         latest: true
         release_branch: true
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
       dest: .github/release-draft-config-n-1.yml
       template:
+        filter_to_backport: true
+        latest: false
+        release_branch: true
+    - source: .sync/workflows/config/release-draft/release-draft-config.yml
+      dest: .github/release-draft-config-n-1-dev.yml
+      template:
+        filter_to_backport: false
         latest: false
         release_branch: true
     repos: |

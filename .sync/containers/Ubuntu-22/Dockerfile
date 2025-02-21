@@ -71,7 +71,6 @@ RUN echo "Installing needed system packages" \
     && apt-get update \
     && apt-get install --yes --no-install-recommends \
         {% endraw %}python{{ sync_version.python_version }}{% raw %} \
-        {% endraw %}python{{ sync_version.python_version }}{% raw %}-distutils \
         {% endraw %}python{{ sync_version.python_version }}{% raw %}-venv \
         g++-${GCC_MAJOR_VERSION} gcc-${GCC_MAJOR_VERSION} \
         gcc-${GCC_MAJOR_VERSION}-x86-64-linux-gnux32 \
@@ -117,7 +116,7 @@ RUN echo "Upgrading pip/lcov_cobertura" \
     && cd iasl_temp \
     && wget -O iasl_${IASL_VERSION}.nupkg "https://pkgs.dev.azure.com/projectmu/acpica/_apis/packaging/feeds/mu_iasl/nuget/packages/edk2-acpica-iasl/versions/${IASL_VERSION}/content?api-version=6.0-preview.1" \
     && unzip iasl_${IASL_VERSION}.nupkg -d /iasl_pkg_contents \
-    && find /iasl_pkg_contents -type f -name "iasl" -exec cp {} /usr/bin \; \
+    && cp /iasl_pkg_contents/edk2-acpica-iasl/Linux-x86/iasl /usr/bin/iasl && chmod +x /usr/bin/iasl \
     && chmod +x /usr/bin/iasl \
     && cd .. \
     && rm -rf iasl_temp && \
