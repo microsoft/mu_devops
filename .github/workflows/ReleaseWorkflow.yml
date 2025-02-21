@@ -62,7 +62,7 @@ jobs:
             }
 
       - name: Cargo Release Dry Run
-        run: cargo release ${{ steps.draft_release.outputs.tag }} --workspace
+        run: cargo release ${{ steps.draft_release.outputs.tag }} --no-tag  --workspace
         env:
           RUSTC_BOOTSTRAP: 1
 
@@ -73,6 +73,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout New Branch
+        run: |
+          git checkout -b "github-actions/release-${{ steps.draft_release.outputs.tag }}"
+          git push origin "github-actions/release-${{ steps.draft_release.outputs.tag }}"
 
       - name: Cargo Release
         run: cargo release ${{ steps.draft_release.outputs.tag }} -x --no-tag --no-confirm --workspace
@@ -131,3 +136,17 @@ jobs:
             if (response.status !== 200) {
               core.setFailed(`Failed to publish release. Exiting with error.`);
             }
+
+      - name: Notify Branch Creation
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = `github-actions/release-${{ steps.draft_release.outputs.tag }}`;
+            const baseBranch = context.payload.repository.default_branch;
+            const repo = context.repo;
+
+            const prUrl = `https://github.com/${repo.owner}/${repo.repo}/compare/${baseBranch}...${branch}?expand=1`;
+
+            core.warning('A pull request needs to be created to update the version');
+            core.info(`Click the link below to create the pull request:`);
+            core.info(prUrl);
