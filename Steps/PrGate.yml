@@ -12,6 +12,10 @@ parameters:
   displayName: Binary Artifacts to Publish
   type: string
   default: ''
+- name: force_publish_binary_artifacts
+  displayName: Force Publish Binary Artifacts
+  type: boolean
+  default: false
 - name: artifacts_identifier
   displayName: Artifacts Identifier
   type: string
@@ -20,6 +24,10 @@ parameters:
   displayName: Other Artifacts to Publish
   type: string
   default: ''
+- name: force_publish_other_artifacts
+  displayName: Force Publish Other Artifacts
+  type: boolean
+  default: false
 - name: build_archs
   displayName: Architectures (e.g. IA32, X64)
   type: string
@@ -233,6 +241,7 @@ steps:
     artifacts_binary: ${{ parameters.artifacts_binary }}
     artifacts_identifier: ${{ parameters.artifacts_identifier }}
     publish_artifacts: ${{ parameters.publish_artifacts }}
+    force_publish_binary_artifacts: ${{ parameters.force_publish_binary_artifacts }}
 
 # Copy other files to the artifact staging directory
 - template: OtherCopyAndPublish.yml
@@ -240,3 +249,4 @@ steps:
     artifacts_other: ${{ parameters.artifacts_other }}
     artifacts_identifier: ${{ parameters.artifacts_identifier }}
     publish_artifacts: ${{ parameters.publish_artifacts }}
+    force_publish_other_artifacts: ${{ parameters.force_publish_other_artifacts }}

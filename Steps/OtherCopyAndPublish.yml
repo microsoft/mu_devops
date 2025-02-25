@@ -19,6 +19,10 @@ parameters:
   displayName: Publish Artifacts
   type: boolean
   default: true
+- name: force_publish_other_artifacts
+  displayName: Force Publish Artifacts
+  type: boolean
+  default: false
 
 steps:
 - bash: |
@@ -28,6 +32,7 @@ steps:
     else
       echo "##vso[task.setvariable variable=artifacts_present]true"
     fi
+  condition: or(succeeded(), eq(${{ parameters.force_publish_other_artifacts }}, 'true'))
 
 # Copy other files to the artifact staging directory
 - task: CopyFiles@2

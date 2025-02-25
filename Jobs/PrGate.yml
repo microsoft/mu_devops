@@ -90,10 +90,18 @@ parameters:
   displayName: Binary Artifacts to Publish
   type: string
   default: ''
+- name: force_publish_binary_artifacts
+  displayName: Force Publish Binary Artifacts
+  type: boolean
+  default: false
 - name: artifacts_other
   displayName: Other Artifacts to Publish
   type: string
   default: ''
+- name: force_publish_other_artifacts
+  displayName: Force Publish Other Artifacts
+  type: boolean
+  default: false
 - name: os_type
   displayName: OS type on the self-hosted agent pools
   type: string
@@ -167,7 +175,9 @@ jobs:
       parameters:
         artifacts_identifier: '${{ item.Key }} ${{ item.Value.Targets }}'
         artifacts_binary: ${{ parameters.artifacts_binary }}
+        force_publish_binary_artifacts: ${{ parameters.force_publish_binary_artifacts }}
         artifacts_other: ${{ parameters.artifacts_other }}
+        force_publish_other_artifacts: ${{ parameters.force_publish_other_artifacts }}
         build_file: ${{ parameters.build_file }}
         build_pkgs: ${{ item.Value.Pkgs }}
         build_targets: ${{ item.Value.Targets }}
