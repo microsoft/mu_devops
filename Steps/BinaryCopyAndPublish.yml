@@ -28,6 +28,7 @@ steps:
     else
       echo "##vso[task.setvariable variable=artifacts_present]true"
     fi
+  condition: succeededOrFailed()
 
 # Copy binaries to the artifact staging directory
 - task: CopyFiles@2
