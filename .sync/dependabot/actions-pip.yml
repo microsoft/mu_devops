@@ -54,7 +54,7 @@ updates:
       prefix: "GitHub Action"
     labels:
       - "type:dependencies"
-      - "type:dependabot"
+      {% additionallabels %}
     rebase-strategy: "disabled"
 
   - package-ecosystem: "pip"
@@ -69,5 +69,5 @@ updates:
     labels:
       - "language:python"
       - "type:dependencies"
-      - "type:dependabot"
+      {% additionallabels %}
     rebase-strategy: "disabled"
