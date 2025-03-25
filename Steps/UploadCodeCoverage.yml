@@ -57,70 +57,10 @@ steps:
 # All Steps to upload to codecov.io
 #
 - ${{ if eq(parameters.install_dependencies, true) }}:
-  - script: |
-      pip install requests
+  - bash: |
+      pip install codecov-cli==10.*
     displayName: "Coverage CodeCov ${{ parameters.flag }}: Install Python Dependencies"
     condition: and(eq(variables['upload_target'] , 'codecov'), gt(variables.coverage_file_count, 0))
-
-- task: PythonScript@0
-  displayName: "Coverage CodeCov ${{ parameters.flag }}: Download and Verify Codecov Uploader"
-  condition:  and(eq(variables['upload_target'] , 'codecov'), gt(variables.coverage_file_count, 0))
-  inputs:
-    scriptSource: inline
-    script: |
-      import platform
-      import requests
-      import hashlib
-      import os
-
-      system = platform.system()
-
-      if system == 'Windows':
-        url = 'https://uploader.codecov.io/latest/windows/codecov.exe'
-        filename = 'codecov.exe'
-        checksum_url = 'https://uploader.codecov.io/latest/windows/codecov.exe.SHA256SUM'
-        checksum_filename = 'codecov.exe.SHA256SUM'
-        print(f'##vso[task.setvariable variable=codecov_uploader_cmd].\{filename}')
-      elif system == 'Linux':
-        url = 'https://uploader.codecov.io/latest/linux/codecov'
-        filename = 'codecov'
-        checksum_url = 'https://uploader.codecov.io/latest/linux/codecov.SHA256SUM'
-        checksum_filename = 'codecov.SHA256SUM'
-        print(f'##vso[task.setvariable variable=codecov_uploader_cmd]./{filename}')
-      else:
-        print(f'##[error]Unsupported Host System! System = {system}.')
-        print(f'##vso[task.complete result=Failed;]Unsupported Host System! System = {system}.')
-
-      response = requests.get(url)
-      if response.status_code == 200:
-        with open(filename, 'wb') as f:
-          f.write(response.content)
-      else:
-        print(f'##[error]Failed to download Uploader. Error code: {response.status_code}.')
-        print(f'##vso[task.complete result=Failed;]Failed to download Uploader. Error code: {response.status_code}.')
-
-      response = requests.get(checksum_url)
-      if response.status_code == 200:
-        with open(checksum_filename, 'wb') as f:
-          f.write(response.content)
-      else:
-        print(f'##[error]Failed to download Checksum file. Error code: {response.status_code}.')
-        print(f'##vso[task.complete result=Failed;]Failed to download Checksum file. Error code: {response.status_code}.')
-
-      with open(checksum_filename, 'r') as f:
-        expected_hash = f.read().split(' ')[0]
-
-      actual_hash = hashlib.new('sha256')
-      with open(filename, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b''):
-          actual_hash.update(chunk)
-
-      if expected_hash != actual_hash.hexdigest():
-        print(f'##[error]Checksum did not match. Expected: {expected_hash}; Actual: {actual_hash.hexdigest()}.')
-        print(f'##vso[task.complete result=Failed;]Hash Mismatch.')
-
-      if system == 'Linux':
-        os.chmod(filename, 0o755)
 
 - task: PythonScript@0
   displayName: "Coverage CodeCov ${{ parameters.flag }}: Upload Results"
@@ -128,31 +68,31 @@ steps:
   env:
     COV_FLAG: ${{ parameters.flag }}
     REPORT_DIR: ${{ parameters.report_dir }}
-    UPLOAD_CMD: $(codecov_uploader_cmd)
+    TOKEN: $(CODECOV_TOKEN)
   inputs:
     scriptSource: inline
     script: |
-      from pathlib import Path
-      import io
       import os
       import subprocess
 
       COV_FLAG = os.environ['COV_FLAG']
       REPORT_DIR = os.environ['REPORT_DIR']
-      UPLOAD_CMD = os.environ['UPLOAD_CMD']
+      TOKEN = os.environ['TOKEN']
 
-      for cov_file in Path(REPORT_DIR).rglob('*coverage.xml'):
-        cmd = f'{UPLOAD_CMD} -f {cov_file} -Z'
-        if COV_FLAG:
-          cmd += f' -F {COV_FLAG}'
-        process = subprocess.Popen(
-          cmd,
-          stdout=subprocess.PIPE,
-          stderr=subprocess.PIPE,
-          shell=True)
-        output, error = process.communicate()
-        print(f"##[debug]{output.decode('utf-8')}")
-        if process.returncode != 0:
-          print(f"##[error]{error.decode('utf-8')}")
-          raise Exception(f"{UPLOAD_CMD} failed with Return Code: "
-                          f"{process.returncode}.")
+      cmd = f'codecov --verbose upload-process -Z -s {REPORT_DIR} -t {TOKEN}'
+
+      if COV_FLAG:
+        cmd += f' -F {COV_FLAG}'
+      
+      process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True
+      )
+      output, error = process.communicate()
+      print(f"##[debug]{output.decode('utf-8')}")
+      if process.returncode != 0:
+        print(f"##[error]{error.decode('utf-8')}")
+        raise Exception(f"codecov upload-process failed with Return Code: "
+                        f"{process.returncode}.")
