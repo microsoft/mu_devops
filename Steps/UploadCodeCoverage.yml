@@ -84,6 +84,8 @@ steps:
       if COV_FLAG:
         cmd += f' -F {COV_FLAG}'
       
+      print(f"Running: {cmd}")
+      
       process = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
