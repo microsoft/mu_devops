@@ -79,13 +79,13 @@ steps:
 # those on both Linux and Windows agents for consistency in the pipeline runs.
 #
 - script: |
-    rustup install --no-self-update 1.80.0
-  displayName: Install Rust 1.80.0 (Windows)
+    rustup install --no-self-update 1.84.0
+  displayName: Install Rust 1.84.0 (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: |
-    rustup default 1.80.0
-  displayName: Set Rust 1.80.0 (Windows)
+    rustup default 1.84.0
+  displayName: Set Rust 1.84.0 (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: pip install requests --upgrade
@@ -130,6 +130,6 @@ steps:
     cargo binstall -y cargo-tarpaulin --version 0.31.5
   displayName: Install cargo-tarpaulin
 
-- script: rustup component add rustfmt rust-src --toolchain 1.80.0-$(rust_target_triple)
+- script: rustup component add rustfmt rust-src --toolchain 1.84.0-$(rust_target_triple)
   displayName: rustup add rust-src
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
