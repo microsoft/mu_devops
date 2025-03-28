@@ -124,10 +124,9 @@ group:
   - files:
     - source: .sync/dependabot/actions-pip.yml
       dest: .github/dependabot.yml
+      template:
+        additionallabels: ""
     repos: |
-      microsoft/mu
-      microsoft/mu_basecore
-      microsoft/mu_common_intel_min_platform
       microsoft/mu_devops
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
@@ -135,15 +134,27 @@ group:
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
-      microsoft/mu_oem_sample
-      microsoft/mu_plus
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
+      microsoft/secureboot_objects
+
+# dependabot - Track GitHub Actions and PIP Modules (dev/release branches)
+  - files:
+    - source: .sync/dependabot/actions-pip.yml
+      dest: .github/dependabot.yml
+      template:
+        additionallabels: '- "type:backport"'
+    repos: |
+      microsoft/mu
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
-      microsoft/secureboot_objects
+
 
 # dependabot - Track GitHub Actions, PIP Modules, and Git Submodules
   - files:

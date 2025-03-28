@@ -55,6 +55,7 @@ updates:
     labels:
       - "type:dependencies"
       - "type:dependabot"
+      {{ additionallabels | safe}}
     rebase-strategy: "disabled"
 
   - package-ecosystem: "pip"
@@ -70,4 +71,5 @@ updates:
       - "language:python"
       - "type:dependencies"
       - "type:dependabot"
+      {{ additionallabels | safe}}
     rebase-strategy: "disabled"
