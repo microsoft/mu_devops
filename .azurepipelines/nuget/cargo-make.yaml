@@ -1,0 +1,8 @@
+author_string: Microsoft Corporation
+copyright_string: Copyright (c) Microsoft Corporation
+description_string: Re-publish of cargo-make binaries
+license_url: http://www.microsoft.com/
+name: cargo_make
+project_url: https://microsoft.github.com/mu
+server_url: https://pkgs.dev.azure.com/projectmu/mu/_packaging/Mu-Public/nuget/v3/index.json
+tags_string: ''
