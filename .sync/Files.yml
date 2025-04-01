@@ -733,6 +733,7 @@ group:
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
+      microsoft/secureboot_objects
 
 # Rust - Pipeline Files
   - files:
