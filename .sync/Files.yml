@@ -44,6 +44,7 @@ group:
       microsoft/mu_tiano_plus
       microsoft/mu_feature_config
       microsoft/mu_oem_sample
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
 
@@ -72,6 +73,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
@@ -132,6 +134,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -163,6 +166,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
@@ -183,6 +187,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -215,6 +220,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -242,6 +248,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -285,6 +292,7 @@ group:
     - source: .sync/github_templates/licensing/project_mu_and_tianocore_license.txt
       dest: License.txt
     repos: |
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_tiano_platforms
 
@@ -312,6 +320,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -341,6 +350,7 @@ group:
       microsoft/mu_crypto_release
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
@@ -481,6 +491,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -509,6 +520,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -536,6 +548,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -582,6 +595,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -611,6 +625,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -677,6 +692,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
@@ -726,6 +742,7 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
       microsoft/mu_feature_uefi_variable
