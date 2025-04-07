@@ -30,14 +30,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Run GitHub File Sync
+      - name: Run GitHub File Sync For Backport Repos
         uses: BetaHuhn/repo-file-sync-action@v1
         with:
           COMMIT_AS_PR_TITLE: true
           COMMIT_BODY: "Signed-off-by: Project Mu UEFI Bot <uefibot@microsoft.com>"
           COMMIT_EACH_FILE: false
           COMMIT_PREFIX: "Repo File Sync:"
-          CONFIG_PATH: .sync/Files.yml
+          CONFIG_PATH: .sync/FilesBackPort.yml
           DRY_RUN: false
           FORK: false
           GH_PAT: ${{ secrets.UEFI_BOT_REPO_FILE_SYNC }}
@@ -48,4 +48,24 @@ jobs:
           PR_BODY: |
             🤖: View the [Repo File Sync Configuration File](https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml) to see how files are synced.
           PR_LABELS: type:file-sync,type:backport
+          SKIP_PR: false
+
+      - name: Run GitHub File Sync For Non Backport Repos
+        uses: BetaHuhn/repo-file-sync-action@v1
+        with:
+          COMMIT_AS_PR_TITLE: true
+          COMMIT_BODY: "Signed-off-by: Project Mu UEFI Bot <uefibot@microsoft.com>"
+          COMMIT_EACH_FILE: false
+          COMMIT_PREFIX: "Repo File Sync:"
+          CONFIG_PATH: .sync/FilesNonBackPort.yml
+          DRY_RUN: false
+          FORK: false
+          GH_PAT: ${{ secrets.UEFI_BOT_REPO_FILE_SYNC }}
+          GIT_EMAIL: uefibot@microsoft.com
+          GIT_USERNAME: uefibot
+          ORIGINAL_MESSAGE: true
+          OVERWRITE_EXISTING_PR: true
+          PR_BODY: |
+            🤖: View the [Repo File Sync Configuration File](https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml) to see how files are synced.
+          PR_LABELS: type:file-sync
           SKIP_PR: false
