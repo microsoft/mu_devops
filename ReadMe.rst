@@ -56,8 +56,6 @@ Table of Contents
 
    - `Auto Merge`_
 
-   - `Auto Approver`_
-
    - `File Synchronization`_
 
    - `Initial Issue Triage`_
@@ -195,28 +193,6 @@ To see more about this flow look in these files:
 
 A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-merge.yml` to their repo in `Files.yml` and the
 auto merge workflow will run in the repo.
-
-Auto Approver
--------------
-
-Auto approves pull requests from allowed bot accounts. As part of reducing dependency overhead, this workflow first
-approves pull requests that are then auto merged after CI status checks complete. If a CI status check (e.g. build)
-fails, the pull request will not be merged.
-
-Note: This is currently disabled in most Project Mu repos.
-
-To see more about this flow look in these files:
-
-- The main reusable workflow file:
-
-  - `.github/workflows/AutoApprover.yml`
-
-- The leaf workflow
-
-  - `.sync/workflows/leaf/auto-approve.yml`
-
-A Project Mu repo simply needs to sync `.sync/workflows/leaf/auto-approve.yml` to their repo in `Files.yml` and the
-auto approve workflow will run in the repo.
 
 File Synchronization
 --------------------
