@@ -30,6 +30,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.MU_ACCESS_APP_ID }}
+          private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+
       - name: Run GitHub File Sync
         uses: BetaHuhn/repo-file-sync-action@v1
         with:
@@ -40,7 +47,7 @@ jobs:
           CONFIG_PATH: .sync/Files.yml
           DRY_RUN: false
           FORK: false
-          GH_PAT: ${{ secrets.UEFI_BOT_REPO_FILE_SYNC }}
+          GH_PAT: ${{ steps.app-token.outputs.token }}
           GIT_EMAIL: uefibot@microsoft.com
           GIT_USERNAME: uefibot
           ORIGINAL_MESSAGE: true
