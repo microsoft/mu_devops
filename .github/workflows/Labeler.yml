@@ -45,10 +45,12 @@ jobs:
           sync-labels: true
         if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
 
-      - name: Apply Labels Based on PR Messages
-        uses: github/issue-labeler@v3.1
+      - name: Apply PR Labels Based on Policies
+        uses: srvaroa/labeler@v1.12.0
         with:
-          configuration-path: .github/workflows/label-issues/regex-pull-requests.yml
-          enable-versioned-regex: 0
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          config_path: .github/workflows/label-issues/regex-pull-requests.yml
+          use_local_config: false
+          fail_on_error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
