@@ -35,6 +35,7 @@ on:
   push:
     branches:
       - {{ sync_version.latest_mu_release_branch | replace("release", "dev") }}
+      - {{ sync_version.previous_mu_release_branch | replace("release", "dev") }}
 
 {% raw %}jobs:
   backport:
