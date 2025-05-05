@@ -41,6 +41,10 @@
   description: Requires integration attention
   color: 'a54418'
   aliases: []
+- name: impact:cherry-pick
+  description: Pull requests that are cherry-picked from another branch
+  color: 'f10f3c'
+  aliases: []
 - name: impact:non-functional
   description: Does not have a functional impact
   color: 'c2e0c6'
