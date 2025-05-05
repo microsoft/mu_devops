@@ -1,0 +1,62 @@
+# This workflow validates commit messages in a pull request to ensure they follow a specific pattern.
+# The pattern is defined as follows:
+# - The commit message must contain the string "[cherry-pick/XXX]" where XXX is a valid label.
+# - The commit message must also contain "(cherry picked from commit <commit_hash>)" where <commit_hash> is a 40-character SHA-1 hash.
+# - Merge commits are ignored.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+
+name: Cherry-Pick Workflow
+
+on:
+  pull_request:
+    types:
+      - edited
+      - opened
+      - reopened
+      - synchronize
+  workflow_dispatch:
+
+jobs:
+  cherry-pick-job:
+    if: contains(github.event.pull_request.title, '[cherry pick]') || contains(github.event.pull_request.title, '[cherry-pick]')
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch the full history to ensure all commits are available
+
+    - name: Validate commit messages
+      run: |
+        base_branch="${{ github.event.pull_request.base.ref }}"
+
+        # Ensure the base branch is fetched
+        git fetch origin $base_branch
+        
+        # Get the commits included in the PR
+        commits=$(git log --pretty=format:%H origin/$base_branch..HEAD)
+
+        echo "Number of commits being reviewed: $(echo "$commits" | wc -w)"
+
+        for commit in $commits; do
+            commit_message=$(git log --format=%B -n 1 "$commit")
+
+            if [[ "$commit_message" =~ ^Merge ]]; then
+              echo "Warning: Commit $commit is a merge commit and will be ignored."
+              continue
+            fi
+
+            if [[ ! $(echo "$commit_message" | tr '[:upper:]' '[:lower:]') =~ \[cherry-pick\/.+\] ]] || [[ ! "$commit_message" =~ \(cherry\ picked\ from\ commit\ [0-9a-f]{40}\) ]]; then
+              echo "Commit $commit does not meet the required pattern."
+              echo "Commit message: $commit_message"
+              echo "Please use 'git cherry-pick -x <commit_hash>' to cherry-pick the commit."
+              exit 1
+            else
+              echo "Commit $commit meets the required pattern."
+            fi
+        done
+
+        echo "All commit messages meet the required pattern.";
