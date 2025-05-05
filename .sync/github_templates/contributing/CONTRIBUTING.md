@@ -101,6 +101,8 @@ Project Mu pull requests autopopulate a PR description from a template in most r
        outside direct code modifications (and comments)?
      * Examples: Update readme file, add feature readme file, link to documentation
       on an a separate Web page, ...
+   * [] **Cherry Pick?**
+     * **Cherry Pick** - Is this pull request cherry picking?
 
 4. **Replace** this text as instructed:
 

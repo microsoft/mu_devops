@@ -24,7 +24,7 @@ labels:
   - label: type:backport
     type: "pull_request"
     authors: ["mu-automation[bot]"]
-    branch : "repo-sync/mu_devops/default"  
+    branch : "repo-sync/mu_devops/default"
     base-branch: "dev/20[0-9]{4}"
 
   - label: type:backport
@@ -52,3 +52,7 @@ labels:
   - label: impact:testing
     type: "pull_request"
     body: '\[\s*(x|X){1}\s*\]\s*Includes\s*tests\?'
+
+  - label: type:cherry-pick
+    type: "pull_request"
+    body: '\s*\[\s*(x|X){1}\s*\]\s*Cherry\s*Pick\?'
