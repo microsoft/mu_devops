@@ -186,7 +186,7 @@ RUN update-alternatives \
 FROM build AS test
 
 ARG QEMU_URL="https://gitlab.com/qemu-project/qemu.git"
-ARG QEMU_BRANCH="v9.0.0"
+ARG QEMU_BRANCH="v10.0.0"
 
 RUN apt-get update && apt-get install --yes --no-install-recommends \
         autoconf \
