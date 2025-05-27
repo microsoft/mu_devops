@@ -27,7 +27,7 @@
   {
     "kind": 2,
     "language": "github-issues",
-    "value": "$repos is:open type:pr -author:app/dependabot -author:app/dependabot-preview -author:app/microsoft-github-policy-service -author:uefibot -author:ProjectMuBot"
+    "value": "$repos is:open type:pr -author:app/dependabot -author:app/dependabot-preview -author:app/microsoft-github-policy-service -author:mu-automation[bot] -author:uefibot -author:ProjectMuBot"
   },
   {
     "kind": 1,
