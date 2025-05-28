@@ -41,13 +41,13 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ vars.MU_ACCESS_APP_ID }}
-          private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+          app-id: {% raw %}${{ vars.MU_ACCESS_APP_ID }}{% raw %}
+          private-key: {% raw %}${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}{% raw %}
 
       - name: Update Submodules to Latest Release
         uses: microsoft/mu_devops/.github/actions/submodule-release-updater@{{ sync_version.mu_devops }}
         with:
-          GH_PAT: {% raw %}${{ steps.app-token.outputs.token }}{% endraw %}
+          GH_PAT: {% raw %}${{ steps.app-token.outputs.token }}{% raw %}
           GH_USER: "ProjectMuBot"
           GIT_EMAIL: "mubot@microsoft.com"
           GIT_NAME: "Project Mu Bot"
