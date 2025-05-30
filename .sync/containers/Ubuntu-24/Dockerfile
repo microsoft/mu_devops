@@ -124,12 +124,12 @@ RUN RUST_VERSION={% endraw %}{{ sync_version.rust_toolchain }}{% raw %} && \
 
 RUN mkdir cargo_downloads && \
     cd cargo_downloads && \
-    TAG_NAME=$(curl -s https://api.github.com/repos/sagiegurari/cargo-make/releases/latest | jq -r '.tag_name') && \
+    TAG_NAME={% endraw %}{{ sync_version.cargo_make }}{% raw %} && \
     DOWNLOAD_URL="https://github.com/sagiegurari/cargo-make/releases/download/$TAG_NAME/cargo-make-v$TAG_NAME-x86_64-unknown-linux-gnu.zip" && \
     curl -L -o cargo-make.zip "$DOWNLOAD_URL" && \
     unzip cargo-make.zip && \
     mv cargo-make-v$TAG_NAME-x86_64-unknown-linux-gnu/cargo-make $CARGO_HOME/bin/ && \
-    TAG_NAME=$(curl -s https://api.github.com/repos/xd009642/tarpaulin/releases/latest | jq -r '.tag_name') && \
+    TAG_NAME={% endraw %}{{ sync_version.cargo_tarpaulin }}{% raw %} && \
     DOWNLOAD_URL="https://github.com/xd009642/tarpaulin/releases/download/$TAG_NAME/cargo-tarpaulin-x86_64-unknown-linux-gnu.tar.gz" && \
     curl -L -o cargo-tarpaulin.tar.gz "$DOWNLOAD_URL" && \
     tar -xzvf cargo-tarpaulin.tar.gz && \
