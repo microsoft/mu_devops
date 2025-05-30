@@ -337,12 +337,14 @@ Steps for Updating Rust Tool Chain
 Steps required to update the Rust tool chain in the Mu DevOps repo. The steps are as follows:
 
 1. Update rust_toolchain in .sync/Version.njk to the new version. PR and merge to main.
-2. Run Build Containers workflow to build a new linux container image (which will use updated .sync/Version.njk).
-3. Update linux_build_container in .sync/Version.njk with the new version. PR and merge to main.
-4. Create new mu_devops tag (GitHub release).
-5. Update mu_devops in .sync/Version.njk to the newly generated tag. PR and merge to main.
-6. Run Sync Mu DevOps Files to Mu Repos workflow to sync the new version to all Mu repos.
-7. Complete associated PRs in the Mu repos.
+2. Run Sync Mu DevOps Files to Mu Repos workflow to sync the new version into the Mu Devops.
+3. Merge the PR into Mu DevOps main branch.
+3. Run Build Containers workflow to build a new linux container image (which will use updated .sync/Version.njk).
+4. Update linux_build_container in .sync/Version.njk with the new version. PR and merge to main.
+5. Create new mu_devops tag (GitHub release).
+6. Update mu_devops in .sync/Version.njk to the newly generated tag. PR and merge to main.
+7. Run Sync Mu DevOps Files to Mu Repos workflow to sync the new version to all Mu repos.
+8. Complete associated PRs in the Mu repos.
 
 Links
 =====
