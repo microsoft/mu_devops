@@ -118,8 +118,7 @@ ENV RUSTUP_HOME="$HOME/.rustup"
 ENV PATH="$CARGO_HOME/bin:$PATH"
 
 # Install Rust/Cargo and extras (rust-src, rust fmt, cargo-make, cargo-tarpaulin)
-RUN VERSION_URL="https://raw.githubusercontent.com/microsoft/mu_devops/main/.sync/Version.njk" && \
-    RUST_VERSION=$(curl -s ${VERSION_URL} | grep -oP '(?<=rust_toolchain = ").*(?=")') && \
+RUN RUST_VERSION={% endraw %}{{ sync_version.rust_toolchain }}{% raw %} && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain ${RUST_VERSION} --profile minimal && \
     rustup component add rustfmt rust-src --toolchain ${RUST_VERSION}-x86_64-unknown-linux-gnu
 
