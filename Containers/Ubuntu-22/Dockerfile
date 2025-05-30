@@ -118,19 +118,18 @@ ENV RUSTUP_HOME="$HOME/.rustup"
 ENV PATH="$CARGO_HOME/bin:$PATH"
 
 # Install Rust/Cargo and extras (rust-src, rust fmt, cargo-make, cargo-tarpaulin)
-RUN VERSION_URL="https://raw.githubusercontent.com/microsoft/mu_devops/main/.sync/Version.njk" && \
-    RUST_VERSION=$(curl -s ${VERSION_URL} | grep -oP '(?<=rust_toolchain = ").*(?=")') && \
+RUN RUST_VERSION=1.85.0 && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain ${RUST_VERSION} --profile minimal && \
     rustup component add rustfmt rust-src --toolchain ${RUST_VERSION}-x86_64-unknown-linux-gnu
 
 RUN mkdir cargo_downloads && \
     cd cargo_downloads && \
-    TAG_NAME=$(curl -s https://api.github.com/repos/sagiegurari/cargo-make/releases/latest | jq -r '.tag_name') && \
+    TAG_NAME=0.37.24 && \
     DOWNLOAD_URL="https://github.com/sagiegurari/cargo-make/releases/download/$TAG_NAME/cargo-make-v$TAG_NAME-x86_64-unknown-linux-gnu.zip" && \
     curl -L -o cargo-make.zip "$DOWNLOAD_URL" && \
     unzip cargo-make.zip && \
     mv cargo-make-v$TAG_NAME-x86_64-unknown-linux-gnu/cargo-make $CARGO_HOME/bin/ && \
-    TAG_NAME=$(curl -s https://api.github.com/repos/xd009642/tarpaulin/releases/latest | jq -r '.tag_name') && \
+    TAG_NAME=0.31.5 && \
     DOWNLOAD_URL="https://github.com/xd009642/tarpaulin/releases/download/$TAG_NAME/cargo-tarpaulin-x86_64-unknown-linux-gnu.tar.gz" && \
     curl -L -o cargo-tarpaulin.tar.gz "$DOWNLOAD_URL" && \
     tar -xzvf cargo-tarpaulin.tar.gz && \
