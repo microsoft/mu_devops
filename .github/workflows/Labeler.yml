@@ -43,7 +43,7 @@ jobs:
           configuration-path: .github/workflows/label-issues/file-paths.yml
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           sync-labels: true
-        if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
 
       - name: Apply PR Labels Based on Policies
         uses: srvaroa/labeler@v1.13.0
@@ -53,4 +53,4 @@ jobs:
           fail_on_error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
