@@ -71,11 +71,16 @@ jobs:
   stale:
     name: Stale
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      pull-requests: write
 
     steps:
+    - name: Generate Token
+      id: app-token
+      uses: actions/create-github-app-token@v2
+      with:
+        app-id: ${{ vars.MU_ACCESS_APP_ID }}
+        private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+        owner: ${{ github.repository_owner }}
+
     - name: Check for Stale Items
       uses: actions/stale@v9
       with:
@@ -91,3 +96,4 @@ jobs:
         stale-pr-label: 'state:stale'
         exempt-issue-labels: 'impact:security,state:backlog,state:under-discussion'
         exempt-pr-labels: 'impact:security,state:backlog,state:under-discussion'
+        repo-token: ${{ steps.app-token.outputs.token }}

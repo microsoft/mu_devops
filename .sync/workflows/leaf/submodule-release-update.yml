@@ -32,10 +32,6 @@ jobs:
     name: Check for Submodule Releases
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
       - name: Generate Token
         id: app-token

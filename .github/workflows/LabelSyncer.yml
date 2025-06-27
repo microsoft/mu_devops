@@ -25,15 +25,20 @@ jobs:
     name: Sync
     runs-on: ubuntu-latest
 
-    permissions:
-      issues: write
-
     steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.MU_ACCESS_APP_ID }}
+          private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Sync Labels
         uses: EndBug/label-sync@v2
         with:
           config-file: |
             https://raw.githubusercontent.com/microsoft/mu_devops/main/.github/Labels.yml
             ${{ inputs.local_config_file }}
-
           delete-other-labels: false
+          token: ${{ steps.app-token.outputs.token }}

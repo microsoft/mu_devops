@@ -16,16 +16,20 @@ jobs:
     name: Adjust Issue Labels
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      issues: write
-
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.MU_ACCESS_APP_ID }}
+          private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Remove Labels
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           # All labels here will be removed if present in the issue
           LABELS_TO_REMOVE=("state:needs-owner")
