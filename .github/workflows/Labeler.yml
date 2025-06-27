@@ -32,16 +32,20 @@ jobs:
     name: Label Based on Messages
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      pull-requests: write
-
     steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.MU_ACCESS_APP_ID }}
+          private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Apply Labels Based on PR File Paths
         uses: actions/labeler@v4.3.0
         with:
           configuration-path: .github/workflows/label-issues/file-paths.yml
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ steps.app-token.outputs.token }}
           sync-labels: true
         if: github.event_name == 'pull_request'
 
@@ -52,5 +56,5 @@ jobs:
           use_local_config: false
           fail_on_error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         if: github.event_name == 'pull_request'

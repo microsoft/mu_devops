@@ -46,11 +46,15 @@ jobs:
     name: Update Release Draft
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.MU_ACCESS_APP_ID }}
+          private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Download Version Information
         id: download_ver_info
         shell: bash
@@ -87,7 +91,7 @@ jobs:
           # Note: Path is relative to .github/
           config-name: release-draft-config-n.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Draft Release for Current (${{ env.latest_mu_release_branch }}) Release Branch
         if: steps.update_draft_n.outcome == 'success'
         run: |
@@ -128,7 +132,7 @@ jobs:
             --notes-file "$release_body_path" \
             --draft
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Build a ${{ env.previous_mu_release_branch }} Draft
         if: ${{ startsWith(github.ref, env.previous_mu_dev_branch_full) }}
         id: update_draft_n_1
@@ -137,7 +141,7 @@ jobs:
           # Note: Path is relative to .github/
           config-name: release-draft-config-n-1.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Draft Release for N-1 (${{ env.previous_mu_release_branch }}) Release Branch
         if: steps.update_draft_n_1.outcome == 'success'
         run: |
@@ -178,7 +182,7 @@ jobs:
             --notes-file "$release_body_path" \
             --draft
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Create the ${{ env.latest_mu_dev_branch }} Draft
         if: ${{ startsWith(github.ref, env.latest_mu_dev_branch_full) }}
         uses: release-drafter/release-drafter@v6.1.0
@@ -186,7 +190,7 @@ jobs:
           # Note: Path is relative to .github/
           config-name: release-draft-config-n-dev.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Create the ${{ env.previous_mu_dev_branch }} Draft
         if: ${{ startsWith(github.ref, env.previous_mu_dev_branch_full) }}
         uses: release-drafter/release-drafter@v6.1.0
@@ -194,7 +198,7 @@ jobs:
           # Note: Path is relative to .github/
           config-name: release-draft-config-n-1-dev.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
       - name: Build the New Release Draft
         if: ${{ !startsWith(github.ref, 'refs/heads/release') && !startsWith(github.ref, 'refs/heads/dev') }}
         id: update_draft_non_release
@@ -203,4 +207,4 @@ jobs:
           # Note: Path is relative to .github/
           config-name: release-draft-config.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
