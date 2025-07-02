@@ -171,15 +171,15 @@ jobs:
       id: app-token
       uses: actions/create-github-app-token@v2
       with:
-        app-id: ${{ vars.MU_ACCESS_APP_ID }}
-        private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
-        owner: ${{ github.repository_owner }}
+        app-id: {% raw %}${{ vars.MU_ACCESS_APP_ID }}{% endraw %}
+        private-key: {% raw %}${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}{% endraw %}
+        owner: {% raw %}${{ github.repository_owner }}{% endraw %}
 
     - name: Get Cargo Tool Details
       id: get_cargo_tool_details
       shell: python
       env:
-        AUTH_TOKEN: ${{ steps.app-token.outputs.token }}
+        AUTH_TOKEN: {% raw %}${{ steps.app-token.outputs.token }}{% endraw %}
       run: |
         import os
         import requests
