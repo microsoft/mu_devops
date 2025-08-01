@@ -711,6 +711,12 @@ group:
       template: true
     repos: |
       microsoft/mu_devops
+      microsoft/mu_feature_mm_supv
+      microsoft/mu_plus
+      microsoft/mu_rust_helpers
+      microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
+      microsoft/mu_tiano_platforms
 
 # Rust - Formatting configuration
   - files:
@@ -721,6 +727,7 @@ group:
       dest: rustfmt.toml
     repos: |
       microsoft/mu_basecore
+      microsoft/mu_feature_mm_supv
       microsoft/mu_plus
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
