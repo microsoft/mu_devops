@@ -33,25 +33,25 @@ jobs:
       - name: 🛠️ Download Rust Tools 🛠️
         uses: microsoft/mu_devops/.github/actions/rust-tool-cache@main
       
-      - name: Run cargo-fmt
-        run: cargo fmt --all --check
+      - name: Run cargo fmt 
+        run: cargo make fmt
         env:
           RUSTC_BOOTSTRAP: 1
 
-      - name: 📎 Run cargo-clippy 📎
+      - name: 📎 Run cargo clippy 📎
         if: success() || failure()
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo make clippy
         env:
           RUSTC_BOOTSTRAP: 1
           
       - name: 🧪 Run Tests 🧪
         if: success() || failure()
-        run: cargo make coverage
+        run: cargo make test
         env:
           RUSTC_BOOTSTRAP: 1
 
       - name: Run Documentation
         if: success() || failure()
-        run: cargo doc --all-features
+        run: cargo make doc
         env:
           RUSTC_BOOTSTRAP: 1
