@@ -16,9 +16,15 @@ name: Validate rust code.
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: 
+      - "main" 
+      - "dev/**"
+      - "release/**"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main" 
+      - "dev/**"
+      - "release/**"
 
 jobs:
   rust_ci:
