@@ -583,6 +583,8 @@ group:
       microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
       microsoft/secureboot_objects
+      microsoft/mu_crypto_release
+
 
 # Leaf Workflow - Release Draft
 # Note: This group has two files synced that allow separate configuration for
@@ -619,7 +621,6 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
-      microsoft/mu_crypto_release
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_silicon_arm_tiano
