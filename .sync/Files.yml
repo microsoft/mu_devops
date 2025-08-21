@@ -734,8 +734,10 @@ group:
       dest: Makefile.toml
     repos: |
       microsoft/mu_plus
+      microsoft/mu_rust_helpers
+      microsoft/mu_rust_hid
+      microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
-
 
 # Rust - Config (for UEFI builds)
   - files:
