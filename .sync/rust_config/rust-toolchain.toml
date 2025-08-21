@@ -2,6 +2,7 @@
 
 [toolchain]
 channel = "{{ sync_version.rust_toolchain }}"
+components = ["rust-src", "clippy", "rustfmt", "rust-docs"]
 
 [tools]
 cargo-make = "{{ sync_version.cargo_make }}"
