@@ -1,31 +1,33 @@
 ## @file
 # Azure Pipelines step to run common Cargo commands.
 #
-# Cargo should be installed on the system prior to invoking this template.
+# Environment Assumptions:
+#
+# - Cargo should be installed on the system prior to invoking this template.
+# - Cargo make should be installed on the system prior to invoking this template.
+# - An `all` task should be defined in the `Makefile.toml` file.
 #
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
 parameters:
-- name: format_command
-  displayName: Rust Format Command
-  type: string
-  default: "cargo fmt --all --check"
-- name: test_command
-  displayName: Rust Test Command
-  type: string
-  default: "cargo make test"
-- name: build_command
-  displayName: Rust Build Command
-  type: string
-  default: "cargo make build"
+- name: checkout_self
+  displayName: Perform self checkout step
+  type: boolean
+  default: false
 - name: container_build
   displayName: Flag for whether a container is being used
   type: boolean
   default: false
 
 steps:
+
+- ${{ if eq(parameters.checkout_self, true) }}:
+  # Repos with local Rust configuration files need to do a self checkout so they are available.
+  - checkout: self
+    clean: true
+    fetchDepth: 0
 
 - task: CmdLine@2
   displayName: Setup Cargo Dir Permissions (Linux)
@@ -39,25 +41,11 @@ steps:
   condition: and(eq('${{ parameters.container_build }}', 'true'), eq(variables['Agent.OS'], 'Linux'))
 
 - task: CmdLine@2
-  displayName: cargo fmt
+  displayName: Cargo Make Checks
+  env:
+    RUSTC_BOOTSTRAP: '1'
   inputs:
-    script: ${{ parameters.format_command }}
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
-    failOnStandardError: true
-  condition: succeeded()
-
-- task: CmdLine@2
-  displayName: cargo make test
-  inputs:
-    script: ${{ parameters.test_command }}
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
-    failOnStandardError: true
-  condition: succeeded()
-
-- task: CmdLine@2
-  displayName: cargo make build
-  inputs:
-    script: ${{ parameters.build_command }}
-    workingDirectory: '$(System.DefaultWorkingDirectory)'
+    script: cargo make all
+    workingDirectory: '$(Build.SourcesDirectory)'
     failOnStandardError: true
   condition: succeeded()
