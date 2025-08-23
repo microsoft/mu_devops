@@ -160,6 +160,9 @@ jobs:
     steps:
     - ${{ if and(eq(parameters.rust_build, true), ne(item.Value.SelfHostAgent, true)) }}:
       - template: ../Steps/RustSetupSteps.yml
+      - template: ../Steps/RustCargoSteps.yml
+        parameters:
+          checkout_self: true
     - ${{ if and(contains(parameters.tool_chain_tag, 'CLANGPDB'), ne(item.Value.SelfHostAgent, true)) }}:
       - template: ../Steps/SetupToolChainTagPreReqs.yml
     - ${{ parameters.extra_steps }}
@@ -172,6 +175,7 @@ jobs:
         build_pkgs: ${{ item.Value.Pkgs }}
         build_targets: ${{ item.Value.Targets }}
         build_archs: ${{ item.Value.ArchList }}
+        checkout_self: ${{ or(ne(parameters.rust_build, true), eq(item.Value.SelfHostAgent, true)) }}
         do_ci_build: ${{ parameters.do_ci_build }}
         do_ci_setup: ${{ parameters.do_ci_setup }}
         do_non_ci_build: ${{ parameters.do_non_ci_build }}
