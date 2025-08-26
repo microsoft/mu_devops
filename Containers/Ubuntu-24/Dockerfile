@@ -43,12 +43,17 @@ RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
         bison \
         ca-certificates \
+        clang \
         curl \
+        device-tree-compiler \
         flex \
         git \
         gnupg \
         gnupg2 \
         lcov \
+        libssl-dev \
+        lld \
+        llvm \
         jq \
         m4 \
         make \
