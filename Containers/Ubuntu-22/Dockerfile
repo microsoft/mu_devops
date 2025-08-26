@@ -205,6 +205,7 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
         ninja-build \
         tar \
         && \
+    pip3 install distlib && \
     git clone "${QEMU_URL}" --branch "${QEMU_BRANCH}" --depth 1 qemu && \
     cd qemu && \
     ./configure --target-list=x86_64-softmmu,aarch64-softmmu --enable-gtk && \
@@ -226,4 +227,3 @@ RUN apt-get update && \
         less \
         && \
     apt-get clean
-
