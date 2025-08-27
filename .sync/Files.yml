@@ -726,7 +726,6 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_tiano_platforms
 
 # Rust - Makefile (for UEFI builds)
   - files:
@@ -737,7 +736,6 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_tiano_platforms
 
 # Rust - Config (for UEFI builds)
   - files:
@@ -748,4 +746,3 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_tiano_platforms
