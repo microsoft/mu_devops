@@ -113,10 +113,30 @@ steps:
                     shutil.copy2(item, dst)
 
 
+        def recursive_chmod(path, file_permissions, dir_permissions):
+            """
+            Recursively changes permissions of files and directories within a given path.
+
+            Args:
+                path (str): The starting directory path.
+                file_permissions (int): The octal permission mode for files (e.g., 0o644).
+                dir_permissions (int): The octal permission mode for directories (e.g., 0o755).
+            """
+            for root, dirs, files in os.walk(path):
+                # Change permissions for directories
+                for d in dirs:
+                    dir_path = os.path.join(root, d)
+                    os.chmod(dir_path, dir_permissions)
+
+                # Change permissions for files
+                for f in files:
+                    file_path = os.path.join(root, f)
+                    os.chmod(file_path, file_permissions)
+
         TARGET_DIR.mkdir(parents=True, exist_ok=True)
         flatten_copy(unzip_path, TARGET_DIR, FILE_PATTERN)
         if os.name != 'nt':
-            # Set execute permission for the target directory
-            os.chmod(TARGET_DIR, 0o755)
+            # Set execute permission for the target directory and files
+            recursive_chmod(TARGET_DIR, 0o755, 0o755)
         shutil.rmtree(download_path.parent)
   condition: and(succeeded(), contains('${{ parameters.target_os}}', variables['Agent.OS']))
