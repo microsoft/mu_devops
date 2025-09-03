@@ -64,9 +64,9 @@ steps:
   target: host
   inputs:
     script: |
-      /usr/bin/docker exec mu_devops_build_container chown -R vsts_azpcontainer:docker_azpcontainer /.cargo
+      /usr/bin/docker exec mu_devops_build_container chown -R 1001:1001 /.cargo
       /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.cargo
-      /usr/bin/docker exec mu_devops_build_container chown -R vsts_azpcontainer:docker_azpcontainer /.rustup
+      /usr/bin/docker exec mu_devops_build_container chown -R 1001:1001 /.rustup
       /usr/bin/docker exec mu_devops_build_container chmod -R ug+rw /.rustup
   condition: eq(variables['Agent.OS'], 'Linux')
 
