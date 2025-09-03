@@ -115,5 +115,8 @@ steps:
 
         TARGET_DIR.mkdir(parents=True, exist_ok=True)
         flatten_copy(unzip_path, TARGET_DIR, FILE_PATTERN)
+        if os.name != 'nt':
+            # Set execute permission for the target directory
+            os.chmod(TARGET_DIR, 0o755)
         shutil.rmtree(download_path.parent)
   condition: and(succeeded(), contains('${{ parameters.target_os}}', variables['Agent.OS']))
