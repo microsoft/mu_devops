@@ -121,7 +121,7 @@ steps:
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
 - script: |
-    sudo chmod +x /.cargo/bin/cargo-binstall
+    sudo chmod 0755 /.cargo/bin/cargo-binstall
   displayName: Make cargo-binstall executable
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
