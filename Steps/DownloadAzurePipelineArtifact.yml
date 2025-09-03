@@ -127,11 +127,13 @@ steps:
                 for d in dirs:
                     dir_path = os.path.join(root, d)
                     os.chmod(dir_path, dir_permissions)
+                    print(f"Changed permissions for directory: {dir_path}")
 
                 # Change permissions for files
                 for f in files:
                     file_path = os.path.join(root, f)
                     os.chmod(file_path, file_permissions)
+                    print(f"Changed permissions for file: {file_path}")
 
         TARGET_DIR.mkdir(parents=True, exist_ok=True)
         flatten_copy(unzip_path, TARGET_DIR, FILE_PATTERN)
