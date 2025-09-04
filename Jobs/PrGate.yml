@@ -160,9 +160,6 @@ jobs:
     steps:
     - ${{ if and(eq(parameters.rust_build, true), ne(item.Value.SelfHostAgent, true)) }}:
       - template: ../Steps/RustSetupSteps.yml
-      - template: ../Steps/RustCargoSteps.yml
-        parameters:
-          checkout_self: true
     - ${{ if and(contains(parameters.tool_chain_tag, 'CLANGPDB'), ne(item.Value.SelfHostAgent, true)) }}:
       - template: ../Steps/SetupToolChainTagPreReqs.yml
     - ${{ parameters.extra_steps }}
@@ -184,7 +181,15 @@ jobs:
         tool_chain_tag: ${{ parameters.tool_chain_tag }}
         install_tools: ${{ and(not(eq(item.Value.SelfHostAgent, true)), not(parameters.container_build)) }}
         extra_install_step: ${{ parameters.extra_install_step }}
-        extra_pre_build_steps: ${{ parameters.extra_pre_build_steps }}
+        ${{ if and(eq(parameters.rust_build, true), ne(item.Value.SelfHostAgent, true)) }}:
+          extra_pre_build_steps:
+          - ${{ each step in parameters.extra_pre_build_steps }}:
+            - ${{ step }}
+          - template: ../Steps/RustCargoSteps.yml
+            parameters:
+              checkout_self: true
+        ${{ else }}:
+          extra_pre_build_steps: ${{ parameters.extra_pre_build_steps }}
         extra_post_build_steps: ${{ parameters.extra_post_build_steps }}
         # This is to handle the matrices that do not specify this.
         ${{ if eq(item.Value.SelfHostAgent, true) }}:
