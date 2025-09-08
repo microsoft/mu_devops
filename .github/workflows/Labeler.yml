@@ -42,7 +42,7 @@ jobs:
           owner: ${{ github.repository_owner }}
 
       - name: Apply Labels Based on PR File Paths
-        uses: actions/labeler@v4.3.0
+        uses: actions/labeler@v6.0.1
         with:
           configuration-path: .github/workflows/label-issues/file-paths.yml
           repo-token: ${{ steps.app-token.outputs.token }}
