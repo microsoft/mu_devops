@@ -82,7 +82,7 @@ jobs:
         owner: ${{ github.repository_owner }}
 
     - name: Check for Stale Items
-      uses: actions/stale@v9
+      uses: actions/stale@v10
       with:
         days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
         days-before-pr-stale: ${{ inputs.days-before-pr-stale }}
