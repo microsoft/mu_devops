@@ -365,20 +365,6 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/mu_tiano_plus
 
-# Leaf Workflow - Backport Dev Branch Changes to Release Branch
-  - files:
-    - source: .sync/workflows/leaf/backport-to-release-branch.yml
-      dest: .github/workflows/backport-to-release-branch.yml
-      template: true
-    repos: |
-      microsoft/mu_basecore
-      microsoft/mu_common_intel_min_platform
-      microsoft/mu_oem_sample
-      microsoft/mu_plus
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_plus
-
 # Leaf Workflow - CodeQL
 # Note: This workflow should be used in repos that build firmware
 #       packages from a CI builder (i.e. a CISettings.py file).
@@ -584,41 +570,6 @@ group:
       microsoft/mu_tiano_platforms
       microsoft/secureboot_objects
       microsoft/mu_crypto_release
-
-
-# Leaf Workflow - Release Draft
-# Note: This group has two files synced that allow separate configuration for
-#       n (e.g. "release/202405") and n-1 (e.g. "release/202311") branches.
-  - files:
-    - source: .sync/workflows/leaf/release-draft.yml
-      dest: .github/workflows/release-draft.yml
-      template:
-        depend_on_backport: true
-    - source: .sync/workflows/config/release-draft/release-draft-config.yml
-      dest: .github/release-draft-config-n.yml
-      template:
-        filter_to_backport: true
-        latest: true
-        release_branch: true
-    - source: .sync/workflows/config/release-draft/release-draft-config.yml
-      dest: .github/release-draft-config-n-dev.yml
-      template:
-        filter_to_backport: false
-        latest: true
-        release_branch: true
-    - source: .sync/workflows/config/release-draft/release-draft-config.yml
-      dest: .github/release-draft-config-n-1.yml
-      template:
-        filter_to_backport: true
-        latest: false
-        release_branch: true
-    - source: .sync/workflows/config/release-draft/release-draft-config.yml
-      dest: .github/release-draft-config-n-1-dev.yml
-      template:
-        filter_to_backport: false
-        latest: false
-        release_branch: true
-    repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
       microsoft/mu_oem_sample
@@ -626,6 +577,7 @@ group:
       microsoft/mu_silicon_arm_tiano
       microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_plus
+
 
 # Leaf Workflow - Scheduled Maintenance
 # Note: This currently sync to the same repos as the label sync since it is exclusively
@@ -665,22 +617,6 @@ group:
     repos: |
       microsoft/mu_tiano_platforms
 
-# Pull Request Template - Common Template - Backport Option
-  - files:
-    - source: .sync/github_templates/pull_requests/pull_request_template.md
-      dest: .github/pull_request_template.md
-      template:
-        additional_checkboxes:
-          - Backport to release branch?
-    repos: |
-      microsoft/mu_basecore
-      microsoft/mu_common_intel_min_platform
-      microsoft/mu_oem_sample
-      microsoft/mu_plus
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_plus
-
 # Pull Request Template - Common Template
   - files:
     - source: .sync/github_templates/pull_requests/pull_request_template.md
@@ -701,6 +637,13 @@ group:
       microsoft/mu_rust_pi
       microsoft/mu_tiano_platforms
       microsoft/secureboot_objects
+      microsoft/mu_basecore
+      microsoft/mu_common_intel_min_platform
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+      microsoft/mu_silicon_arm_tiano
+      microsoft/mu_silicon_intel_tiano
+      microsoft/mu_tiano_plus
 
 # Rust - Pipeline Files
   - files:
