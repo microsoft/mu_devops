@@ -23,17 +23,9 @@
 name: Update Release Draft
 
 on:
-{% if depend_on_backport %}
-  workflow_run:
-    workflows: ["Backport Commits to Release Branch"]
-    branches: [{{ trigger_branch_name if trigger_branch_name else sync_version.latest_mu_release_branch | replace ("release", "dev") }}]
-    types:
-      - completed
-{% else %}
   push:
     branches:
-      - {{ trigger_branch_name if trigger_branch_name else sync_version.latest_mu_release_branch | replace ("release", "dev") }}
-{% endif %}
+      - {{ trigger_branch_name if trigger_branch_name else sync_version.latest_mu_release_branch }}
 
 jobs:
   draft:
