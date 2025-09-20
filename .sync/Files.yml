@@ -578,6 +578,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/release-draft.yml
       dest: .github/workflows/release-draft.yml
+      template: true
     - source: .sync/workflows/config/release-draft/release-draft-config.yml
       dest: .github/release-draft-config-n.yml
       template:
