@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: ✅ Checkout Repository ✅
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🛠️ Download Rust Tools 🛠️
         uses: microsoft/mu_devops/.github/actions/rust-tool-cache@main
