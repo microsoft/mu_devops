@@ -26,7 +26,7 @@ jobs:
         template: [ bug_report.yml, documentation_request.yml, feature_request.yml ]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Generate Token
         id: app-token
