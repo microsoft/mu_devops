@@ -120,7 +120,7 @@ ENV RUSTUP_HOME="$HOME/.rustup"
 ENV PATH="$CARGO_HOME/bin:$PATH"
 
 # Install Rust/Cargo and extras (rust-src, rust fmt, cargo-make, cargo-tarpaulin)
-RUN RUST_VERSION=1.89.0 && \
+RUN RUST_VERSION=1.92.0 && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain ${RUST_VERSION} --profile minimal && \
     rustup component add rustfmt rust-src --toolchain ${RUST_VERSION}-x86_64-unknown-linux-gnu
 
