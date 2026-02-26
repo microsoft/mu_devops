@@ -50,7 +50,7 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
 
       - name: Apply PR Labels Based on Policies
-        uses: srvaroa/labeler@v1.13.0
+        uses: srvaroa/labeler@v1.14.0
         with:
           config_path: .github/workflows/label-issues/regex-pull-requests.yml
           use_local_config: false
