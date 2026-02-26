@@ -38,10 +38,7 @@ group:
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
       microsoft/mu_plus
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/mu_feature_config
       microsoft/mu_oem_sample
       microsoft/mu_feature_ffa
@@ -81,10 +78,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # CI Configuration - Markdown Lint - Mu Documentation Repo Settings
@@ -143,9 +137,6 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # dependabot - Track GitHub Actions, PIP Modules, and Git Submodules
@@ -171,9 +162,6 @@ group:
       microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_plus
       microsoft/mu_feature_mm_supv
 
 # Git Templates - .gitattributes
@@ -196,10 +184,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
 
 # GitHub Actions - In the Local Repo
   - files:
@@ -229,10 +214,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
 
 # GitHub Templates - Issues
 #
@@ -257,10 +239,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # GitHub Templates - Licensing - Project Mu License
@@ -303,9 +282,6 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_plus
 
 # GitHub Templates - Security Policy
   - files:
@@ -329,10 +305,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
 
 # Leaf Workflow - Apply Labels
   - files:
@@ -360,17 +333,11 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
 
 # Leaf Workflow - CodeQL
 # Note: This workflow should be used in repos that build firmware
 #       packages from a CI builder (i.e. a CISettings.py file).
-# Note: Lack of Visual Studio support is currently a blocker for
-#       enabling the CodeQL workflow as-is in mu_silicon_arm_tiano.
-#       # microsoft/mu_silicon_arm_tiano
   - files:
     - source: .sync/workflows/leaf/codeql.yml
       dest: .github/workflows/codeql.yml
@@ -385,15 +352,10 @@ group:
       microsoft/mu_feature_mm_supv
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_plus
 
 # Leaf Workflow - CodeQL - Platform
 # Note: This workflow should be used in repos that build firmware
 #       packages from a platform builder (i.e. a PlatformBuild.py file).
-# Note: Lack of Visual Studio support is currently a blocker for
-#       enabling the CodeQL workflow as-is in mu_silicon_arm_tiano.
-#       # microsoft/mu_silicon_arm_tiano
   - files:
     - source: .sync/workflows/leaf/codeql-platform.yml
       dest: .github/workflows/codeql-platform.yml
@@ -435,10 +397,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # Leaf Workflow - Label Sync
@@ -464,10 +423,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # Leaf Workflow - Mark Stale Issues and Pull Requests
@@ -492,10 +448,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # Leaf Workflow - Mark Stale Issues and Pull Requests (Mu DevOps Adjustment)
@@ -539,10 +492,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
 
 # Leaf Workflow - Release Draft
 # Note: The branch name used to draft releases on in this group is
@@ -594,9 +544,6 @@ group:
       microsoft/mu_common_intel_min_platform
       microsoft/mu_oem_sample
       microsoft/mu_plus
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
-      microsoft/mu_tiano_plus
 
 # Leaf Workflow - Scheduled Maintenance
 # Note: This currently sync to the same repos as the label sync since it is exclusively
@@ -622,10 +569,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # Leaf Workflow - Submodule Release Update
@@ -656,10 +600,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
-      microsoft/mu_silicon_arm_tiano
-      microsoft/mu_silicon_intel_tiano
       microsoft/mu_tiano_platforms
-      microsoft/mu_tiano_plus
       microsoft/secureboot_objects
 
 # Rust - Pipeline Files
