@@ -95,6 +95,10 @@ ENV GCC5_AARCH64_PREFIX /usr/bin/aarch64-linux-gnu-
 ENV GCC5_ARM_PREFIX     /usr/bin/arm-linux-gnueabi-
 ENV GCC5_RISCV64_PREFIX /usr/bin/riscv64-linux-gnu-
 
+ENV GCC_AARCH64_PREFIX /usr/bin/aarch64-linux-gnu-
+ENV GCC_ARM_PREFIX     /usr/bin/arm-linux-gnueabi-
+ENV GCC_RISCV64_PREFIX /usr/bin/riscv64-linux-gnu-
+
 RUN pip install pip lcov_cobertura --upgrade
 
 # RUN npm install -g npm
