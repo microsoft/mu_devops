@@ -51,7 +51,8 @@ on:
             - packages: MdeModulePkg
               targets: DEBUG
               toolchain: CLANGPDB
-        required: true
+        required: false
+        default: '[]'
         type: string
       python-version:
         description: Python version to use when not running in a container

@@ -1,4 +1,4 @@
-# A callable Github Action to tun CI tests on EDK II package(s) using stuart.
+# A callable Github Action to run CI tests on EDK II package(s) using stuart.
 #
 # Produces an output, `log-path`, which is the path to the folder containing all logs produced.
 #
@@ -56,13 +56,15 @@ runs:
     - name: Create temporary directory for log files
       id: tempdir
       shell: bash
+      env:
+        PACKAGES: ${{ inputs.packages }}
       run: |
         TEMP_DIR="ci-logs"
-        if [ -n "${{ inputs.packages }}" ]; then
-          TEMP_DIR="${TEMP_DIR}-$(echo "${{ inputs.packages }}" | tr ',' '-')"
+        if [ -n "${PACKAGES}" ]; then
+          TEMP_DIR="${TEMP_DIR}-$(echo "${PACKAGES}" | tr ',' '-')"
         fi
-        mkdir -p "$RUNNER_TEMP"/$TEMP_DIR
-        echo "path="$RUNNER_TEMP"/$TEMP_DIR" >> $GITHUB_OUTPUT
+        mkdir -p "$RUNNER_TEMP/$TEMP_DIR"
+        echo "path=$RUNNER_TEMP/$TEMP_DIR" >> $GITHUB_OUTPUT
     
     - name: Gather submodule hashes
       if: ${{ fromJson(inputs.stuart-setup) }}
@@ -81,9 +83,11 @@ runs:
     
     - name: Download required submodules (stuart_setup)
       if: ${{ fromJson(inputs.stuart-setup) }}
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
       shell: bash
       run: |
-        stuart_setup -c ${{ inputs.ci-config }}
+        stuart_setup -c "${CI_CONFIG}"
     
     - name: Move setup log
       if: always() && fromJson(inputs.stuart-setup)
@@ -104,8 +108,10 @@ runs:
     - name: Download CI dependencies (stuart_ci_setup)
       if: ${{ fromJson(inputs.stuart-ci-setup) }}
       shell: bash
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
       run: |
-        stuart_ci_setup -c ${{ inputs.ci-config }}
+        stuart_ci_setup -c "${CI_CONFIG}"
 
     - name: Move CI setup log
       if: always() && fromJson(inputs.stuart-ci-setup)
@@ -125,8 +131,10 @@ runs:
     
     - name: Download external dependencies (stuart_update)
       shell: bash
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
       run: |
-        stuart_update -c ${{ inputs.ci-config }}
+        stuart_update -c "${CI_CONFIG}"
     
     - name: Move update log
       if: always()
@@ -146,22 +154,29 @@ runs:
     
     - name: Run CI tests
       shell: bash
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
+        PACKAGES: ${{ inputs.packages }}
+        TARGETS: ${{ inputs.targets }}
+        ARCHITECTURES: ${{ inputs.architectures }}
+        TOOLCHAIN: ${{ inputs.toolchain }}
+        STUART_ARGS: ${{ inputs.stuart-args }}
       run: |
-        ARGS=(-c "${{ inputs.ci-config }}")
-        if [ -n "${{ inputs.packages }}" ]; then
-          ARGS+=(-p "${{ inputs.packages }}")
+        ARGS=(-c "${CI_CONFIG}")
+        if [ -n "${PACKAGES}" ]; then
+          ARGS+=(-p "${PACKAGES}")
         fi
-        if [ -n "${{ inputs.targets }}" ]; then
-          ARGS+=(-t "${{ inputs.targets }}")
+        if [ -n "${TARGETS}" ]; then
+          ARGS+=(-t "${TARGETS}")
         fi
-        if [ -n "${{ inputs.architectures }}" ]; then
-          ARGS+=(-a "${{ inputs.architectures }}")
+        if [ -n "${ARCHITECTURES}" ]; then
+          ARGS+=(-a "${ARCHITECTURES}")
         fi
-        if [ -n "${{ inputs.toolchain }}" ]; then
-          ARGS+=(TOOL_CHAIN_TAG="${{ inputs.toolchain }}")
+        if [ -n "${TOOLCHAIN}" ]; then
+          ARGS+=(TOOL_CHAIN_TAG="${TOOLCHAIN}")
         fi
-        echo "stuart_ci_build ${ARGS[*]} ${{ inputs.stuart-args }}"
-        stuart_ci_build "${ARGS[@]}" ${{ inputs.stuart-args }}
+        echo "stuart_ci_build ${ARGS[*]} ${STUART_ARGS}"
+        stuart_ci_build "${ARGS[@]}" ${STUART_ARGS}
 
     - name: Move build log
       if: always()

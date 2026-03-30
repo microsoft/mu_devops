@@ -57,6 +57,11 @@ on:
         type: string
         required: false
         default: 'both'
+      stuart-args:
+        description: Additional arguments to pass to `stuart_ci_build`. Should be space-separated. For example, `--test-filter MyTest*`.
+        type: string
+        required: false
+        default: ''
 
 jobs:
   package-ci:
@@ -107,6 +112,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           stuart-setup: ${{ inputs.setup-cmd == 'setup' || inputs.setup-cmd == 'both' }}
           stuart-ci-setup: ${{ inputs.setup-cmd == 'ci-setup' || inputs.setup-cmd == 'both' }}
+          stuart-args: ${{ inputs.stuart-args }}
       
       - name: Upload CI build logs
         if: always()

@@ -581,6 +581,7 @@ group:
       microsoft/mu_tiano_platforms
 
 # Leaf Worfklow - Package CI
+# NOTE: This is sync'd only to mu_devops purely to keep the inner workflow versions up to date.
   - files:
     - source: .sync/workflows/leaf/PackageCi.yml
       dest: .github/workflows/PackageCi.yml
