@@ -98,7 +98,7 @@ jobs:
       
       - name: EDK II Package CI
         id: package-ci
-        uses: microsoft/mu_devops/.github/actions/stuart-ci@personal/joeyvagedes/ci-workflow
+        uses: microsoft/mu_devops/.github/actions/stuart-ci@v18.0.4
         with:
           ci-config: ${{ inputs.ci-config }}
           packages: ${{ matrix.packages }}
