@@ -1,7 +1,7 @@
 # A workflow to build EDK II packages in this repository using certain configurations.
 #
-# NOTE: This file is automatically synchronized from Mu DevOps. Update the original file there
-#       instead of the file in this repo.
+# NOTE: This file is automatically synchronized from Mu DevOps to keep the version of the
+#       workflow up to date. Update the original file there instead of the file in this repo.
 #
 # - Mu DevOps Repo: https://github.com/microsoft/mu_devops
 # - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
