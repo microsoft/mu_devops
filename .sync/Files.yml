@@ -580,6 +580,15 @@ group:
     repos: |
       microsoft/mu_tiano_platforms
 
+# Leaf Worfklow - Package CI
+# NOTE: This is sync'd only to mu_devops purely to keep the inner workflow versions up to date.
+  - files:
+    - source: .sync/workflows/leaf/PackageCi.yml
+      dest: .github/workflows/PackageCi.yml
+      template: true
+    repos: |
+      microsoft/mu_devops
+
 # Pull Request Template - Common Template
   - files:
     - source: .sync/github_templates/pull_requests/pull_request_template.md

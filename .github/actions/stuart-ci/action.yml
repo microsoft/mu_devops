@@ -1,0 +1,195 @@
+# A callable Github Action to run CI tests on EDK II package(s) using stuart.
+#
+# Produces an output, `log-path`, which is the path to the folder containing all logs produced.
+#
+##
+# Copyright (c) Microsoft Corporation.
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+name: EDK II Package CI
+description: Prepare and run CI tests on EDK II package(s) using stuart.
+
+inputs:
+  ci-config:
+    description: Path to the CI configuration file (relative to the repository root). No value means '.pytool/CISettings.py'.
+    required: false
+    default: '.pytool/CISettings.py'
+  packages:
+    description: Comma-separated list of EDK II packages to run CI tests on. No value means all packages. Do not include spaces between package names.
+    required: false
+    default: ''
+  targets:
+    description: Comma-separated list of build targets to run CI tests on. No value means all targets. Do not include spaces between target names.
+    required: false
+    default: ''
+  architectures:
+    description: Comma-separated list of architectures to run CI tests on. No value means all architectures. Do not include spaces between architecture names.
+    required: false
+    default: ''
+  toolchain:
+    description: The toolchain to use for the CI build.
+    required: false
+    default: 'CLANGPDB'
+  stuart-args:
+    description: Additional arguments to pass to `stuart_ci_build`. Should be space-separated. For example, `--test-filter MyTest*`.
+    required: false
+    default: ''
+  stuart-setup:
+    description: Whether to run `stuart_setup` before running CI tests ('true' or 'false').
+    required: false
+    default: 'false'
+  stuart-ci-setup:
+    description: Whether to run `stuart_ci_setup` before running CI tests ('true' or 'false').
+    required: false
+    default: 'true'
+
+outputs:
+  log-path:
+    description: 'Path to the folder containing the build logs'
+    value: ${{ steps.tempdir.outputs.path }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Create temporary directory for log files
+      id: tempdir
+      shell: bash
+      env:
+        PACKAGES: ${{ inputs.packages }}
+      run: |
+        TEMP_DIR="ci-logs"
+        if [ -n "${PACKAGES}" ]; then
+          TEMP_DIR="${TEMP_DIR}-$(echo "${PACKAGES}" | tr ',' '-')"
+        fi
+        mkdir -p "$RUNNER_TEMP/$TEMP_DIR"
+        echo "path=$RUNNER_TEMP/$TEMP_DIR" >> $GITHUB_OUTPUT
+    
+    - name: Gather submodule hashes
+      if: ${{ fromJson(inputs.stuart-setup) }}
+      id: submodules-hash
+      shell: bash
+      run: |
+        HASH=$(git submodule foreach --quiet 'echo $sha1' | sha256sum | awk '{print $1}')
+        echo "hash=$HASH" >> $GITHUB_OUTPUT
+    
+    - name: Cache submodules
+      if: ${{ fromJson(inputs.stuart-setup) }}
+      uses: actions/cache@v5
+      with:
+        path: .git/modules
+        key: ${{ runner.os }}-submodules-${{ steps.submodules-hash.outputs.hash }}
+    
+    - name: Download required submodules (stuart_setup)
+      if: ${{ fromJson(inputs.stuart-setup) }}
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
+      shell: bash
+      run: |
+        stuart_setup -c "${CI_CONFIG}"
+    
+    - name: Move setup log
+      if: always() && fromJson(inputs.stuart-setup)
+      shell: bash
+      env:
+        TEMP_DIR: ${{ steps.tempdir.outputs.path }}
+      run: |
+        shopt -s globstar nullglob
+        files=(Build/SETUP*.txt)
+
+        if ((${#files[@]})); then
+          echo "Moving ${#files[@]} log files"
+          mv "${files[@]}" "$TEMP_DIR"
+        else
+          echo "No matching log files found"
+        fi
+    
+    - name: Download CI dependencies (stuart_ci_setup)
+      if: ${{ fromJson(inputs.stuart-ci-setup) }}
+      shell: bash
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
+      run: |
+        stuart_ci_setup -c "${CI_CONFIG}"
+
+    - name: Move CI setup log
+      if: always() && fromJson(inputs.stuart-ci-setup)
+      shell: bash
+      env:
+        TEMP_DIR: ${{ steps.tempdir.outputs.path }}
+      run: |
+        shopt -s globstar nullglob
+        files=(Build/CI_SETUP*.txt)
+
+        if ((${#files[@]})); then
+          echo "Moving ${#files[@]} log files"
+          mv "${files[@]}" "$TEMP_DIR"
+        else
+          echo "No matching log files found"
+        fi
+    
+    - name: Download external dependencies (stuart_update)
+      shell: bash
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
+      run: |
+        stuart_update -c "${CI_CONFIG}"
+    
+    - name: Move update log
+      if: always()
+      shell: bash
+      env:
+        TEMP_DIR: ${{ steps.tempdir.outputs.path }}
+      run: |
+        shopt -s globstar nullglob
+        files=(Build/UPDATE*.txt)
+
+        if ((${#files[@]})); then
+          echo "Moving ${#files[@]} log files"
+          mv "${files[@]}" "$TEMP_DIR"
+        else
+          echo "No matching log files found"
+        fi
+    
+    - name: Run CI tests
+      shell: bash
+      env:
+        CI_CONFIG: ${{ inputs.ci-config }}
+        PACKAGES: ${{ inputs.packages }}
+        TARGETS: ${{ inputs.targets }}
+        ARCHITECTURES: ${{ inputs.architectures }}
+        TOOLCHAIN: ${{ inputs.toolchain }}
+        STUART_ARGS: ${{ inputs.stuart-args }}
+      run: |
+        ARGS=(-c "${CI_CONFIG}")
+        if [ -n "${PACKAGES}" ]; then
+          ARGS+=(-p "${PACKAGES}")
+        fi
+        if [ -n "${TARGETS}" ]; then
+          ARGS+=(-t "${TARGETS}")
+        fi
+        if [ -n "${ARCHITECTURES}" ]; then
+          ARGS+=(-a "${ARCHITECTURES}")
+        fi
+        if [ -n "${TOOLCHAIN}" ]; then
+          ARGS+=(TOOL_CHAIN_TAG="${TOOLCHAIN}")
+        fi
+        echo "stuart_ci_build ${ARGS[*]} ${STUART_ARGS}"
+        stuart_ci_build "${ARGS[@]}" ${STUART_ARGS}
+
+    - name: Move build log
+      if: always()
+      shell: bash
+      env:
+        TEMP_DIR: ${{ steps.tempdir.outputs.path }}
+      run: |
+        shopt -s globstar nullglob
+        files=(Build/**/CI_BUILDLOG*.txt Build/**/BUILDLOG_*.txt)
+
+        if ((${#files[@]})); then
+          echo "Moving ${#files[@]} log files"
+          mv "${files[@]}" "$TEMP_DIR"
+        else
+          echo "No matching log files found"
+        fi

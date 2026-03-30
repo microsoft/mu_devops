@@ -1,0 +1,122 @@
+# A workflow to build EDK II packages in this repository using certain configurations.
+#
+# NOTE: This file is automatically synchronized from Mu DevOps to keep the version of the
+#       workflow up to date. Update the original file there instead of the file in this repo.
+#
+# - Mu DevOps Repo: https://github.com/microsoft/mu_devops
+# - File Sync Settings: https://github.com/microsoft/mu_devops/blob/main/.sync/Files.yml
+#
+# Copyright (c) Microsoft Corporation.
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+name: Package CI
+
+on:
+  workflow_call:
+    inputs:
+      ci-config:
+        description: >
+          Path to the CI configuration file used to run the CI build. Default is
+          '.pytool/CISettings.py'.
+        type: string
+        required: false
+        default: '.pytool/CISettings.py'
+      container:
+        description: A container image to run the build in when using a linux runner.
+        type: string
+        required: false
+        default: ''
+      package-config:
+        description: >
+          A YAML array of objects. Each object must have a "packages" key.
+          All other keys are passed through to the output.
+          Example:
+            - packages: 'MdePkg,UefiCpuPkg'
+              targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
+              architectures: 'X64,AARCH64'
+            - packages: 'ShellPkg'
+              targets: 'DEBUG'
+        type: string
+        required: true
+      python-version:
+        description: Python version to use when not running in a container
+        type: string
+        required: false
+        default: '3.12'
+      runner:
+        description: >
+          The type of runner to use for the CI build.
+        type: string
+        required: false
+        default: 'ubuntu-latest'
+      setup-cmd:
+        description: >
+          The stuart setup command to run, e.g. `setup`, `ci-setup`, or `both`.
+          Any other value will result in no setup command being run. Default is `both`.
+        type: string
+        required: false
+        default: 'both'
+      stuart-args:
+        description: Additional arguments to pass to `stuart_ci_build`. Should be space-separated. For example, `--test-filter MyTest*`.
+        type: string
+        required: false
+        default: ''
+
+jobs:
+  package-ci:
+
+    name: "${{ matrix.packages }} ${{ matrix.architectures }} ${{ matrix.targets }}"
+
+    runs-on: ${{ inputs.runner }}
+
+    container:
+      image: ${{ inputs.container || null }}
+      options: --security-opt seccomp=unconfined
+
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(inputs.package-config) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+    
+      - name: Setup Python ${{ inputs.python-version }}
+        if: ${{ inputs.container == null }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: 'pip'
+          cache-dependency-path: pip-requirements.txt
+
+      - name: Install Python dependencies
+        run: pip install -r pip-requirements.txt
+
+      - name: Container Configuration
+        if: ${{ inputs.container != null }}
+        shell: bash
+        run: |
+          git config --global --add safe.directory '*'
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+      
+      - name: EDK II Package CI
+        id: package-ci
+        uses: microsoft/mu_devops/.github/actions/stuart-ci@v18.0.4
+        with:
+          ci-config: ${{ inputs.ci-config }}
+          packages: ${{ matrix.packages }}
+          targets: ${{ matrix.targets }}
+          architectures: ${{ matrix.architectures }}
+          toolchain: ${{ matrix.toolchain }}
+          stuart-setup: ${{ inputs.setup-cmd == 'setup' || inputs.setup-cmd == 'both' }}
+          stuart-ci-setup: ${{ inputs.setup-cmd == 'ci-setup' || inputs.setup-cmd == 'both' }}
+          stuart-args: ${{ inputs.stuart-args }}
+      
+      - name: Upload CI build logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ci-logs-${{ matrix.packages }}-${{ matrix.architectures }}-${{ matrix.targets }}-${{ inputs.runner }}
+          path: ${{ steps.package-ci.outputs.log-path }}
