@@ -1,0 +1,172 @@
+# A reusable workflow to discover and validate EDK II packages in a repository.
+#
+# Produces a matrix object where:
+#   - default-config arrays become top-level matrix dimensions (cross-product)
+#     for any undeclared *Pkg directories
+#   - package-config entries go into the matrix "include" for exact combinations.
+#     Any package names here are excluded from the default-config cross-product.
+#
+# If `ci-config` is provided and the event is a pull request, `stuart_pr_eval` is
+# used to filter the produced job matrix to only include packages affected by the
+# PR changes.
+#
+##
+# Copyright (c) Microsoft Corporation.
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+name: Build Matrix Configuration
+
+on:
+  workflow_call:
+    inputs:
+      ci-config:
+        description: >
+            Path to the CI configuration file. If provided, it will be used
+            to determine which packages need testing based on the changed
+            files in a pull request. No value means '.pytool/CISettings.py'.
+        type: string
+        required: false
+        default: ''
+      default-config:
+        description: >
+          A YAML object whose values are arrays used as top-level matrix
+          dimensions. Undeclared *Pkg directories are added as the
+          "packages" array. These dimensions form a cross-product.
+          Example:
+            targets: [DEBUG, RELEASE]
+            toolchain: [CLANGPDB]
+            architectures: [IA32, X64, AARCH64]
+        required: true
+        type: string
+      package-config:
+        description: >
+          A YAML array of objects placed into the matrix "include". Each
+          object must have a "packages" key. All other keys are passed
+          through as-is.
+          Example:
+            - packages: MdeModulePkg
+              targets: RELEASE
+              toolchain: CLANGPDB
+            - packages: MdeModulePkg
+              targets: DEBUG
+              toolchain: CLANGPDB
+        required: true
+        type: string
+      python-version:
+        description: Python version to use when not running in a container
+        type: string
+        required: false
+        default: '3.12'
+
+    outputs:
+      matrix:
+        description: >
+          A JSON matrix object with top-level dimensions from default-config,
+          a "packages" array of undeclared packages, and an "include" array
+          from package-config. Suitable for use with fromJson() in a matrix
+          strategy.
+        value: ${{ jobs.gather-packages.outputs.matrix }}
+
+jobs:
+  gather-packages:
+    name: Build Matrix Configuration
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.filter-matrix.outputs.matrix || steps.set-packages.outputs.matrix }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Fetch PR target branch
+        if: ${{ inputs.ci-config != '' && github.event_name == 'pull_request' }}
+        run: git fetch --depth=1 origin ${{ github.base_ref }}:${{ github.base_ref }}
+
+      - name: Setup Python ${{ inputs.python-version }}
+        if: ${{ inputs.ci-config != '' && github.event_name == 'pull_request' }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: 'pip'
+          cache-dependency-path: pip-requirements.txt
+
+      - name: Install Python dependencies
+        if: ${{ inputs.ci-config != '' && github.event_name == 'pull_request' }}
+        run: pip install -r pip-requirements.txt
+
+      - name: Filter to packages that need testing
+        if: ${{ inputs.ci-config != '' && github.event_name == 'pull_request' }}
+        id: filter-packages
+        shell: bash
+        run: |
+          stuart_pr_eval \
+            -c ${{ inputs.ci-config }} \
+            --pr-target ${{ github.base_ref }} \
+            --output-csv-format-string "{pkgcsv}" \
+            2>&1 | tee stuart_pr_eval.log
+
+          CSV=$(tail -1 stuart_pr_eval.log)
+          echo "csv=$CSV" >> "$GITHUB_OUTPUT"
+
+      - name: Build matrix from all packages
+        id: set-packages
+        shell: bash
+        env:
+          PACKAGE_CONFIG: ${{ inputs.package-config }}
+          DEFAULT_CONFIG: ${{ inputs.default-config }}
+        run: |
+          # Convert YAML inputs to JSON
+          PACKAGE_CONFIG_JSON=$(echo "$PACKAGE_CONFIG" | yq -o=json -I=0 '.')
+          DEFAULT_JSON=$(echo "$DEFAULT_CONFIG" | yq -o=json -I=0 '.')
+
+          # Collect all package names mentioned across include entries
+          DECLARED=$(echo "$PACKAGE_CONFIG_JSON" | jq -r '.[].packages // empty' | tr ',' '\n' | sort -u)
+
+          # Find *Pkg directories not covered by any include entry
+          UNDECLARED="[]"
+          for dir in *Pkg/; do
+            pkg="${dir%/}"
+            if ! echo "$DECLARED" | grep -qxF "$pkg"; then
+              UNDECLARED=$(echo "$UNDECLARED" | jq -c --arg p "$pkg" '. + [$p]')
+            fi
+          done
+
+          # Build matrix: default-config dimensions + undeclared packages + include
+          OUTPUT=$(echo "$DEFAULT_JSON" | jq -c \
+            --argjson pkgs "$UNDECLARED" \
+            --argjson inc "$PACKAGE_CONFIG_JSON" \
+            '. + {"packages": $pkgs, "include": $inc}')
+
+          echo "::group::Generated matrix JSON"
+          echo "$OUTPUT" | jq .
+          echo "::endgroup::"
+          echo ""
+          echo "matrix=$OUTPUT" >> "$GITHUB_OUTPUT"
+
+      - name: Filter matrix to PR-affected packages
+        if: ${{ inputs.ci-config != '' && github.event_name == 'pull_request' }}
+        id: filter-matrix
+        shell: bash
+        env:
+          MATRIX: ${{ steps.set-packages.outputs.matrix }}
+          PACKAGE_CSV: ${{ steps.filter-packages.outputs.csv }}
+        run: |
+          echo "Filtering matrix to packages that need testing: $PACKAGE_CSV"
+
+          # Convert CSV to a JSON array of package names
+          CSV_JSON=$(echo "$PACKAGE_CSV" | tr ',' '\n' | jq -R . | jq -sc '.')
+
+          # Filter "packages" array to only those in CSV
+          # Filter "include" array to only entries with at least one package in CSV
+          OUTPUT=$(echo "$MATRIX" | jq -c --argjson csv "$CSV_JSON" \
+            '.packages = [.packages[] | select(. as $p | $csv | index($p))]
+             | .include = [.include[] | select(.packages | split(",") | any(. as $p | $csv | index($p)))]')
+
+          echo "::group::Filtered matrix JSON"
+          echo "$OUTPUT" | jq .
+          echo "::endgroup::"
+          echo ""
+          echo "matrix=$OUTPUT" >> "$GITHUB_OUTPUT"
