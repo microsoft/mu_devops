@@ -598,7 +598,28 @@ group:
         package_config: "[]"
     repos: |
       microsoft/mu_common_intel_min_platform
+
+# Leaf Workflow - CLANGPDB Package CI
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: ci-setup
+        package_config: "[]"
+    repos: |
       microsoft/mu_tiano_platforms
+
+# Leaf Workflow - CLANGPDB Package CI
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: both
+        package_config: "[]"
+    repos: |
+      microsoft/mu_crypto_release
 
 # Leaf Workflow - CLANGPDB Package CI
   - files:
