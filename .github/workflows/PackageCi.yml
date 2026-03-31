@@ -10,6 +10,10 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
+# NOTE: Because this pipeline YAML file is a Nunjucks template, the pipeline syntax of `{{}}` will conflict with
+#       Nunjucks style. Surround pipeline YAML code that uses `{{}}` within `raw` and `endraw` tags
+#       to allow it to pass through Nunjucks processing.
+
 name: Package CI
 
 on:
@@ -81,7 +85,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-    
+
       - name: Setup Python ${{ inputs.python-version }}
         if: ${{ inputs.container == null }}
         uses: actions/setup-python@v6
@@ -100,9 +104,10 @@ jobs:
           git config --global --add safe.directory '*'
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-      
+
       - name: EDK II Package CI
         id: package-ci
+
         uses: microsoft/mu_devops/.github/actions/stuart-ci@v18.0.4
         with:
           ci-config: ${{ inputs.ci-config }}
@@ -113,10 +118,11 @@ jobs:
           stuart-setup: ${{ inputs.setup-cmd == 'setup' || inputs.setup-cmd == 'both' }}
           stuart-ci-setup: ${{ inputs.setup-cmd == 'ci-setup' || inputs.setup-cmd == 'both' }}
           stuart-args: ${{ inputs.stuart-args }}
-      
+
       - name: Upload CI build logs
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: ci-logs-${{ matrix.packages }}-${{ matrix.architectures }}-${{ matrix.targets }}-${{ inputs.runner }}
           path: ${{ steps.package-ci.outputs.log-path }}
+
