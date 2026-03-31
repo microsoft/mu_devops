@@ -589,7 +589,7 @@ group:
     repos: |
       microsoft/mu_devops
 
-# Leaf Workflow - CLANGPDB Package CI
+# Leaf Workflow - CLANGPDB Package CI (mu_common_intel_min_platform)
   - files:
     - source: .sync/workflows/leaf/clangpdb-ci.yml
       dest: .github/workflows/clangpdb-ci.yml
@@ -599,29 +599,7 @@ group:
     repos: |
       microsoft/mu_common_intel_min_platform
 
-# Leaf Workflow - CLANGPDB Package CI
-  - files:
-    - source: .sync/workflows/leaf/clangpdb-ci.yml
-      dest: .github/workflows/clangpdb-ci.yml
-      template:
-        branch: main
-        setup_cmd: ci-setup
-        package_config: "[]"
-    repos: |
-      microsoft/mu_tiano_platforms
-
-# Leaf Workflow - CLANGPDB Package CI
-  - files:
-    - source: .sync/workflows/leaf/clangpdb-ci.yml
-      dest: .github/workflows/clangpdb-ci.yml
-      template:
-        branch: main
-        setup_cmd: both
-        package_config: "[]"
-    repos: |
-      microsoft/mu_crypto_release
-
-# Leaf Workflow - CLANGPDB Package CI
+# Leaf Workflow - CLANGPDB Package CI (mu_basecore)
   - files:
     - source: .sync/workflows/leaf/clangpdb-ci.yml
       dest: .github/workflows/clangpdb-ci.yml
@@ -636,6 +614,53 @@ group:
             toolchain: CLANGPDB
     repos: |
       microsoft/mu_basecore
+
+# Leaf Workflow - CLANGPDB Package CI (mu_plus, mu_oem_sample)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        setup_cmd: ci-setup
+        package_config: "[]"
+    repos: |
+      microsoft/mu_plus
+      microsoft/mu_oem_sample
+
+# Leaf Workflow - CLANGPDB Package CI (mu_crypto_release)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: both
+        package_config: "[]"
+    repos: |
+      microsoft/mu_crypto_release
+
+# Leaf Workflow - CLANGPDB Package CI (feature repos)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: both
+        package_config: "[]"
+    repos: |
+      microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
+      microsoft/mu_feature_dfci
+      microsoft/mu_feature_ipmi
+
+# Leaf Workflow - CLANGPDB Package CI (mu_tiano_platforms)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: ci-setup
+        package_config: "[]"
+    repos: |
+      microsoft/mu_tiano_platforms
 
 # Pull Request Template - Common Template
   - files:
