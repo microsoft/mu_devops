@@ -596,7 +596,7 @@ group:
       dest: .github/workflows/clangpdb-ci.yml
       template:
         setup_cmd: ci-setup
-        package_config: []
+        package_config: "[]"
     repos: |
       microsoft/mu_common_intel_min_platform
 
