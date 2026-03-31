@@ -590,7 +590,6 @@ group:
       microsoft/mu_devops
 
 # Leaf Workflow - CLANGPDB Package CI
-# Specific configuration for mu_common_intel_min_platform
   - files:
     - source: .sync/workflows/leaf/clangpdb-ci.yml
       dest: .github/workflows/clangpdb-ci.yml
@@ -599,6 +598,23 @@ group:
         package_config: "[]"
     repos: |
       microsoft/mu_common_intel_min_platform
+      microsoft/mu_tiano_platforms
+
+# Leaf Workflow - CLANGPDB Package CI
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        setup_cmd: setup
+        package_config: |
+          - packages: MdeModulePkg
+            targets: RELEASE
+            toolchain: CLANGPDB
+          - packages: MdeModulePkg
+            targets: DEBUG
+            toolchain: CLANGPDB
+    repos: |
+      microsoft/mu_basecore
 
 # Pull Request Template - Common Template
   - files:
