@@ -60,7 +60,6 @@ jobs:
       setup-cmd: {{ package_config }}
       python-version: {{ sync_version.python_version }}
 {% raw %}
-      
 
   ubuntu-ci:
     name: Ubuntu CLANGPDB CI
