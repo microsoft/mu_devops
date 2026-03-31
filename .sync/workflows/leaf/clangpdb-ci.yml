@@ -20,10 +20,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - {{ sync_version.latest_mu_release_branch}}
+      - {{ sync_version.latest_mu_release_branch }}
   pull_request:
     branches:
-      - {{ sync_version.latest_mu_release_branch}}
+      - {{ sync_version.latest_mu_release_branch }}
 {% raw %}
 
 jobs:
