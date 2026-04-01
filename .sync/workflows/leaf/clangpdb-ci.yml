@@ -37,7 +37,10 @@ jobs:
       default-config: |
         targets: ["DEBUG,RELEASE"]
         toolchain: ["CLANGPDB"]
-      package-config: {{ package_config }}
+{%- if package_config is defined %}
+      package-config: |
+{{ package_config | indent(8, true) }}
+{%- endif %}
       python-version: "{{ sync_version.python_version }}"
 
   windows-ci:
