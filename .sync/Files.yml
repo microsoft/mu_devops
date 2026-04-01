@@ -611,7 +611,6 @@ group:
       dest: .github/workflows/clangpdb-ci.yml
       template:
         setup_cmd: ci-setup
-        package_config: "[]"
     repos: |
       microsoft/mu_common_intel_min_platform
 
@@ -654,7 +653,6 @@ group:
       template:
         branch: main
         setup_cmd: both
-        package_config: "[]"
     repos: |
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
@@ -667,7 +665,6 @@ group:
       dest: .github/workflows/clangpdb-ci.yml
       template:
         setup_cmd: ci-setup
-        package_config: "[]"
     repos: |
       microsoft/mu_oem_sample
       microsoft/mu_plus
@@ -679,7 +676,6 @@ group:
       template:
         branch: main
         setup_cmd: ci-setup
-        package_config: "[]"
     repos: |
       microsoft/mu_tiano_platforms
 
