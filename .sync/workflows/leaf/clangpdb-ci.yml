@@ -55,7 +55,7 @@ jobs:
       package-config: ${{ needs.package-matrix.outputs.matrix }}
 {% endraw %}
       runner: windows-latest
-      setup-cmd: {{ package_config }}
+      setup-cmd: {{ setup_cmd }}
       python-version: "{{ sync_version.python_version }}"
 
   ubuntu-ci:
@@ -73,6 +73,6 @@ jobs:
       package-config: ${{ needs.package-matrix.outputs.matrix }}
 {% endraw %}
       runner: ubuntu-latest
-      setup-cmd: {{ package_config }}
+      setup-cmd: {{ setup_cmd }}
       container: {{ sync_version.linux_build_container }}
       python-version: "{{ sync_version.python_version }}"
