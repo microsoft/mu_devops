@@ -622,7 +622,28 @@ group:
       template:
         branch: main
         setup_cmd: both
-        package_config: "[]"
+        package_config: |
+          - packages: OneCryptoPkg
+            targets: NO-TARGET
+            toolchain: CLANGPDB
+          - packages: MbedTlsPkg
+            targets: NO-TARGET
+            toolchain: CLANGPDB
+          - packages: MbedTlsPkg
+            targets: DEBUG
+            toolchain: CLANGPDB
+          - packages: MbedTlsPkg
+            targets: RELEASE
+            toolchain: CLANGPDB
+          - packages: OpensslPkg
+            targets: NO-TARGET
+            toolchain: CLANGPDB
+          - packages: OpensslPkg
+            targets: DEBUG
+            toolchain: CLANGPDB
+          - packages: OpensslPkg
+            targets: RELEASE
+            toolchain: CLANGPDB
     repos: |
       microsoft/mu_crypto_release
 
