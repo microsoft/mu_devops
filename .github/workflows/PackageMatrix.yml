@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      matrix: ${{ steps.filter-matrix.outputs.matrix || steps.set-packages.outputs.matrix }}
+      matrix: ${{ steps.clean-matrix.outputs.matrix }}
 
     steps:
       - name: Checkout repository
@@ -171,3 +171,50 @@ jobs:
           echo "::endgroup::"
           echo ""
           echo "matrix=$OUTPUT" >> "$GITHUB_OUTPUT"
+
+      - name: Clean matrix if no packages found
+        id: clean-matrix
+        shell: bash
+        env:
+          MATRIX: ${{ steps.filter-matrix.outputs.matrix || steps.set-packages.outputs.matrix }}
+          DEFAULT_CONFIG: ${{ inputs.default-config }}
+        run: |
+          echo "Checking if matrix has any packages..."
+          
+          # Check if packages array is empty
+          PACKAGES_COUNT=$(echo "$MATRIX" | jq '.packages | length')
+          
+          echo "Packages count: $PACKAGES_COUNT"
+          
+          if [ "$PACKAGES_COUNT" -eq 0 ]; then
+            echo "No packages found - removing default-config dimensions and packages, keeping include only"
+            # Keep only include, remove packages and all default-config dimensions
+            OUTPUT=$(echo "$MATRIX" | jq '{include: .include}')
+          else
+            echo "Packages found - keeping matrix as-is"
+            OUTPUT="$MATRIX"
+          fi
+          
+          # Remove include if it's an empty array (regardless of packages count)
+          INCLUDE_COUNT=$(echo "$OUTPUT" | jq '.include | length')
+          echo "Include count: $INCLUDE_COUNT"
+          
+          if [ "$INCLUDE_COUNT" -eq 0 ]; then
+            echo "Include array is empty - removing it"
+            OUTPUT=$(echo "$OUTPUT" | jq 'del(.include)')
+          fi
+          
+          # Check if we have an empty JSON object and return empty string instead
+          OBJECT_KEYS=$(echo "$OUTPUT" | jq 'keys | length')
+          if [ "$OBJECT_KEYS" -eq 0 ]; then
+            echo "Matrix is completely empty - returning empty string"
+            OUTPUT=''
+          fi
+          
+          echo "::group::Final matrix JSON"
+          echo "$OUTPUT" | jq .
+          echo "::endgroup::"
+          echo ""
+          # Ensure compact JSON output for GitHub Actions
+          COMPACT_OUTPUT=$(echo "$OUTPUT" | jq -c .)
+          echo "matrix=$COMPACT_OUTPUT" >> "$GITHUB_OUTPUT"
