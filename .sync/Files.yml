@@ -580,7 +580,7 @@ group:
     repos: |
       microsoft/mu_tiano_platforms
 
-# Leaf Worfklow - Package CI
+# Leaf Workflow - Package CI
 # NOTE: This is sync'd only to mu_devops purely to keep the inner workflow versions up to date.
   - files:
     - source: .sync/workflows/leaf/PackageCi.yml
@@ -588,6 +588,100 @@ group:
       template: true
     repos: |
       microsoft/mu_devops
+
+# Leaf Workflow - CLANGPDB Package CI (mu_basecore)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        setup_cmd: setup
+        package_config: |
+          - packages: MdeModulePkg
+            targets: RELEASE
+            toolchain: CLANGPDB
+          - packages: MdeModulePkg
+            targets: DEBUG
+            toolchain: CLANGPDB
+    repos: |
+      microsoft/mu_basecore
+
+# Leaf Workflow - CLANGPDB Package CI (mu_common_intel_min_platform)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        setup_cmd: ci-setup
+        package_config: "[]"
+    repos: |
+      microsoft/mu_common_intel_min_platform
+
+# Leaf Workflow - CLANGPDB Package CI (mu_crypto_release)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: both
+        package_config: |
+          - packages: OneCryptoPkg
+            targets: NO-TARGET
+            toolchain: CLANGPDB
+          - packages: MbedTlsPkg
+            targets: NO-TARGET
+            toolchain: CLANGPDB
+          - packages: MbedTlsPkg
+            targets: DEBUG
+            toolchain: CLANGPDB
+          - packages: MbedTlsPkg
+            targets: RELEASE
+            toolchain: CLANGPDB
+          - packages: OpensslPkg
+            targets: NO-TARGET
+            toolchain: CLANGPDB
+          - packages: OpensslPkg
+            targets: DEBUG
+            toolchain: CLANGPDB
+          - packages: OpensslPkg
+            targets: RELEASE
+            toolchain: CLANGPDB
+    repos: |
+      microsoft/mu_crypto_release
+
+# Leaf Workflow - CLANGPDB Package CI (feature repos)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: both
+        package_config: "[]"
+    repos: |
+      microsoft/mu_feature_config
+      microsoft/mu_feature_debugger
+      microsoft/mu_feature_dfci
+      microsoft/mu_feature_ipmi
+
+# Leaf Workflow - CLANGPDB Package CI (mu_oem_sample, mu_plus)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        setup_cmd: ci-setup
+        package_config: "[]"
+    repos: |
+      microsoft/mu_oem_sample
+      microsoft/mu_plus
+
+# Leaf Workflow - CLANGPDB Package CI (mu_tiano_platforms)
+  - files:
+    - source: .sync/workflows/leaf/clangpdb-ci.yml
+      dest: .github/workflows/clangpdb-ci.yml
+      template:
+        branch: main
+        setup_cmd: ci-setup
+        package_config: "[]"
+    repos: |
+      microsoft/mu_tiano_platforms
 
 # Pull Request Template - Common Template
   - files:
