@@ -52,6 +52,13 @@ jobs:
             echo 'VALIDATION_ERROR=true' >> $GITHUB_ENV
           fi
 
+          if [[ "${prTitle}" == "Repo File Sync: synced file(s) with microsoft/mu_devops" ]]; then
+            if ! echo "${comments}" | grep -qF '<!-- pr-val-sync-title -->'; then
+              gh pr comment $PR_URL --body "<!-- pr-val-sync-title -->⚠️ Please add a meaningful PR title (update the default file sync title)."
+            fi
+            echo 'VALIDATION_ERROR=true' >> $GITHUB_ENV
+          fi
+
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           OWNER: ${{ github.repository_owner }}
