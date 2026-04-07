@@ -492,6 +492,7 @@ group:
       microsoft/mu_rust_helpers
       microsoft/mu_rust_hid
       microsoft/mu_rust_pi
+      microsoft/secureboot_objects
       microsoft/mu_tiano_platforms
 
 # Leaf Workflow - Release Draft
