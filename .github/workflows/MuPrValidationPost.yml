@@ -318,7 +318,9 @@ jobs:
             }
 
       - name: Set Final Commit Status
-        if: always()
+        # TODO: Requires microsoft org admin to accept permissions
+        # if: always()
+        if: false
         uses: actions/github-script@v8
         with:
           github-token: ${{ steps.app-token.outputs.token }}
