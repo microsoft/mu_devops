@@ -114,7 +114,9 @@ jobs:
             }
 
       - name: Set In-Progress Commit Status
-        if: inputs.head-sha != ''
+        # TODO: Requires microsoft org admin to accept permissions
+        # if: inputs.head-sha != ''
+        if: false
         uses: actions/github-script@v8
         with:
           github-token: ${{ steps.app-token.outputs.token }}
@@ -206,7 +208,9 @@ jobs:
             -t ${{ env.BUILD_TARGET }}
 
       - name: Update Commit Status - Build
-        if: inputs.head-sha != ''
+        # TODO: Requires microsoft org admin to accept permissions
+        # if: inputs.head-sha != ''
+        if: false
         shell: bash
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -226,7 +230,9 @@ jobs:
             TARGET=${{ env.BUILD_TARGET }}
 
       - name: Update Commit Status - Boot
-        if: inputs.head-sha != '' && steps.build.outcome == 'success'
+        # TODO: Requires microsoft org admin to accept permissions
+        # if: inputs.head-sha != '' && steps.build.outcome == 'success'
+        if: false
         shell: bash
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -262,7 +268,9 @@ jobs:
         run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
 
       - name: Update Commit Status - Post-Boot
-        if: always() && inputs.head-sha != ''
+        # TODO: Requires microsoft org admin to accept permissions
+        # if: always() && inputs.head-sha != ''
+        if: false
         shell: bash
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
