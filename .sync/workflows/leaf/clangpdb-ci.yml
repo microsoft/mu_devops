@@ -27,6 +27,12 @@ on:
     branches:
       - {{ branch or sync_version.latest_mu_release_branch }}
 
+concurrency:
+{% raw %}
+  group: clangpdb-package-ci-${{ github.ref }}
+{% endraw %}
+  cancel-in-progress: true
+
 jobs:
   package-matrix:
     name: Gather Repository Packages
