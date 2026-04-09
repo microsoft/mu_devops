@@ -85,3 +85,26 @@ jobs:
 {% raw %}
       package-config: ${{ needs.package-matrix.outputs.matrix }}
 {% endraw %}
+
+  final:
+    name: Collapse Results
+{% raw %}
+    if: ${{ always() }}
+{% endraw %}
+    needs: [ubuntu-ci, windows-ci]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check Matrix Jobs Results
+{% raw %}
+        run: |
+          echo "Ubuntu CI result: ${{ needs.ubuntu-ci.result }}"
+          echo "Windows CI result: ${{ needs.windows-ci.result }}"
+          
+          if [[ "${{ needs.ubuntu-ci.result }}" == "failure" || "${{ needs.windows-ci.result }}" == "failure" ]]; then
+            echo "One or more CI jobs failed"
+            exit 1
+          else
+            echo "All ubuntu and windows CI matrix jobs completed successfully"
+          fi
+{% endraw %}
