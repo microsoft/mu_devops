@@ -248,7 +248,6 @@ group:
       dest: LICENSE.txt
     repos: |
       microsoft/mu
-      microsoft/mu_crypto_release
       microsoft/mu_devops
       microsoft/mu_feature_config
       microsoft/mu_feature_dfci
@@ -281,6 +280,7 @@ group:
       dest: License.txt
     repos: |
       microsoft/mu_basecore
+      microsoft/mu_crypto_release
       microsoft/mu_common_intel_min_platform
 
 # GitHub Templates - Security Policy
