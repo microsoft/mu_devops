@@ -657,6 +657,7 @@ group:
     repos: |
       microsoft/mu_feature_config
       microsoft/mu_feature_dfci
+      microsoft/mu_feature_mm_supv
 
 # Leaf Workflow - CLANGPDB Package CI (mu_feature_ipmi and mu_feature_debugger)
   - files:
