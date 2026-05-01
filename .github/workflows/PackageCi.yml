@@ -86,6 +86,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Enable Git Long Paths (Windows)
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
+
       - name: Setup Python ${{ inputs.python-version }}
         if: ${{ inputs.container == null }}
         uses: actions/setup-python@v6
