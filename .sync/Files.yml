@@ -345,6 +345,7 @@ group:
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
+      microsoft/mu_crypto_release
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
