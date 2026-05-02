@@ -86,10 +86,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Enable Git Long Paths (Windows)
-        if: runner.os == 'Windows'
-        run: git config --system core.longpaths true
-
       - name: Setup Python ${{ inputs.python-version }}
         if: ${{ inputs.container == null }}
         uses: actions/setup-python@v6
@@ -112,7 +108,7 @@ jobs:
       - name: EDK II Package CI
         id: package-ci
 
-        uses: microsoft/mu_devops/.github/actions/stuart-ci@v18.0.5
+        uses: microsoft/mu_devops/.github/actions/stuart-ci@v18.0.6
         with:
           ci-config: ${{ inputs.ci-config }}
           packages: ${{ matrix.packages }}
