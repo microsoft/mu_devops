@@ -338,14 +338,15 @@ group:
 # Leaf Workflow - CodeQL
 # Note: This workflow should be used in repos that build firmware
 #       packages from a CI builder (i.e. a CISettings.py file).
+# IA32 & X64 architectures
   - files:
     - source: .sync/workflows/leaf/codeql.yml
       dest: .github/workflows/codeql.yml
-      template: true
+      template:
+        archs: IA32,X64
     repos: |
       microsoft/mu_basecore
       microsoft/mu_common_intel_min_platform
-      microsoft/mu_crypto_release
       microsoft/mu_feature_config
       microsoft/mu_feature_debugger
       microsoft/mu_feature_dfci
@@ -353,6 +354,15 @@ group:
       microsoft/mu_feature_mm_supv
       microsoft/mu_oem_sample
       microsoft/mu_plus
+
+# X64 architecture only
+  - files:
+    - source: .sync/workflows/leaf/codeql.yml
+      dest: .github/workflows/codeql.yml
+      template:
+        archs: X64
+    repos: |
+      microsoft/mu_crypto_release
 
 # Leaf Workflow - CodeQL - Platform
 # Note: This workflow should be used in repos that build firmware
