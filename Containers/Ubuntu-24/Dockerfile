@@ -52,6 +52,8 @@ RUN apt-get update && \
         gnupg2 \
         lcov \
         libssl-dev \
+        libxml-parser-perl \
+        libxml-simple-perl \
         lld \
         llvm \
         jq \
@@ -71,6 +73,8 @@ RUN apt-get update && \
         python3.12 \
         python3.12-venv \
         g++-${GCC_MAJOR_VERSION} gcc-${GCC_MAJOR_VERSION} \
+        g++-${GCC_MAJOR_VERSION}-multilib \
+        gcc-${GCC_MAJOR_VERSION}-multilib \
         gcc-${GCC_MAJOR_VERSION}-x86-64-linux-gnux32 \
         gcc-${GCC_MAJOR_VERSION}-aarch64-linux-gnu \
         gcc-${GCC_MAJOR_VERSION}-riscv64-linux-gnu \
