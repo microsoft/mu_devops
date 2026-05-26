@@ -7,7 +7,7 @@
 
 steps:
 
-- task: NodeTool@0
+- task: UseNode@1
   inputs:
-    versionSpec: '19.x'
+    version: '24.x'
   condition: succeeded()
