@@ -75,6 +75,16 @@ jobs:
         displayName: "Run Tag Generator"
         workingDirectory: $(Agent.BuildDirectory)
 
+      - bash: |
+          echo "Generated tag: '$(tag_name)'"
+          if [ -z "$(tag_name)" ]; then
+          echo "No new commits since last tag."
+            echo "##vso[task.setvariable variable=skip_tag_generation]true"
+          else
+            echo "##vso[task.setvariable variable=skip_tag_generation]false"
+          fi
+        displayName: Detect no-op tag generation
+        
       - script: |
           set -e
           git branch
@@ -86,3 +96,4 @@ jobs:
         continueOnError: false
         displayName: "Create Tag"
         workingDirectory: $(Agent.BuildDirectory)/target
+        condition: ne(variables.skip_tag_generation, 'true')
