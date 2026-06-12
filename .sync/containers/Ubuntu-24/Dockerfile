@@ -202,7 +202,7 @@ RUN update-alternatives \
 FROM build AS test
 
 ARG QEMU_URL="https://gitlab.com/qemu-project/qemu.git"
-ARG QEMU_BRANCH="v10.0.0"
+ARG QEMU_BRANCH="v11.0.0"
 
 RUN apt-get update && apt-get install --yes --no-install-recommends \
         autoconf \
@@ -218,6 +218,8 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
         libsdl2-dev \
         mtools \
         ninja-build \
+        swtpm \
+        swtpm-tools \
         tar \
         && \
     git clone "${QEMU_URL}" --branch "${QEMU_BRANCH}" --depth 1 qemu && \
