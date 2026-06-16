@@ -147,9 +147,9 @@ jobs:
             build_pkg: QemuQ35Pkg
             build_file: Platforms/QemuQ35Pkg/PlatformBuild.py
             run_flags: "SHUTDOWN_AFTER_RUN=TRUE QEMU_HEADLESS=TRUE EMPTY_DRIVE=TRUE BLD_*_QEMU_CORE_NUM=2"
-          - platform: SBSA
-            build_pkg: QemuSbsaPkg
-            build_file: Platforms/QemuSbsaPkg/PlatformBuild.py
+          - platform: ArmVirt
+            build_pkg: QemuArmVirtPkg
+            build_file: Platforms/QemuArmVirtPkg/PlatformBuild.py
             run_flags: "SHUTDOWN_AFTER_RUN=TRUE QEMU_HEADLESS=TRUE EMPTY_DRIVE=TRUE"
 
     env:
@@ -360,12 +360,12 @@ jobs:
           name: mu-qemu-results-Q35
           path: results
 
-      - name: Download SBSA Results
-        id: dl-sbsa
+      - name: Download ArmVirt Results
+        id: dl-armvirt
         continue-on-error: true
         uses: actions/download-artifact@v6
         with:
-          name: mu-qemu-results-SBSA
+          name: mu-qemu-results-ArmVirt
           path: results
 
       - name: Write PR Metadata
@@ -393,7 +393,7 @@ jobs:
 
           # Aggregate per-platform results
           platforms = {}
-          for p in ('Q35', 'SBSA'):
+          for p in ('Q35', 'ArmVirt'):
               result_file = pathlib.Path(f'results/{p}.json')
               if result_file.exists():
                   platforms[p] = json.loads(result_file.read_text(encoding='utf-8'))
