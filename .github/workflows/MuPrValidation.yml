@@ -64,7 +64,7 @@ jobs:
           owner: ${{ github.repository_owner }}
 
       - name: Update PR Comment to In-Progress
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -117,7 +117,7 @@ jobs:
         # TODO: Requires microsoft org admin to accept permissions
         # if: inputs.head-sha != ''
         if: false
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -167,7 +167,7 @@ jobs:
           owner: ${{ github.repository_owner }}
 
       - name: Checkout mu_tiano_platforms
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: main
           repository: microsoft/mu_tiano_platforms
@@ -355,7 +355,7 @@ jobs:
       - name: Download Q35 Results
         id: dl-q35
         continue-on-error: true
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: mu-qemu-results-Q35
           path: results
@@ -363,7 +363,7 @@ jobs:
       - name: Download ArmVirt Results
         id: dl-armvirt
         continue-on-error: true
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: mu-qemu-results-ArmVirt
           path: results

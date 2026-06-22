@@ -52,7 +52,7 @@ jobs:
       - name: Download PR Metadata from Triggering Run
         id: download-metadata
         continue-on-error: true
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: mu-qemu-pr-metadata
           path: metadata
@@ -102,7 +102,7 @@ jobs:
       - name: Check PR State
         if: steps.download-metadata.outcome == 'success' && steps.metadata.outputs.pr_number != ''
         id: pr-state
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -131,7 +131,7 @@ jobs:
           steps.download-metadata.outcome == 'success' &&
           steps.metadata.outputs.skipped != 'true' &&
           steps.pr-state.outputs.merged_or_closed != 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -260,7 +260,7 @@ jobs:
           steps.download-metadata.outcome == 'success' &&
           (steps.metadata.outputs.skipped == 'true' ||
            steps.pr-state.outputs.merged_or_closed == 'true')
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
@@ -321,7 +321,7 @@ jobs:
         # TODO: Requires microsoft org admin to accept permissions
         # if: always()
         if: false
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           script: |
