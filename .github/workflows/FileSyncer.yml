@@ -23,18 +23,18 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Generate Token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           app-id: ${{ vars.MU_ACCESS_APP_ID }}
           private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
       - name: Run GitHub File Sync
-        uses: BetaHuhn/repo-file-sync-action@v1
+        uses: BetaHuhn/repo-file-sync-action@8b92be3375cf1d1b0cd579af488a9255572e4619 # v1.21.1
         with:
           COMMIT_AS_PR_TITLE: true
           COMMIT_BODY: "Signed-off-by: Project Mu UEFI Bot <uefibot@microsoft.com>"

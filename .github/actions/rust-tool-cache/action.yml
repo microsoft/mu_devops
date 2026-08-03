@@ -13,7 +13,7 @@ runs:
   steps:
     - name: Rust Tool Cache
       id: tool-cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           ~/.cargo/bin/
@@ -21,7 +21,7 @@ runs:
         key: ${{ runner.os }}-rust-tools-${{ hashFiles('**/rust-toolchain.toml' )}}
 
     - name: Install cargo-binstall
-      uses: cargo-bins/cargo-binstall@v1.10.17
+      uses: cargo-bins/cargo-binstall@9bc0ba964d12bf4c034d65ce732726a2b1a8d9df # v1.10.17
 
     # Read any tools from rust-toolchain.toml file and installs them
     - name: Install Rust Tools
