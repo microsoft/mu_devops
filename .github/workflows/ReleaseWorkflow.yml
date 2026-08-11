@@ -27,14 +27,14 @@ jobs:
 
     steps:
       - name: ✅ Checkout Repository ✅
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: 🛠️ Download Rust Tools 🛠️
         uses: microsoft/mu_devops/.github/actions/rust-tool-cache@main
 
       - name: Get Current Draft Release
         id: draft_release
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const releases = await github.rest.repos.listReleases({
@@ -80,7 +80,7 @@ jobs:
           RUSTC_BOOTSTRAP: 1
 
       - name: Wait for Release Draft Updater
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const workflowId = "release-draft.yml";
@@ -116,7 +116,7 @@ jobs:
             }
 
       - name: Publish Release
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const releaseId = ${{ steps.draft_release.outputs.id }};
