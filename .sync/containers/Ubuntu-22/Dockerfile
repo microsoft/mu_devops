@@ -42,7 +42,8 @@ ENV TZ=UTC
 # the .local/bin directory to the path which will be used by pip.
 ENV PATH $PATH:/home/vsts_azpcontainer/.local/bin
 
-RUN apt-get update && \
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
     apt-get install --yes --no-install-recommends \
         bison \
         ca-certificates \
@@ -68,6 +69,9 @@ RUN apt-get update && \
         unzip \
         uuid-dev \
         wget \
+        libc6-i386 \
+        libc6-dev-i386 \
+        linux-libc-dev:i386 \
         && \
     apt-get update && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys F23C5A6CF475977595C89F51BA6932366A755776 && \
