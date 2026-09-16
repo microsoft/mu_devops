@@ -111,7 +111,7 @@ jobs:
       - name: EDK II Package CI
         id: package-ci
 {% endraw %}
-        uses: microsoft/mu_devops/.github/actions/stuart-ci@{{ sync_version.mu_devops }}
+        uses: microsoft/mu_devops/.github/actions/stuart-ci@{{ sync_version.mu_devops_sha }} # {{ sync_version.mu_devops }}
 {% raw %}
         with:
           ci-config: ${{ inputs.ci-config }}
