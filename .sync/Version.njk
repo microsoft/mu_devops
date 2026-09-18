@@ -8,18 +8,22 @@
   files are synced.
 
   =====================================================================================================================
-  `mu_devops` Example:
+  `mu_devops` / `mu_devops_sha` Example:
   =====================================================================================================================
   `mu_devops` defines the git tag value of Mu DevOps that will be synced (via file sync) to repos that depend on this
-  repo. More simply, this updates the version of Mu DevOps used across all Project Mu repos.
+  repo. `mu_devops_sha` is the full commit SHA that tag points to. Synced workflow files pin the `uses:`
+  reusable-workflow ref to `mu_devops_sha` (with `mu_devops` kept as a trailing `# vX.Y.Z` comment), so that
+  leaf repos are not affected by a tag being moved or deleted.
 
   Example flow:
     1. Make a new Mu DevOps release (e.g. "v1.0.0")
-    2. Update this file to set `mu_devops` to "v1.0.0"
+    2. Look up the commit SHA that the "v1.0.0" tag points to (e.g. `git rev-parse v1.0.0`, or the commit shown on
+       the release/tag page in GitHub)
+    3. Update this file to set `mu_devops` to "v1.0.0" and `mu_devops_sha` to the resolved commit SHA
 
-  Step (2) causes the following automated actions to take place after the change is merged:
-    1. All sync files (e.g. an Azure Pipeline file) that depend on this version get the new value substituted
-    2. All sync files with the substituted value are synced to their respective repos (PRs created with the change)
+  Step (3) causes the following automated actions to take place after the change is merged:
+    1. All sync files (e.g. an Azure Pipeline file) that depend on this version get the new values substituted
+    2. All sync files with the substituted values are synced to their respective repos (PRs created with the change)
     3. After the PRs in those repos are merged, they use the new version of Mu DevOps
 
   ---------------------------------------------------------------------------------------------------------------------
@@ -29,8 +33,11 @@
   SPDX-License-Identifier: BSD-2-Clause-Patent
 #}
 
-{# The git ref value that files dependent on this repo will use. #}
+{# The git tag value of Mu DevOps. Kept only as a human-readable `# vX.Y.Z` comment in synced files. #}
 {% set mu_devops = "v18.0.7" %}
+
+{# The full commit SHA that the `mu_devops` tag points to. This is the value actually used to pin `uses:` refs. #}
+{% set mu_devops_sha = "131433bb4f29d68250154cc66096f04c19fe3ee9" %}
 
 {# The latest Project Mu release branch value. #}
 {% set latest_mu_release_branch = "release/202608" %}
