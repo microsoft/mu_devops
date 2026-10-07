@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: 🛠️ Download Rust Tools 🛠️
-        uses: microsoft/mu_devops/.github/actions/rust-tool-cache@main
+        uses: microsoft/mu_devops/.github/actions/rust-tool-cache@03a39fd1bad66b91ef5487fd9725437fc1b34e3f # v18.0.8
 
       - name: Get Current Draft Release
         id: draft_release
