@@ -20,8 +20,6 @@ on:
       - reopened
       - synchronize
 
-permissions: {}
-
 jobs:
   validate_pr:
     runs-on: ubuntu-latest
