@@ -1,6 +1,12 @@
-# This workflow automatically applies labels to issues and pull requests
-# based on regular expression matches against the content in the issue
-# or pull request or file path pattern matches.
+# This workflow automatically applies labels to pull requests and issues based on file path patterns (pull
+# requests only) and regular expression matches against the pull request or issue body.
+#
+# For pull requests, it is intended to be called from a workflow_run workflow that runs after a pull_request
+# workflow uploads a "pr-labeler-metadata" artifact containing the pull request number. This keeps the
+# GitHub App token away from code that runs in a pull_request context.
+#
+# For issues, it is intended to be called from a workflow triggered by the issues event, which needs no
+# artifact. Issues are only labeled when the regex configuration file sets "issues: True".
 #
 # The labels are declaratively defined in the following configuration files:
 #   - File Path Patterns: .sync/workflows/config/label-issues/file-paths.yml
@@ -10,22 +16,44 @@
 #   - File Path Patterns: .github/workflows/label-issues/file-paths.yml
 #   - Regular Expressions for Pull Requests: .github/workflows/label-issues/regex-pull-requests.yml
 #
-# Ideally, curl (or wget) could be used to grab the files from mu_devops in this workflow file and once on
-# the local runner, the file path could simply be passed to the actions. That is not currently possible as
-# the actions are hardcoded to use the GitHub REST API to get the files in the local repo. If that is fixed
-# (tracked in https://github.com/github/issue-labeler/issues/39) then that approach can be used.
+# Both files are read from the default branch commit that the calling workflow runs on.
+#
+# The regular expression rules are evaluated by the script in this file because srvaroa/labeler does
+# not support the workflow_run event. Only the "label", "type" and "body" matcher keys are supported.
 #
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # For more information, see:
 # https://github.com/actions/labeler
-# https://github.com/github/issue-labeler
 
 name: Apply Labels Based on Message Content
 
 on:
   workflow_call:
+    inputs:
+      app-id:
+        description: "GitHub App ID for generating tokens (must be passed since vars don't cross repo boundaries)"
+        required: true
+        type: string
+      head-sha:
+        description: "Head commit SHA of the pull request that triggered the run (not used for issues events)"
+        required: false
+        type: string
+        default: ''
+      triggering-run-id:
+        description: "Workflow run ID of the pull_request workflow that uploaded the metadata artifact (not used for issues events)"
+        required: false
+        type: number
+        default: 0
+    secrets:
+      private-key:
+        description: "GitHub App private key for generating tokens"
+        required: true
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   sync:
@@ -37,24 +65,168 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
-          app-id: ${{ vars.MU_ACCESS_APP_ID }}
-          private-key: ${{ secrets.MU_ACCESS_APP_PRIVATE_KEY }}
+          app-id: ${{ inputs.app-id }}
+          private-key: ${{ secrets.private-key }}
           owner: ${{ github.repository_owner }}
 
+      - name: Download PR Metadata from Triggering Run
+        id: download-metadata
+        if: github.event_name != 'issues'
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: pr-labeler-metadata
+          path: metadata
+          github-token: ${{ steps.app-token.outputs.token }}
+          run-id: ${{ inputs.triggering-run-id }}
+          repository: ${{ github.repository }}
+
+      # The artifact is produced by code from the pull request, so only the PR number is used and
+      # everything else is read from the API.
+      - name: Resolve Target
+        id: target
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          HEAD_SHA: ${{ inputs.head-sha }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "valid=false" >> "$GITHUB_OUTPUT"
+
+          if [[ "${EVENT_NAME}" == "issues" ]]; then
+            if [[ ! "${ISSUE_NUMBER}" =~ ^[0-9]+$ ]]; then
+              echo "::notice::Event does not contain a valid issue number. Skipping."
+              exit 0
+            fi
+
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+            echo "number=${ISSUE_NUMBER}" >> "$GITHUB_OUTPUT"
+            echo "is_pull_request=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ ! -f metadata/pr-metadata.json ]]; then
+            echo "::notice::PR metadata artifact not found. Skipping."
+            exit 0
+          fi
+
+          pr_number="$(jq -r '.pr_number // empty' metadata/pr-metadata.json)"
+          if [[ ! "${pr_number}" =~ ^[0-9]+$ ]]; then
+            echo "::notice::PR metadata does not contain a valid PR number. Skipping."
+            exit 0
+          fi
+
+          state="$(gh api "repos/${REPO}/pulls/${pr_number}" --jq '.state')"
+          api_head_sha="$(gh api "repos/${REPO}/pulls/${pr_number}" --jq '.head.sha')"
+
+          if [[ "${state}" != "open" ]]; then
+            echo "::notice::PR #${pr_number} is ${state}. Skipping."
+            exit 0
+          fi
+
+          if [[ "${api_head_sha}" != "${HEAD_SHA}" ]]; then
+            echo "::notice::PR #${pr_number} head is ${api_head_sha}, not ${HEAD_SHA}. A newer run will apply labels."
+            exit 0
+          fi
+
+          echo "valid=true" >> "$GITHUB_OUTPUT"
+          echo "number=${pr_number}" >> "$GITHUB_OUTPUT"
+          echo "is_pull_request=true" >> "$GITHUB_OUTPUT"
+
       - name: Apply Labels Based on PR File Paths
+        if: steps.target.outputs.valid == 'true' && steps.target.outputs.is_pull_request == 'true'
         uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
         with:
           configuration-path: .github/workflows/label-issues/file-paths.yml
           repo-token: ${{ steps.app-token.outputs.token }}
+          pr-number: ${{ steps.target.outputs.number }}
           sync-labels: true
-        if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
 
-      - name: Apply PR Labels Based on Policies
-        uses: srvaroa/labeler@bf262763a8a8e191f5847873aecc0f29df84f957 # v1.14.0
-        with:
-          config_path: .github/workflows/label-issues/regex-pull-requests.yml
-          use_local_config: false
-          fail_on_error: true
+      - name: Install PyYAML
+        if: steps.target.outputs.valid == 'true'
+        shell: bash
+        run: python3 -m pip install --user pyyaml
+
+      - name: Apply Labels Based on Policies
+        if: steps.target.outputs.valid == 'true'
+        shell: python3 {0}
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+          CONFIG_PATH: .github/workflows/label-issues/regex-pull-requests.yml
+          CONFIG_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          IS_PULL_REQUEST: ${{ steps.target.outputs.is_pull_request }}
+          NUMBER: ${{ steps.target.outputs.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+          import urllib.parse
+
+          import yaml
+
+          repo = os.environ['REPO']
+          number = os.environ['NUMBER']
+          target_type = 'pull_request' if os.environ['IS_PULL_REQUEST'] == 'true' else 'issue'
+          supported_keys = {'label', 'type', 'body'}
+
+
+          def gh(*args, stdin=None):
+              result = subprocess.run(['gh', 'api', *args], input=stdin, capture_output=True, text=True)
+              if result.returncode != 0:
+                  sys.exit(f"gh api {' '.join(args)} failed: {result.stderr}")
+              return result.stdout
+
+
+          config = yaml.safe_load(gh(
+              f"repos/{repo}/contents/{os.environ['CONFIG_PATH']}?ref={os.environ['CONFIG_SHA']}",
+              '-H', 'Accept: application/vnd.github.raw'))
+          if target_type == 'issue' and not config.get('issues'):
+              print('Issues are not enabled in the labeler configuration. Skipping.')
+              sys.exit(0)
+
+          # The issues endpoint serves both issues and pull requests.
+          body = json.loads(gh(f"repos/{repo}/issues/{number}")).get('body') or ''
+
+          # True: label should be set, False: label should be removed.
+          desired = {}
+          for matcher in config.get('labels', []):
+              unsupported = set(matcher) - supported_keys
+              if unsupported:
+                  sys.exit(f"Unsupported matcher keys {sorted(unsupported)} for label {matcher.get('label')}")
+
+              label = matcher['label']
+              if desired.get(label):
+                  continue  # Multiple matchers for one label are OR'd.
+
+              results = []
+              if matcher.get('type'):
+                  results.append(matcher['type'] == target_type)
+              if matcher.get('body'):
+                  results.append(re.search(matcher['body'], body) is not None)
+
+              if results:
+                  desired[label] = all(results)
+              else:
+                  desired.pop(label, None)
+
+          current = set(gh(f"repos/{repo}/issues/{number}/labels", '--paginate', '--jq', '.[].name').splitlines())
+          append_only = bool(config.get('appendOnly'))
+
+          to_add = sorted(label for label, wanted in desired.items() if wanted and label not in current)
+          to_remove = sorted(label for label, wanted in desired.items()
+                             if not wanted and label in current and not append_only)
+
+          print(f"Current labels: {sorted(current)}")
+          print(f"Adding: {to_add}")
+          print(f"Removing: {to_remove}")
+
+          if to_add:
+              gh('-X', 'POST', f"repos/{repo}/issues/{number}/labels", '--input', '-',
+                 stdin=json.dumps({'labels': to_add}))
+          for label in to_remove:
+              gh('-X', 'DELETE', f"repos/{repo}/issues/{number}/labels/{urllib.parse.quote(label, safe='')}")

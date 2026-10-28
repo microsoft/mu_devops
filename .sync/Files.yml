@@ -297,6 +297,8 @@ group:
   - files:
     - source: .sync/workflows/leaf/label-issues.yml
       dest: .github/workflows/label-issues.yml
+    - source: .sync/workflows/leaf/label-issues-post.yml
+      dest: .github/workflows/label-issues-post.yml
       template: true
     - source: .sync/workflows/config/label-issues/file-paths.yml
       dest: .github/workflows/label-issues/file-paths.yml
@@ -461,6 +463,9 @@ group:
   - files:
     - source: .sync/workflows/leaf/pull-request-formatting-validator.yml
       dest: .github/workflows/pull-request-formatting-validator.yml
+    - source: .sync/workflows/leaf/pull-request-formatting-validator-post.yml
+      dest: .github/workflows/pull-request-formatting-validator-post.yml
+      template: true
     repos: |
       microsoft/mu
       microsoft/mu_basecore
