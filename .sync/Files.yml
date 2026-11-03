@@ -53,7 +53,7 @@ group:
 #   - microsoft/mu_devops
 #     - Does not build firmware code
 #   - microsoft/mu_feature_uefi_variable
-#     - Not connected to pipelines yet
+#     - Archived
 
 # CI Configuration - Markdown Lint - Common Settings
   - files:
@@ -72,7 +72,6 @@ group:
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -129,7 +128,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -155,7 +153,6 @@ group:
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_feature_mm_supv
@@ -174,7 +171,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -202,7 +198,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -225,7 +220,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -242,7 +236,6 @@ group:
       microsoft/mu_feature_config
       microsoft/mu_feature_dfci
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
 
@@ -287,7 +280,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -315,7 +307,6 @@ group:
       microsoft/mu_feature_dfci
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -388,7 +379,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -412,7 +402,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -435,7 +424,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -479,7 +467,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -505,7 +492,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_rust_hid
       microsoft/mu_tiano_platforms
       microsoft/secureboot_objects
@@ -553,7 +539,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
@@ -690,7 +675,6 @@ group:
       microsoft/mu_feature_ffa
       microsoft/mu_feature_ipmi
       microsoft/mu_feature_mm_supv
-      microsoft/mu_feature_uefi_variable
       microsoft/mu_oem_sample
       microsoft/mu_plus
       microsoft/mu_rust_hid
