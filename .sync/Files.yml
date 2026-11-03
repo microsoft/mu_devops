@@ -456,6 +456,7 @@ group:
   - files:
     - source: .sync/workflows/leaf/publish-release.yml
       dest: .github/workflows/publish-release.yml
+      template: true
     repos: |
       microsoft/mu_rust_hid
 

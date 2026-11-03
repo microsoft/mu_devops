@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Update Submodules to Latest Release
-        uses: microsoft/mu_devops/.github/actions/submodule-release-updater@v2.4.0
+        uses: microsoft/mu_devops/.github/actions/submodule-release-updater@894949127ade038c299c30790741f36e1a5436fe # v18.0.9
         with:
           GH_PAT: ${{ secrets.SUBMODULE_UPDATER_TOKEN }}
           GH_USER: "Add GitHub account username here"
