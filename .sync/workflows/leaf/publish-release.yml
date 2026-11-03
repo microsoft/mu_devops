@@ -7,6 +7,8 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
+{% import '../../Version.njk' as sync_version -%}
+
 name: Publish Release
 
 on:
@@ -21,19 +23,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      {% raw %}
       - name: Validate Branch
         run: |
           if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
               echo "This workflow can only be run on the main branch."
               exit 1
           fi
+      {% endraw %}
 
   release:
     name: Release
     needs: validate_branch
-    uses: microsoft/mu_devops/.github/workflows/ReleaseWorkflow.yml@main
+    uses: microsoft/mu_devops/.github/workflows/ReleaseWorkflow.yml@{{ sync_version.mu_devops_sha }} # {{ sync_version.mu_devops }}
+    {% raw %}
     secrets:
       CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
     permissions:
       contents: write
       actions: read
+    {% endraw %}
