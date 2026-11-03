@@ -1,0 +1,112 @@
+# This workflow posts pull request formatting comments after the "Validate Pull Request Formatting"
+# pull_request workflow completes.
+#
+# The pull_request workflow only fails the check. Posting the comment needs a GitHub App token, so it is
+# deferred to this workflow, which is called from a workflow_run workflow. The pull request number and the
+# rules that were violated are read from the "pr-formatting-metadata" artifact.
+#
+# Copyright (c) Microsoft Corporation.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+
+name: Pull Request Formatting Comments
+
+on:
+  workflow_call:
+    inputs:
+      app-id:
+        description: "GitHub App ID for generating tokens (must be passed since vars don't cross repo boundaries)"
+        required: true
+        type: string
+      head-sha:
+        description: "Head commit SHA of the pull request that triggered the run"
+        required: true
+        type: string
+      triggering-run-id:
+        description: "Workflow run ID of the pull_request workflow that uploaded the metadata artifact"
+        required: true
+        type: number
+    secrets:
+      private-key:
+        description: "GitHub App private key for generating tokens"
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  post_comments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ inputs.app-id }}
+          private-key: ${{ secrets.private-key }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Download PR Metadata from Triggering Run
+        id: download-metadata
+        continue-on-error: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: pr-formatting-metadata
+          path: metadata
+          github-token: ${{ steps.app-token.outputs.token }}
+          run-id: ${{ inputs.triggering-run-id }}
+          repository: ${{ github.repository }}
+
+      # The artifact is produced by code from the pull request. Only fixed comment text is posted, and
+      # only on the PR whose head SHA matches the triggering run.
+      - name: Post Formatting Comments
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          HEAD_SHA: ${{ inputs.head-sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [[ ! -f metadata/pr-metadata.json ]]; then
+            echo "::notice::PR metadata artifact not found. Skipping."
+            exit 0
+          fi
+
+          pr_number="$(jq -r '.pr_number // empty' metadata/pr-metadata.json)"
+          if [[ ! "${pr_number}" =~ ^[0-9]+$ ]]; then
+            echo "::notice::PR metadata does not contain a valid PR number. Skipping."
+            exit 0
+          fi
+
+          pr_state="$(gh api "repos/${REPO}/pulls/${pr_number}" --jq '.state')"
+          pr_head_sha="$(gh api "repos/${REPO}/pulls/${pr_number}" --jq '.head.sha')"
+
+          if [[ "${pr_state}" != "open" ]]; then
+            echo "::notice::PR #${pr_number} is ${pr_state}. Skipping."
+            exit 0
+          fi
+
+          if [[ "${pr_head_sha}" != "${HEAD_SHA}" ]]; then
+            echo "::notice::PR #${pr_number} head is ${pr_head_sha}, not ${HEAD_SHA}. Skipping."
+            exit 0
+          fi
+
+          comments="$(gh api "repos/${REPO}/issues/${pr_number}/comments" --paginate --jq '.[].body')"
+
+          post_comment() {
+            local marker="$1"
+            local message="$2"
+
+            if ! echo "${comments}" | grep -qF "${marker}"; then
+              gh api -X POST "repos/${REPO}/issues/${pr_number}/comments" -f body="${marker}${message}"
+            fi
+          }
+
+          if [[ "$(jq -r '.personal_prefix' metadata/pr-metadata.json)" == "true" ]]; then
+            post_comment '<!-- pr-val-personal -->' "⚠️ Please add a meaningful PR title (remove the 'Personal/' prefix from the title)."
+          fi
+
+          if [[ "$(jq -r '.default_sync_title' metadata/pr-metadata.json)" == "true" ]]; then
+            post_comment '<!-- pr-val-sync-title -->' "⚠️ Please add a meaningful PR title (update the default file sync title)."
+          fi
