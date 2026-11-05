@@ -138,6 +138,7 @@ jobs:
     needs: [notify-in-progress]
     container:
       image: ghcr.io/microsoft/mu_devops/ubuntu-24-test:latest
+      options: ${{ matrix.platform == 'Q35' && '--device=/dev/kvm:/dev/kvm' || '' }}
 
     strategy:
       fail-fast: false
@@ -146,7 +147,7 @@ jobs:
           - platform: Q35
             build_pkg: QemuQ35Pkg
             build_file: Platforms/QemuQ35Pkg/PlatformBuild.py
-            run_flags: "SHUTDOWN_AFTER_RUN=TRUE QEMU_HEADLESS=TRUE EMPTY_DRIVE=TRUE BLD_*_QEMU_CORE_NUM=2"
+            run_flags: "QEMU_ACCEL=kvm SHUTDOWN_AFTER_RUN=TRUE QEMU_HEADLESS=TRUE EMPTY_DRIVE=TRUE BLD_*_QEMU_CORE_NUM=2"
           - platform: ArmVirt
             build_pkg: QemuArmVirtPkg
             build_file: Platforms/QemuArmVirtPkg/PlatformBuild.py
