@@ -73,19 +73,19 @@ steps:
 #
 # Linux will use a container image pre-loaded with the designated Rust version. Windows does not use a container
 # image, but will have a VM image with a very recent version of Rust installed. This step installs the same toolchain
-# version used in the Linux container for consistency between the two. The cargo-make and cargo-tarpaulin versions
+# version used in the Linux container for consistency between the two. The cargo-make and cargo-llvm-cov versions
 # placed in the container image are the latest at the time the image is built. That should be equal to or less than
 # the latest version available when the pipeline is run. Get the latest available in the cache pipelines and use
 # those on both Linux and Windows agents for consistency in the pipeline runs.
 #
 - script: |
-    rustup install --no-self-update 1.95.0
-  displayName: Install Rust 1.95.0 (Windows)
+    rustup install --no-self-update 1.99.1
+  displayName: Install Rust 1.99.1 (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: |
-    rustup default 1.95.0
-  displayName: Set Rust 1.95.0 (Windows)
+    rustup default 1.99.1
+  displayName: Set Rust 1.99.1 (Windows)
   condition: eq(variables['Agent.OS'], 'Windows_NT')
 
 - script: pip install requests --upgrade
@@ -127,9 +127,9 @@ steps:
   displayName: Install cargo-make
 
 - script: |
-    cargo binstall -y cargo-tarpaulin --version 0.31.5
-  displayName: Install cargo-tarpaulin
+    cargo binstall -y cargo-llvm-cov --version 0.9.1
+  displayName: Install cargo-llvm-cov
 
-- script: rustup component add rustfmt rust-src --toolchain 1.95.0-$(rust_target_triple)
+- script: rustup component add rustfmt rust-src --toolchain 1.99.1-$(rust_target_triple)
   displayName: rustup add rust-src
   condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
