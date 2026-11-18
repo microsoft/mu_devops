@@ -121,7 +121,7 @@ jobs:
 
   analyze:
     name: Analyze
-    runs-on: windows-2022
+    runs-on: windows-2026
     needs:
       - gather_build_files
     permissions:
@@ -134,7 +134,7 @@ jobs:
       matrix:
         build_file: ${{ fromJson(needs.gather_build_files.outputs.platform_build_files) }}
         include:
-          - tool_chain_tag: VS2022
+          - tool_chain_tag: VS2026
 
     steps:
     - name: Checkout repository
