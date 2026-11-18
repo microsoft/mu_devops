@@ -63,7 +63,7 @@ parameters:
   type: boolean
   default: true
 - name: tool_chain_tag
-  displayName: Tool Chain (e.g. VS2022)
+  displayName: Tool Chain (e.g. VS2026)
   type: string
   default: ''
 - name: checkout_self

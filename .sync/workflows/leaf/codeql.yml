@@ -87,7 +87,7 @@ jobs:
 
   analyze:
     name: Analyze
-    runs-on: windows-2022
+    runs-on: windows-2026
     needs:
       - gather_packages
     if: needs.gather_packages.outputs.package_count != '0'
@@ -103,7 +103,7 @@ jobs:
         include:
           - archs: {% endraw %}{{ archs }}{% raw %}
 
-          - tool_chain_tag: VS2022
+          - tool_chain_tag: VS2026
 
     steps:
     - name: Checkout repository
