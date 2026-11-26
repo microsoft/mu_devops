@@ -130,8 +130,8 @@ ENV CARGO_HOME="$HOME/.cargo"
 ENV RUSTUP_HOME="$HOME/.rustup"
 ENV PATH="$CARGO_HOME/bin:$PATH"
 
-# Install Rust/Cargo and extras (rust-src, rust fmt, cargo-make, cargo-tarpaulin)
-RUN RUST_VERSION=1.95.0 && \
+# Install Rust/Cargo and extras (rust-src, rust fmt, cargo-make, cargo-llvm-cov)
+RUN RUST_VERSION=1.99.1 && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain ${RUST_VERSION} --profile minimal && \
     rustup component add rustfmt rust-src --toolchain ${RUST_VERSION}-x86_64-unknown-linux-gnu
 
@@ -142,11 +142,11 @@ RUN mkdir cargo_downloads && \
     curl -L -o cargo-make.zip "$DOWNLOAD_URL" && \
     unzip cargo-make.zip && \
     mv cargo-make-v$TAG_NAME-x86_64-unknown-linux-gnu/cargo-make $CARGO_HOME/bin/ && \
-    TAG_NAME=0.31.5 && \
-    DOWNLOAD_URL="https://github.com/xd009642/tarpaulin/releases/download/$TAG_NAME/cargo-tarpaulin-x86_64-unknown-linux-gnu.tar.gz" && \
-    curl -L -o cargo-tarpaulin.tar.gz "$DOWNLOAD_URL" && \
-    tar -xzvf cargo-tarpaulin.tar.gz && \
-    mv cargo-tarpaulin $CARGO_HOME/bin/ && \
+    TAG_NAME=0.9.1 && \
+    DOWNLOAD_URL="https://github.com/taiki-e/cargo-llvm-cov/releases/download/v$TAG_NAME/cargo-llvm-cov-x86_64-unknown-linux-gnu.tar.gz" && \
+    curl -L -o cargo-llvm-cov.tar.gz "$DOWNLOAD_URL" && \
+    tar -xzvf cargo-llvm-cov.tar.gz && \
+    mv cargo-llvm-cov $CARGO_HOME/bin/ && \
     cd .. && \
     rm -r cargo_downloads
 
