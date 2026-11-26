@@ -121,7 +121,7 @@ jobs:
 
   analyze:
     name: Analyze
-    runs-on: windows-2026
+    runs-on: windows-2025-vs2026
     needs:
       - gather_build_files
     permissions:
